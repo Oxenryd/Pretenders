@@ -12,11 +12,12 @@ public class ZoomFollowGang : MonoBehaviour
     [SerializeField] private Transform[] _targets = new Transform[4];
     [SerializeField] private float _maxZoomIn = 30f;
     [SerializeField] private Vector3 _startPos = new Vector3(0, 12f, -24f);
-    [SerializeField] private Vector3 _offset = Vector3.zero;
-    [SerializeField] private float _smoothTimeFactor = 0.65f;
-    [SerializeField] public float _bufferFactor = 0f;
+    [SerializeField] private Vector3 _zoomPanOffset = new Vector3(0, 0, -0.1f);
+    [SerializeField] private float _smoothTimeFactor = 0.08f;
+    [SerializeField] public float _bufferFactor = -0.35f;
     [SerializeField] public bool _stationary = false;
-    
+    [SerializeField] public bool _zoomDependentOffset = true;
+
     private Vector3 _curVecVel;
 
     void Update()
@@ -50,7 +51,9 @@ public class ZoomFollowGang : MonoBehaviour
         Vector3 cameraPosition = _stationary ?
             _startPos - _cam.transform.forward * Mathf.Clamp(requiredDistance, _maxZoomIn, float.MaxValue) :
             new Vector3(space.center.x, 0, space.center.y) - _cam.transform.forward * Mathf.Clamp(requiredDistance, _maxZoomIn, float.MaxValue);
-        var targetPosition = cameraPosition + new Vector3(_offset.x, _offset.y, _offset.z);
+        var targetPosition = _zoomDependentOffset ?
+            cameraPosition + _zoomPanOffset * requiredDistance :
+            cameraPosition;
 
         // Let the smoothing time to target be longer when the camera is far away
         float smoothTime = _smoothTimeFactor * requiredDistance * 0.01f;

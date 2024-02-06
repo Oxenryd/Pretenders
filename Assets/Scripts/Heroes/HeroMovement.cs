@@ -32,17 +32,22 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
     public int Index { get; set; }
     public bool CanMove { get; set; } = true;
     public float CurrentSpeed { get; set; } = 0f;
-    public float MaxMoveSpeed { get; set; }
-    public float MaxJumpPower { get; set; }
+    public float MaxMoveSpeed
+        { get { return _moveSpeed; } set { _moveSpeed = value; } }
+    public float MaxJumpPower
+        { get { return _jumpPower; } set { _jumpPower = value; } }
     public float TargetSpeed { get; set; } = 0f;
     public bool AiControlled { get; set; } = true;
     public bool TryingToMove { get; set; } = false;
     public bool TryingToJump { get; set; } = false;
     public Vector2 CurrentDirection { get; set; } = Vector2.zero;
     public Vector2 TargetDirection { get; set; } = Vector2.zero;
-    public float AccelerationTime { get; set; }
-    public float RetardTime { get; set; }
-    public float TurnTime { get; set; }
+    public float AccelerationTime
+        { get { return _accelerationTime; } set { _accelerationTime = value; } }
+    public float RetardTime
+        { get { return _retardTime; } set { _retardTime = value; } }
+    public float TurnTime
+        { get { return _turnTime; } set { _turnTime = value; } }
     public ControlSchemeType CurrentControlScheme { get; set; } = ControlSchemeType.TopDown;
     public float JumpVelocity { get; set; } = 0f;
     public bool IsGrounded { get; set; } = false;
@@ -60,13 +65,6 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
         var thisRenderer = GetComponentInChildren<MeshRenderer>();
         thisRenderer.sharedMaterial = new Material(_mat);
         thisRenderer.sharedMaterial.color = PrimaryColor;
-
-        // Set Acceleration, turn time and movespeed
-        AccelerationTime = _accelerationTime;
-        RetardTime = _retardTime;
-        TurnTime = _turnTime;
-        MaxMoveSpeed = _moveSpeed;
-        MaxJumpPower = _jumpPower;
 
         // Set the accelTimer, turnTimer and let them subscribe to
         // GameManagers' 'EarlyUpdate' for automatic ticking.

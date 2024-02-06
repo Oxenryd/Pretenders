@@ -1221,10 +1221,11 @@ MonoBehaviour:
   - {fileID: 1584298312}
   _maxZoomIn: 30
   _startPos: {x: 0, y: 12, z: -24}
-  _offset: {x: 0, y: 0, z: 0}
-  _smoothTimeFactor: 0.65
-  _bufferFactor: 0
+  _zoomPanOffset: {x: 0, y: 0, z: -0.1}
+  _smoothTimeFactor: 0.08
+  _bufferFactor: -0.35
   _stationary: 0
+  _zoomDependentOffset: 1
 --- !u!114 &1969203239 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3260374244989247857, guid: 4084f915a0d4a27428fba8a955cb3c86,
