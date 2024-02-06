@@ -251,7 +251,7 @@ GameObject:
   m_Component:
   - component: {fileID: 11420867}
   m_Layer: 0
-  m_Name: --------------------------
+  m_Name: --------- Managers -------
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -532,7 +532,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 533070179}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -578,7 +578,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 737576133}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -627,7 +627,7 @@ GameObject:
   m_Component:
   - component: {fileID: 871659448}
   m_Layer: 0
-  m_Name: --------------------------
+  m_Name: ---------- Lights ---------
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -786,7 +786,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 991589032}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -822,7 +822,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1226786555}
   m_Layer: 0
-  m_Name: ---------Objects----------
+  m_Name: -------- Objects ---------
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -891,8 +891,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1555419241}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.7388178, y: 3.26525, z: -1.2445674}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.7388178, y: 3.26525, z: -1.2445679}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -912,7 +912,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1561081171}
   m_Layer: 0
-  m_Name: --------------------------
+  m_Name: -------- Cameras --------
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1150,7 +1150,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1922888529}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.23344536, y: 0, z: 0, w: 0.97236997}
+  m_LocalRotation: {x: 0.23344536, y: -0, z: -0, w: 0.97236997}
   m_LocalPosition: {x: 0, y: 12, z: -24}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1387,33 +1387,43 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 6195959668544682588, guid: 0601d719ad0074249986b9c6e99d7fec,
         type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.6500001
+      objectReference: {fileID: 0}
+    - target: {fileID: 6195959668544682588, guid: 0601d719ad0074249986b9c6e99d7fec,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.6500001
+      objectReference: {fileID: 0}
+    - target: {fileID: 6195959668544682588, guid: 0601d719ad0074249986b9c6e99d7fec,
+        type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.6767617
       objectReference: {fileID: 0}
     - target: {fileID: 6195959668544682588, guid: 0601d719ad0074249986b9c6e99d7fec,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.587
+      value: 0.58700085
       objectReference: {fileID: 0}
     - target: {fileID: 6195959668544682588, guid: 0601d719ad0074249986b9c6e99d7fec,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.26406643
+      value: -0.2640667
       objectReference: {fileID: 0}
     - target: {fileID: 6195959668544682588, guid: 0601d719ad0074249986b9c6e99d7fec,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.96189666
+      value: 0.9618967
       objectReference: {fileID: 0}
     - target: {fileID: 6195959668544682588, guid: 0601d719ad0074249986b9c6e99d7fec,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: 0.000000014901161
       objectReference: {fileID: 0}
     - target: {fileID: 6195959668544682588, guid: 0601d719ad0074249986b9c6e99d7fec,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.27341327
+      value: -0.2734133
       objectReference: {fileID: 0}
     - target: {fileID: 6195959668544682588, guid: 0601d719ad0074249986b9c6e99d7fec,
         type: 3}
@@ -1453,8 +1463,8 @@ SceneRoots:
   - {fileID: 1922888532}
   - {fileID: 1226786555}
   - {fileID: 1555419242}
-  - {fileID: 737576134}
   - {fileID: 4534677304713377410}
+  - {fileID: 737576134}
   - {fileID: 871659448}
   - {fileID: 10385635}
   - {fileID: 11420867}

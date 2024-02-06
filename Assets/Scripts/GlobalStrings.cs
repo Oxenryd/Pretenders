@@ -3,7 +3,9 @@ public static class GlobalStrings
     //NAMES
     public const string NAME_INPUTMANAGER = "InputManager";
     public const string NAME_GAMEMANAGER = "GameManager";
-    public const string NAME_HEROCONTAINER = "HeroContainer";
+
+    //CONTAINERS
+    public const string CONT_HEROCONTAINER = "HeroContainer";
 
     //LAYERS
     public const string LAYER_GROUND = "Ground";

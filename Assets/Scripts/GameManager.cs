@@ -15,29 +15,13 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int _maxHeroes = 4;
     [SerializeField] private InputManager _inputMan;
 
-    // Unity specific Singleton-shenanigans----------------------------------------------------------
     private static GameManager _instance;
     /// <summary>
-    /// The Singleton instance of our GameManager
+    /// The Singleton instance of our GameManager.
+    /// <br>Singleton pattern in unity gameobject is special...</br>
     /// </summary>
     public static GameManager Instance
-    {
-        get
-        {
-            if (_instance == null)
-            {
-                _instance = FindObjectOfType<GameManager>();
-                if (_instance == null)
-                {
-                    GameObject singletonObject = new GameObject(typeof(GameManager).Name);
-                    _instance = singletonObject.AddComponent<GameManager>();
-                }
-            }
-            return _instance;
-        }
-    }
-    // -----------------------------------------------------------------------------------------------
-
+        { get { return _instance; } }
     
     private Hero[] _heroes;
 
@@ -90,6 +74,20 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
+        if (this != Instance && Instance != null)
+        {
+            Destroy(this);
+            return;
+        } else
+        {
+            _instance = this;
+        }
+
+        //Make sure this item survives between scenes.
+        // Be aware that this moves this object in the objects list during runtime in editor.
+        // To "Don't Destroy On Load" - object.
+        DontDestroyOnLoad(this);
+        
         // Cache layer so not to compare string literals during updates.
         GroundLayer = LayerMask.NameToLayer(GlobalStrings.LAYER_GROUND);
     }
@@ -108,7 +106,7 @@ public class GameManager : MonoBehaviour
             // Find Heroes in the container then assign them to and init the inputmanager.
             // Also populate this managers' info about Heroes.
             // (HeroContainer MUST have at least as many Heroes as _maxHeroes!!)
-            var hContainer = GameObject.FindGameObjectWithTag(GlobalStrings.NAME_HEROCONTAINER);
+            var hContainer = GameObject.FindGameObjectWithTag(GlobalStrings.CONT_HEROCONTAINER);
             var heroList = hContainer.GetComponentsInChildren<Hero>();
             var iMoveList = new List<ICharacterMovement>();
             _heroes = new Hero[_maxHeroes];
