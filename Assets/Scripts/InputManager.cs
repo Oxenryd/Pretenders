@@ -1,29 +1,26 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Analytics;
 using UnityEngine.InputSystem;
-
-// This class get the inputs from controllers, but it is not Polling in update but rather gets event from Unity´s InputSystem.
-
-//TODO:
-// *Fix so that a new controller device is chosen for a new player when a button on that device is pressed instead of forcing all devices as of now.
-// *Not polling if a player or AI is controlling a hero every update.
-// *Unsubscribe from events for clean disposal.
+using UnityEngine.InputSystem.Controls;
 
 /// <summary>
 /// Class that control characters' movement behaviors.
 /// </summary>
 public class InputManager : MonoBehaviour
 {
-    
+    public const string IGNOREINPUT_MSG = "Ignored ";
+    public const string PLAYERJOIN = "Player Joined! ID: ";
+    public const string DEVICECONNECTED = " Device Assigned: ";
+
     [SerializeField] private InputActionAsset _actionsFile;
     [SerializeField] private PlayerInput[] _input = new PlayerInput[4];
     [SerializeField] private ICharacterMovement[] _characters = new ICharacterMovement[4];
     
-    private int _numOfPlayers;
     private InputActionMap[] _actionsMaps = new InputActionMap[4];
-    private List<Gamepad> _gamePads = new List<Gamepad>();
-    private int _maxControllables;
+    private List<InputDevice> _inputDevices = new List<InputDevice>();
+    private Dictionary<InputDevice, int> _deviceCharCouple = new Dictionary<InputDevice, int>();
 
     /// <summary>
     /// ActionMaps holds the different actions that a character can perform.
@@ -36,28 +33,22 @@ public class InputManager : MonoBehaviour
     public InputActionAsset ActionsFile
         { get { return _actionsFile; } }
     /// <summary>
-    /// List of currently detected gamepads (since last poll).
+    /// List of currently detected devices (since last UpdateDevices() ).
     /// </summary>
-    public List<Gamepad> GamePads
-        { get { return _gamePads; } }
-    public int MaxControllableCharacter
-        { get { return _maxControllables; } private set { _maxControllables = value; } } 
-    /// <summary>
-    /// Number of human players.
-    /// </summary>
-    public int NumberPlayers
-        { get { return _numOfPlayers; } set { _numOfPlayers = value; } }
+    public List<InputDevice> InputDevices
+        { get { return _inputDevices; } }
+    public int MaxControllableCharacters
+        { get { return GameManager.Instance.MaxControllableCharacters; } } 
 
 
     /// <summary>
     /// Needs to be run before anything else on the manager to assign controllable characters and such.
     /// </summary>
-    public void Initialize(int numberOfPlayers, ICharacterMovement[] moveableCharacters)
+    public void Initialize(ICharacterMovement[] moveableCharacters)
     {
-        _numOfPlayers = numberOfPlayers;
+        _deviceCharCouple.Clear();
         _characters = moveableCharacters;
-        MaxControllableCharacter = _characters.Length;
-        UpdateGamePads();
+        UpdateDevices();
     }
 
 
@@ -65,27 +56,23 @@ public class InputManager : MonoBehaviour
     /// <br>Can be used to set up a default inputs. Keyboard only for player one, and attached gamepads to following players.</br>
     /// </summary>
     /// <param name="numberOfHumanPlayers"></param>
-    public void SetupDefaultInputs()
+    public void SetupDefaultInput()
     {
-        for (int i = 0; i < _maxControllables; i++)
+        _deviceCharCouple.Clear();
+        var players = GameManager.Instance.NumOfPlayers;
+        for (int i = 0; i < MaxControllableCharacters; i++)
         {        
-            if (_numOfPlayers > 0 && i < _numOfPlayers)
+            if (players > 0 && i < players)
             {
                 if (i == 0)
                 {
-                    SetHeroControl(0, false, new InputDevice[] { InputSystem.GetDevice<Keyboard>() });
-                } else
-                {
-                    if (_gamePads.Count >= i)
-                    {
-                        SetHeroControl(i, false, new InputDevice[] { _gamePads[i - 1] });
-                    } else
-                        SetHeroControl(i, false, new InputDevice[] { } );
+                    var keyboard = InputSystem.GetDevice<Keyboard>();
+                    SetHeroControl(0, false, new InputDevice[] { keyboard });
+                    _deviceCharCouple.Add(keyboard, 0);
                 }
 
-                if (i < _numOfPlayers)
+                if (i < players)
                     _characters[i].AiControlled = false;
-
             } else
             {
                 SetHeroControl(i, true, new InputDevice[] { } );
@@ -169,18 +156,56 @@ public class InputManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Find all connected gamepads and store references to them in InputManager.GamePads
+    /// Find all connected gamepads and others and store references to them in InputManager.InputDevices
     /// </summary>
-    public void UpdateGamePads()
+    public void UpdateDevices()
     {
-        _gamePads.Clear();
+        _inputDevices.Clear();
+        var ignoreList = GlobalStrings.MISC_INPUT_IGNORE.Split(';');
         foreach (var device in InputSystem.devices)
         {
-            if (device is Gamepad)
+            if (device is Mouse || device is Keyboard) // Skip mouse and keyboard
+                continue;
+
+            // Check ignores
+            bool ignored = false;
+            foreach (var ignore in ignoreList)
+                if (device.name == ignore)
+                {
+                    Debug.Log(IGNOREINPUT_MSG + ignore);
+                    ignored = true;
+                }
+            if (ignored)
+                continue;
+
+            _inputDevices.Add(device);
+        }
+    }
+
+    void Update()
+    {
+        // Probe devices and if a new device is being activated,
+        // assign that device to a character as a new player.
+        for (int i = 0; i < _inputDevices.Count; i++)
+        {
+            if (GameManager.Instance.NumOfPlayers >= GameManager.Instance.MaxControllableCharacters)
+                break;
+
+            if (!_inputDevices[i].enabled || _deviceCharCouple.ContainsKey(_inputDevices[i]))
+                continue;
+
+            var controls = _inputDevices[i].allControls;
+            for (int j = 0; j < controls.Count; j++)
             {
-                if (!(device as  Gamepad).name.Contains(GlobalStrings.MISC_XINPUT_IGNORE)) // Debug... Pierre has duplicates of input devices on his computer sometimes.
-                    _gamePads.Add((Gamepad)device);
-            }
+                if (controls[j] is ButtonControl && (controls[j] as ButtonControl).wasPressedThisFrame)
+                {
+                    int newIndex = GameManager.Instance.NumOfPlayers++;
+                    _deviceCharCouple.Add(_inputDevices[i], newIndex);
+                    SetHeroControl(newIndex, false, new InputDevice[] { _inputDevices[i] });
+                    Debug.Log(PLAYERJOIN + newIndex + DEVICECONNECTED + _inputDevices[i].name);
+                    _characters[newIndex].Halt();
+                }
+            }    
         }
     }
 }

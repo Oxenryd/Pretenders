@@ -1,20 +1,17 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public interface ICharacterMovement
 {
     public ControlSchemeType CurrentControlScheme { get; set; }
-    public int Index { get; set; }
     public bool AiControlled { get; set; }
     public bool CanMove { get; set; }
     public float MaxMoveSpeed { get; set; }
     public float MaxJumpPower { get; set; }
     public bool TryingToMove { get; set; }
     public bool TryingToJump { get; set; }
-    public Vector2 CurrentDirection { get; set; }
-    public Vector2 TargetDirection { get; set; }
+    public Vector3 CurrentDirection { get; set; }
+    public Vector3 TargetDirection { get; set; }
     public float CurrentSpeed { get; set; }
     public float AccelerationTime { get; set; }
     public float JumpVelocity { get; set; }
@@ -26,4 +23,7 @@ public interface ICharacterMovement
 
     public void TryMove(InputAction.CallbackContext context);
     public void TryJump(InputAction.CallbackContext context);
+    public void TryMoveAi(Vector2 direction);
+    public void TryJumpAi();
+    public void Halt();
 }

@@ -9,14 +9,15 @@ using UnityEngine.InputSystem.Layouts;
 
 public class AiHeroController : MonoBehaviour
 {
-    [SerializeField] private HeroMovement _hero;
+    
     [SerializeField] private bool _enabled = true;
 
     // Debug and testing random movement for Ai heroes for now
     private EasyTimer _directionTimer;
     private EasyTimer _jumpTimer;
-    private Vector2 _targetDirection = Vector2.zero;
-    
+    private Vector3 _targetDirection = Vector3.zero;
+    private HeroMovement _heroMove;
+
     /// <summary>
     /// Must be enabled to run.
     /// </summary>
@@ -31,28 +32,28 @@ public class AiHeroController : MonoBehaviour
         _jumpTimer = new EasyTimer(Random.Range(0.8f, 10f));
         GameManager.Instance.EarlyUpdate += _directionTimer.TickSubscription;
         GameManager.Instance.EarlyUpdate += _jumpTimer.TickSubscription;
-
+        _heroMove = GetComponent<HeroMovement>();
     }
 
     // Update is called once per frame
     void Update()
     {
         // Just stop if this Hero is player controlled
-        if (!_hero.AiControlled || !_enabled)
+        if (!_heroMove.AiControlled || !_enabled)
             return;
 
         // If Timer is done, get a random direction and walk in that direction.
         // Do sporadic happy jumps.
         if (_directionTimer.Done)
         {
-            _targetDirection = new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized;
-            _hero.TryMoveAi(_targetDirection);
+            _targetDirection = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0f).normalized;
+            _heroMove.TryMoveAi(_targetDirection);
             _directionTimer.Time = Random.Range(0.3f, 3f);
             _directionTimer.Reset();
         }
         if (_jumpTimer.Done)
         {
-            _hero.TryJumpAi();
+            _heroMove.TryJumpAi();
             _jumpTimer.Time = Random.Range(0.8f, 6f);
             _jumpTimer.Reset();
         }

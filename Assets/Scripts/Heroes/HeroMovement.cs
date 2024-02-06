@@ -8,18 +8,17 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
 {
     [SerializeField] private float _quickTurnFactor = 0.2f;
     [SerializeField] private float _jumpBufferTime = 0.13f;
-
+    [SerializeField] private HeroType _heroType = HeroType.Basic;
     [SerializeField] private Rigidbody _body;
     [SerializeField] private Material _mat;
-    [SerializeField] public PlayerInput Input;
-    [SerializeField] public HeroType HeroType = HeroType.Basic;
+    [SerializeField] private PlayerInput _input;
     [SerializeField] private float _accelerationTime = 0.9f;
     [SerializeField] private float _retardTime = 0.9f;
     [SerializeField] private float _turnTime = 0.9f;
     [SerializeField] private float _moveSpeed = 2.5f;
     [SerializeField] private float _jumpPower = 5f;
-    [ColorUsage(false)] public Color PrimaryColor;
-    [ColorUsage(false)] public Color SecondaryColor;
+    [ColorUsage(false)][SerializeField] private Color _primaryColor;
+    [ColorUsage(false)][SerializeField] private Color _secondaryColor;
 
     private EasyTimer _accelTimer;
     private EasyTimer _turnTimer;
@@ -29,7 +28,12 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
     private bool _jumpButtonIsDown = false; // (instead of polling device with external calls)
     private bool _didJumpDecel = false;
 
-    public int Index { get; set; }
+    public Color PrimaryColor
+        { get { return _primaryColor; } set { _primaryColor = value; } }
+    public Color SecondaryColor
+        { get { return _secondaryColor; } set { _secondaryColor = value; } }
+    public HeroType HeroType
+        { get { return _heroType; } set { _heroType = value; } }
     public bool CanMove { get; set; } = true;
     public float CurrentSpeed { get; set; } = 0f;
     public float MaxMoveSpeed
@@ -40,8 +44,8 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
     public bool AiControlled { get; set; } = true;
     public bool TryingToMove { get; set; } = false;
     public bool TryingToJump { get; set; } = false;
-    public Vector2 CurrentDirection { get; set; } = Vector2.zero;
-    public Vector2 TargetDirection { get; set; } = Vector2.zero;
+    public Vector3 CurrentDirection { get; set; } = Vector2.zero;
+    public Vector3 TargetDirection { get; set; } = Vector2.zero;
     public float AccelerationTime
         { get { return _accelerationTime; } set { _accelerationTime = value; } }
     public float RetardTime
@@ -64,12 +68,12 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
         // Set color to prefab instance picked color.
         var thisRenderer = GetComponentInChildren<MeshRenderer>();
         thisRenderer.sharedMaterial = new Material(_mat);
-        thisRenderer.sharedMaterial.color = PrimaryColor;
+        thisRenderer.sharedMaterial.color = _primaryColor;
 
         // Set the accelTimer, turnTimer and let them subscribe to
         // GameManagers' 'EarlyUpdate' for automatic ticking.
         _accelTimer = new EasyTimer(_accelerationTime);
-        _turnTimer = new EasyTimer(AccelerationTime, true);
+        _turnTimer = new EasyTimer(_turnTime, true);
         _haltTimer = new EasyTimer(_retardTime);
         _jumpBufferTimer = new EasyTimer(_jumpBufferTime);
         GameManager.Instance.EarlyFixedUpdate += _accelTimer.TickSubscription;
@@ -154,7 +158,14 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
             IsMoving = false;
 
         // Actually set velocity
-        _body.velocity = new Vector3(CurrentDirection.x * CurrentSpeed, _body.velocity.y, CurrentDirection.y * CurrentSpeed);
+        // Taking current controlscheme into consideration for axes.
+        switch (CurrentControlScheme)
+        {
+            case ControlSchemeType.TopDown:
+                _body.velocity = new Vector3(CurrentDirection.x * CurrentSpeed, _body.velocity.y, CurrentDirection.y * CurrentSpeed);
+                break;
+        }
+        
     }
 
     // Handle Input Events
@@ -258,7 +269,7 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
         return Mathf.Round(Mathf.Atan2(TargetDirection.y, TargetDirection.x)) ==
             Mathf.Round(Mathf.Atan2(CurrentDirection.y, CurrentDirection.x));
     }
-    private void _resumeMoving(Vector2 direction)
+    private void _resumeMoving(Vector3 direction)
     {
         TargetDirection = direction;
         if (direction.magnitude * MaxMoveSpeed >= CurrentSpeed)
@@ -275,7 +286,7 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
 
         TryingToMove = true;
     }
-    private void _startMovingFromStandStill(Vector2 direction)
+    private void _startMovingFromStandStill(Vector3 direction)
     {
         TargetDirection = direction;
         TargetSpeed = direction.magnitude * MaxMoveSpeed;

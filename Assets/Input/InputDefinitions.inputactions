@@ -156,6 +156,61 @@
                     "isPartOfComposite": true
                 },
                 {
+                    "name": "2D Vector",
+                    "id": "a2cf410d-d7ad-483d-9776-273e86ded10c",
+                    "path": "2DVector",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "up",
+                    "id": "9e98224e-31bd-4294-bcbe-21e094b15e6c",
+                    "path": "<Joystick>/stick/up",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "down",
+                    "id": "bcb38b75-086c-4366-b56f-1e9a9a457e49",
+                    "path": "<Joystick>/stick/down",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "left",
+                    "id": "359dc36a-7f86-46ef-bcd5-1b0b89ce104a",
+                    "path": "<Joystick>/stick/left",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "right",
+                    "id": "c4b26fe3-894b-45f0-a8d6-1dea2acdb242",
+                    "path": "<Joystick>/stick/right",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
                     "name": "",
                     "id": "0344d97f-fcda-4fb5-9d7d-9be09410c93a",
                     "path": "<Keyboard>/space",
@@ -179,6 +234,17 @@
                 },
                 {
                     "name": "",
+                    "id": "d27577c9-5b5c-4277-974c-a5f8c8178222",
+                    "path": "<HID::Padix Co. Ltd. USB,2-axis 8-button gamepad>/button2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "5ca05ba2-c74f-428e-9f69-501bd46c38a6",
                     "path": "<Gamepad>/buttonWest",
                     "interactions": "",
@@ -192,6 +258,17 @@
                     "name": "",
                     "id": "fdd9666e-dd15-4b73-9eac-4fb7d2933cbb",
                     "path": "<Keyboard>/j",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Fire1",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "938f56d1-e0e1-4fd3-a2e2-82feeab473f2",
+                    "path": "<HID::Padix Co. Ltd. USB,2-axis 8-button gamepad>/button4",
                     "interactions": "",
                     "processors": "",
                     "groups": "",

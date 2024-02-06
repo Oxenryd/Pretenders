@@ -390,6 +390,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Hero (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 292827918394475042, guid: 4084f915a0d4a27428fba8a955cb3c86,
+        type: 3}
+      propertyPath: m_TagString
+      value: Character
+      objectReference: {fileID: 0}
     - target: {fileID: 4387190863125152318, guid: 4084f915a0d4a27428fba8a955cb3c86,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -477,6 +482,21 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4639903446269128158, guid: 4084f915a0d4a27428fba8a955cb3c86,
         type: 3}
+      propertyPath: _primaryColor.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4639903446269128158, guid: 4084f915a0d4a27428fba8a955cb3c86,
+        type: 3}
+      propertyPath: _primaryColor.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4639903446269128158, guid: 4084f915a0d4a27428fba8a955cb3c86,
+        type: 3}
+      propertyPath: _primaryColor.r
+      value: 0.048508644
+      objectReference: {fileID: 0}
+    - target: {fileID: 4639903446269128158, guid: 4084f915a0d4a27428fba8a955cb3c86,
+        type: 3}
       propertyPath: _accelerationTime
       value: 2.8
       objectReference: {fileID: 0}
@@ -490,6 +510,11 @@ PrefabInstance:
       propertyPath: _inputMan
       value: 
       objectReference: {fileID: 991589034}
+    - target: {fileID: 7126460000812090534, guid: 4084f915a0d4a27428fba8a955cb3c86,
+        type: 3}
+      propertyPath: _index
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -551,8 +576,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64d7da1b753f06147945a020ce90238e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _numPlayers: 1
-  _maxHeroes: 4
+  _maxControllables: 4
   _inputMan: {fileID: 991589034}
 --- !u!1 &737576133
 GameObject:
@@ -661,6 +685,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Hero (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 292827918394475042, guid: 4084f915a0d4a27428fba8a955cb3c86,
+        type: 3}
+      propertyPath: m_TagString
+      value: Character
+      objectReference: {fileID: 0}
     - target: {fileID: 4387190863125152318, guid: 4084f915a0d4a27428fba8a955cb3c86,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -743,6 +772,21 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4639903446269128158, guid: 4084f915a0d4a27428fba8a955cb3c86,
         type: 3}
+      propertyPath: _primaryColor.b
+      value: 0.013520718
+      objectReference: {fileID: 0}
+    - target: {fileID: 4639903446269128158, guid: 4084f915a0d4a27428fba8a955cb3c86,
+        type: 3}
+      propertyPath: _primaryColor.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4639903446269128158, guid: 4084f915a0d4a27428fba8a955cb3c86,
+        type: 3}
+      propertyPath: _primaryColor.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4639903446269128158, guid: 4084f915a0d4a27428fba8a955cb3c86,
+        type: 3}
       propertyPath: _accelerationTime
       value: 6.65
       objectReference: {fileID: 0}
@@ -756,6 +800,11 @@ PrefabInstance:
       propertyPath: _inputMan
       value: 
       objectReference: {fileID: 991589034}
+    - target: {fileID: 7126460000812090534, guid: 4084f915a0d4a27428fba8a955cb3c86,
+        type: 3}
+      propertyPath: _index
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -952,6 +1001,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Hero (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 292827918394475042, guid: 4084f915a0d4a27428fba8a955cb3c86,
+        type: 3}
+      propertyPath: m_TagString
+      value: Character
+      objectReference: {fileID: 0}
     - target: {fileID: 4387190863125152318, guid: 4084f915a0d4a27428fba8a955cb3c86,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1039,6 +1093,21 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4639903446269128158, guid: 4084f915a0d4a27428fba8a955cb3c86,
         type: 3}
+      propertyPath: _primaryColor.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4639903446269128158, guid: 4084f915a0d4a27428fba8a955cb3c86,
+        type: 3}
+      propertyPath: _primaryColor.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4639903446269128158, guid: 4084f915a0d4a27428fba8a955cb3c86,
+        type: 3}
+      propertyPath: _primaryColor.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4639903446269128158, guid: 4084f915a0d4a27428fba8a955cb3c86,
+        type: 3}
       propertyPath: _accelerationTime
       value: 2.51
       objectReference: {fileID: 0}
@@ -1052,6 +1121,11 @@ PrefabInstance:
       propertyPath: _inputMan
       value: 
       objectReference: {fileID: 991589034}
+    - target: {fileID: 7126460000812090534, guid: 4084f915a0d4a27428fba8a955cb3c86,
+        type: 3}
+      propertyPath: _index
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1263,6 +1337,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Hero
       objectReference: {fileID: 0}
+    - target: {fileID: 292827918394475042, guid: 4084f915a0d4a27428fba8a955cb3c86,
+        type: 3}
+      propertyPath: m_TagString
+      value: Character
+      objectReference: {fileID: 0}
     - target: {fileID: 3260374244989247857, guid: 4084f915a0d4a27428fba8a955cb3c86,
         type: 3}
       propertyPath: m_Camera
@@ -1360,6 +1439,21 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4639903446269128158, guid: 4084f915a0d4a27428fba8a955cb3c86,
         type: 3}
+      propertyPath: _primaryColor.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4639903446269128158, guid: 4084f915a0d4a27428fba8a955cb3c86,
+        type: 3}
+      propertyPath: _primaryColor.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4639903446269128158, guid: 4084f915a0d4a27428fba8a955cb3c86,
+        type: 3}
+      propertyPath: _primaryColor.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4639903446269128158, guid: 4084f915a0d4a27428fba8a955cb3c86,
+        type: 3}
       propertyPath: _accelerationTime
       value: 0.84
       objectReference: {fileID: 0}
@@ -1449,7 +1543,7 @@ PrefabInstance:
     - target: {fileID: 6825109376793108710, guid: 0601d719ad0074249986b9c6e99d7fec,
         type: 3}
       propertyPath: m_Name
-      value: "D\xE4Junik\xE5rn"
+      value: Unicorn
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
