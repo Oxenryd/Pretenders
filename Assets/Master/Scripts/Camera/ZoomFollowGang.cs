@@ -1,68 +1,61 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
+/// <summary>
+/// Camera Component for following a group of transforms and keep them in the view.
+/// </summary>
 public class ZoomFollowGang : MonoBehaviour
 {
     [SerializeField] private Camera _cam;
     [SerializeField] private Transform[] _targets = new Transform[4];
+    [SerializeField] private float _maxZoomIn = 30f;
+    [SerializeField] private Vector3 _startPos = new Vector3(0, 12f, -24f);
     [SerializeField] private Vector3 _offset = Vector3.zero;
-    [SerializeField] private float _smoothTime = 0.3f;
-
-    public float _bufferDistance = 1f;
-    private float _bounds = 1000;
-    private Vector3 _targetPosition;
+    [SerializeField] private float _smoothTimeFactor = 0.65f;
+    [SerializeField] public float _bufferFactor = 0f;
+    [SerializeField] public bool _stationary = false;
+    
     private Vector3 _curVecVel;
-    Rect _space;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
     void Update()
     {
-        float left = -_bounds;
-        float right = _bounds;
-        float up = _bounds;
-        float down = -_bounds;
-        
+        // Calculate the rectangle to keep in view
+        float left = float.MinValue;
+        float right = float.MaxValue;
+        float up = float.MaxValue;
+        float down = float.MinValue;
         for (int i = 0 ; i < _targets.Length; i++)
         {
             if (_targets[i].position.x > left)
                 left = _targets[i].position.x;
             if (_targets[i].position.x < right)
                 right = _targets[i].position.x;
-            if (_targets[i].position.y < up)
-                up = _targets[i].position.y;
-            if (_targets[i].position.y > down)
-                down = _targets[i].position.y;
+            if (_targets[i].position.z < up)
+                up = _targets[i].position.z;
+            if (_targets[i].position.z > down)
+                down = _targets[i].position.z;
         }
+        var space = new Rect(left, up, right - left, down - up);
 
-        _space = new Rect(left, up, right - left, down - up);
- 
-        // Calculate the distance to ensure all objects fit in the camera's view
-        float requiredDistance = CalculateRequiredDistance(_cam, _space.height, _space.width, _bufferDistance);
-        Vector3 baryCenter = (_targets[0].position + _targets[1].position + _targets[2].position + _targets[3].position) / 4;
-        Vector3 cameraTarget = baryCenter;// space.center;
-        Vector3 cameraPosition = cameraTarget - _cam.transform.forward * requiredDistance;
+        // Calculate the distance to ensure all targets fit in the camera's view
+        float diagonalSize = Mathf.Sqrt(space.width * space.width + space.height * space.height);
+        float calcDistance = diagonalSize * 0.5f / Mathf.Tan(Mathf.Deg2Rad * (_cam.fieldOfView * 0.5f));
 
-        _targetPosition = cameraPosition - new Vector3(0, 0, _offset.z);
+        // Having a screen pad buffer that scales with the amount of zoom if needed to keep things in the frame.
+        float requiredDistance = calcDistance + calcDistance * _bufferFactor;
 
-        _cam.transform.position = Vector3.SmoothDamp(_cam.transform.position, _targetPosition, ref _curVecVel, _smoothTime);
+        // Stationary camera or moving with group?
+        Vector3 cameraPosition = _stationary ?
+            _startPos - _cam.transform.forward * Mathf.Clamp(requiredDistance, _maxZoomIn, float.MaxValue) :
+            new Vector3(space.center.x, 0, space.center.y) - _cam.transform.forward * Mathf.Clamp(requiredDistance, _maxZoomIn, float.MaxValue);
+        var targetPosition = cameraPosition + new Vector3(_offset.x, _offset.y, _offset.z);
+
+        // Let the smoothing time to target be longer when the camera is far away
+        float smoothTime = _smoothTimeFactor * requiredDistance * 0.01f;
+
+        // Set the position of the camera
+        _cam.transform.position = Vector3.SmoothDamp(_cam.transform.position, targetPosition, ref _curVecVel, smoothTime);
     }
-
-    float CalculateRequiredDistance(Camera cam, float width, float length, float buffer)
-    {
-        float diagonalSize = Mathf.Sqrt(width * width + length * length);
-        float requiredDistance = diagonalSize * 0.5f / Mathf.Tan(Mathf.Deg2Rad * (cam.fieldOfView * 0.5f));
-
-        requiredDistance += buffer;
-
-        return requiredDistance;
-    }
-
-
 }

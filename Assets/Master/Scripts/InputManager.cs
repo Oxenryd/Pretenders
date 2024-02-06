@@ -1,115 +1,124 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using static UnityEditor.ShaderData;
+
+// This class get the inputs from controllers, but it is not Polling in update but rather gets event from Unity´s InputSystem.
 
 //TODO:
 // *Fix so that a new controller device is chosen for a new player when a button on that device is pressed instead of forcing all devices as of now.
 // *Not polling if a player or AI is controlling a hero every update.
 // *Unsubscribe from events for clean disposal.
 
+/// <summary>
+/// Class that control characters' movement behaviors.
+/// </summary>
 public class InputManager : MonoBehaviour
 {
+    
     [SerializeField] private InputActionAsset _actionsFile;
     [SerializeField] private PlayerInput[] _input = new PlayerInput[4];
-    [SerializeField] private HeroMovement[] _heroes = new HeroMovement[4];
-    [SerializeField] private bool[] _toggleAiControlled = new bool[4]; //Don´t set index 0 to True in inspector!!!
-    [SerializeField] private string _AiToggleWarning = "Leave the first checkbox unchecked above!!";
-
+    [SerializeField] private ICharacterMovement[] _characters = new ICharacterMovement[4];
+    
+    private int _numOfPlayers;
     private InputActionMap[] _actionsMaps = new InputActionMap[4];
-    public InputActionMap[] ActionMaps
-        { get { return _actionsMaps; } }
-    public InputActionAsset ActionsFile
-        { get { return _actionsFile; } }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        //Setup AiControlled Heroes.
-        //First Hero must be human controlled.
-        for (int i = 0; i < 4; i++)
-        {
-            _heroes[i].Index = i;
-            _heroes[i].AiControlled = _toggleAiControlled[i];
-        }
-
-        //Create InputActionMaps for players and assign devices.
-        var gpads = _getGamePadDevices();
-        for (int i = 0; i < 4; i++)
-        {
-            _enableActionMapsforPlayer(i, gpads);
-            _subscribeToActions(i);
-        }
-    }
-
-
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    private List<Gamepad> _gamePads = new List<Gamepad>();
+    private int _maxControllables;
 
     /// <summary>
-    /// Assign the action maps to each player and their resp. input device.
+    /// ActionMaps holds the different actions that a character can perform.
+    /// </summary>
+    public InputActionMap[] ActionMaps
+        { get { return _actionsMaps; } }
+    /// <summary>
+    /// ActionsFile is the Input file that holds the definition of maps and their resp. actions.
+    /// </summary>
+    public InputActionAsset ActionsFile
+        { get { return _actionsFile; } }
+    /// <summary>
+    /// List of currently detected gamepads (since last poll).
+    /// </summary>
+    public List<Gamepad> GamePads
+        { get { return _gamePads; } }
+    public int MaxControllableCharacter
+        { get { return _maxControllables; } private set { _maxControllables = value; } } 
+    /// <summary>
+    /// Number of human players.
+    /// </summary>
+    public int NumberPlayers
+        { get { return _numOfPlayers; } set { _numOfPlayers = value; } }
+
+
+    /// <summary>
+    /// Needs to be run before anything else on the manager to assign controllable characters and such.
+    /// </summary>
+    public void Initialize(int numberOfPlayers, ICharacterMovement[] moveableCharacters)
+    {
+        _numOfPlayers = numberOfPlayers;
+        _characters = moveableCharacters;
+        MaxControllableCharacter = _characters.Length;
+        UpdateGamePads();
+    }
+
+
+    /// <summary>
+    /// <br>Can be used to set up a default inputs. Keyboard only for player one, and attached gamepads to following players.</br>
+    /// </summary>
+    /// <param name="numberOfHumanPlayers"></param>
+    public void SetupDefaultInputs()
+    {
+        for (int i = 0; i < _maxControllables; i++)
+        {        
+            if (_numOfPlayers > 0 && i < _numOfPlayers)
+            {
+                if (i == 0)
+                {
+                    SetHeroControl(0, false, new InputDevice[] { InputSystem.GetDevice<Keyboard>() });
+                } else
+                {
+                    if (_gamePads.Count >= i)
+                    {
+                        SetHeroControl(i, false, new InputDevice[] { _gamePads[i - 1] });
+                    } else
+                        SetHeroControl(i, false, new InputDevice[] { } );
+                }
+
+                if (i < _numOfPlayers)
+                    _characters[i].AiControlled = false;
+
+            } else
+            {
+                SetHeroControl(i, true, new InputDevice[] { } );
+            }
+        }
+    }
+
+   
+    /// <summary>
+    /// <para>Assign the action maps to each player and their resp. input device.
+    /// Provide an array of InputDevice[] for this player to control his/her character.</para>
+    /// <para>Provide empty array in no controller or Ai controlled.</para>
     /// </summary>
     /// <param name="playerIndex"></param>
-    /// <param name="gamepads"></param>
-    private void _enableActionMapsforPlayer(int playerIndex, List<Gamepad> gamepads)
+    /// <param name="devices"></param>
+    public void SetHeroControl(int playerIndex, bool isAi, InputDevice[] devices)
     {
+        _unSubscribeToActions(playerIndex);
+
+        _characters[playerIndex].AiControlled = isAi;
+
         //Setup Controller based on if the hero should be controlled by player or Ai.
-        if (!_heroes[playerIndex].AiControlled)
-            _actionsMaps[playerIndex] = _actionsFile.FindActionMap("HeroMovement").Clone();
-        else
-            _actionsMaps[playerIndex] = _actionsFile.FindActionMap("AiHeroMovement").Clone();
-
-        switch (playerIndex)
+        if (!_characters[playerIndex].AiControlled)
         {
-            case 0: //Player 1
-                    //Set the actionmap to this players' controller. First player can not be Ai controlled.                
-                _input[0].currentActionMap = _actionsMaps[0];
-                if (gamepads.Count > 0)
-                    _actionsMaps[0].devices = new InputDevice[] { InputSystem.GetDevice<Keyboard>(), gamepads[0] };
-                else
-                    _actionsMaps[0].devices = new InputDevice[] { InputSystem.GetDevice<Keyboard>() };
-                break;
+            _actionsMaps[playerIndex] = _actionsFile.FindActionMap(GlobalStrings.INPUT_HEROMOVEMENT).Clone();
+        } else
+            _actionsMaps[playerIndex] = _actionsFile.FindActionMap(GlobalStrings.INPUT_AI_HEROMOVEMENT).Clone();
 
-            case 1: //Player 2
-                _input[1].currentActionMap = _actionsMaps[1];
-                if (_heroes[playerIndex].AiControlled)
-                    break;
+        _input[playerIndex].currentActionMap = _actionsMaps[playerIndex];
 
-                if (gamepads.Count > 1)
-                    _actionsMaps[1].devices = new InputDevice[] { gamepads[1] };
-                else
-                    _actionsMaps[1].devices = new InputDevice[] { };
-                break;
+        _actionsMaps[playerIndex].devices = devices;
 
-            case 2: //Player 3
-                _input[2].currentActionMap = _actionsMaps[2];
-                if (_heroes[playerIndex].AiControlled)
-                    break;
-
-                if (gamepads.Count > 2)
-                    _actionsMaps[2].devices = new InputDevice[] { gamepads[2] };
-                else
-                    _actionsMaps[2].devices = new InputDevice[] { };
-                break;
-
-            case 3: //Player 4
-                _input[3].currentActionMap = _actionsMaps[3];
-                if (_heroes[playerIndex].AiControlled)
-                    break;
-
-                if (gamepads.Count > 3)
-                    _actionsMaps[3].devices = new InputDevice[] { gamepads[3] };
-                else
-                    _actionsMaps[3].devices = new InputDevice[] { };
-                break;
-        }
+        _subscribeToActions(playerIndex);
     }
 
     /// <summary>
@@ -122,14 +131,14 @@ public class InputManager : MonoBehaviour
         {
             switch (action.name)
             {
-                case "Move":
-                    action.started += _heroes[playerIndex].TryMove;
-                    action.performed += _heroes[playerIndex].TryMove;
-                    action.canceled += _heroes[playerIndex].TryMove;
+                case GlobalStrings.INPUT_MOVE:
+                    action.started += _characters[playerIndex].TryMove;
+                    action.performed += _characters[playerIndex].TryMove;
+                    action.canceled += _characters[playerIndex].TryMove;
                     break;
-                case "Jump":
-                    action.started += _heroes[playerIndex].TryJump;
-                    action.canceled += _heroes[playerIndex].TryJump;
+                case GlobalStrings.INPUT_MOVE_JUMP:
+                    action.started += _characters[playerIndex].TryJump;
+                    action.canceled += _characters[playerIndex].TryJump;
                     break;
             }
         }
@@ -140,38 +149,38 @@ public class InputManager : MonoBehaviour
     /// <param name="playerIndex"></param>
     private void _unSubscribeToActions(int playerIndex)
     {
+        if (_actionsMaps[playerIndex] == null) return;
+
         foreach (var action in _actionsMaps[playerIndex])
         {
             switch (action.name)
             {
-                case "Move":
-                    action.started -= _heroes[playerIndex].TryMove;
-                    action.performed -= _heroes[playerIndex].TryMove;
-                    action.canceled -= _heroes[playerIndex].TryMove;
+                case GlobalStrings.INPUT_MOVE:
+                    action.started -= _characters[playerIndex].TryMove;
+                    action.performed -= _characters[playerIndex].TryMove;
+                    action.canceled -= _characters[playerIndex].TryMove;
                     break;
-                case "Jump":
-                    action.started -= _heroes[playerIndex].TryJump;
-                    action.canceled -= _heroes[playerIndex].TryJump;
+                case GlobalStrings.INPUT_MOVE_JUMP:
+                    action.started -= _characters[playerIndex].TryJump;
+                    action.canceled -= _characters[playerIndex].TryJump;
                     break;
             }
         }
     }
 
     /// <summary>
-    /// Find all connected gamepads.
+    /// Find all connected gamepads and store references to them in InputManager.GamePads
     /// </summary>
-    private List<Gamepad> _getGamePadDevices()
+    public void UpdateGamePads()
     {
-        List<Gamepad> gamepads = new List<Gamepad>();
+        _gamePads.Clear();
         foreach (var device in InputSystem.devices)
         {
             if (device is Gamepad)
             {
-                if (!(device as  Gamepad).name.Contains("XInput")) //Debug... Pierre has duplicates of input devices on his computer sometimes.
-                    gamepads.Add((Gamepad)device);
+                if (!(device as  Gamepad).name.Contains(GlobalStrings.MISC_XINPUT_IGNORE)) // Debug... Pierre has duplicates of input devices on his computer sometimes.
+                    _gamePads.Add((Gamepad)device);
             }
         }
-
-        return gamepads;
     }
 }

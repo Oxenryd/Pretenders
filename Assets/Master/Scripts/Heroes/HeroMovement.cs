@@ -26,6 +26,8 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
     private EasyTimer _haltTimer;
     private EasyTimer _jumpBufferTimer;
     private float _stopSpeed = 0f;
+    private bool _jumpButtonIsDown = false; // (instead of polling device with external calls)
+    private bool _didJumpDecel = false;
 
     public int Index { get; set; }
     public bool CanMove { get; set; } = true;
@@ -54,20 +56,20 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
     // Start is called before the first frame update
     void Start()
     {
-        //Set color to prefab instance picked color.
+        // Set color to prefab instance picked color.
         var thisRenderer = GetComponentInChildren<MeshRenderer>();
         thisRenderer.sharedMaterial = new Material(_mat);
         thisRenderer.sharedMaterial.color = PrimaryColor;
 
-        //Set Acceleration, turn time and movespeed
+        // Set Acceleration, turn time and movespeed
         AccelerationTime = _accelerationTime;
         RetardTime = _retardTime;
         TurnTime = _turnTime;
         MaxMoveSpeed = _moveSpeed;
         MaxJumpPower = _jumpPower;
 
-        //Set the accelTimer, turnTimer and let them subscribe to
-        //GameManagers' 'EarlyUpdate' for automatic ticking.
+        // Set the accelTimer, turnTimer and let them subscribe to
+        // GameManagers' 'EarlyUpdate' for automatic ticking.
         _accelTimer = new EasyTimer(_accelerationTime);
         _turnTimer = new EasyTimer(AccelerationTime, true);
         _haltTimer = new EasyTimer(_retardTime);
@@ -83,28 +85,29 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
     // the physics engine is syncing.
     void FixedUpdate()
     {
-        //Cached external calls
+        // Cached external calls
         var fixedDeltaTime = Time.fixedDeltaTime;
 
-        //Are we trying to move??
-        //T's for t in lerps.
+        // Are we trying to move??
+        // T's for t in lerps.
         float turnT = _turnTimer.Ratio;
         float accelT = _accelTimer.Ratio;
         float haltT = _haltTimer.Ratio;
         if (TryingToMove)
         {   
-            //Trying a "glassy" feeling of movement, with some time for acceleration and turning.
+            // Trying a "glassy" feeling of movement, with some time for acceleration and turning.
             CurrentDirection = Vector3.Lerp(CurrentDirection, TargetDirection, turnT);
             CurrentSpeed = Mathf.Clamp(Mathf.Lerp(CurrentSpeed, MaxMoveSpeed, accelT), 0f, TargetSpeed);
         } else 
         {   
-            //Take some time to slow down.
+            // Take some time to slow down.
             CurrentSpeed = Mathf.Lerp(_stopSpeed, 0f, haltT);
         }
 
-        //Resolve jumping
-        //Do a buffer to check if player reaches ground a moment later and
-        //perform the jump then.
+        // Resolve jumping
+        // Do a buffer to check if player reaches ground a moment later and
+        // perform the jump then. Always check if jumpbutton is down though,
+        // so even the jumpbuffer can jumpDecel() if it's not.
         void _doJump()
             { _body.velocity = new Vector3(_body.velocity.x, MaxJumpPower, _body.velocity.z); }
         if (TryingToJump)
@@ -120,13 +123,21 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
             } else if (_jumpBufferTimer.Done && InJumpBuffer)
             {
                 if (CanMove && IsGrounded)
+                {
                     _doJump();
+                }
                 InJumpBuffer = false;
                 TryingToJump = false;
             }
         }
+        if (!_jumpButtonIsDown && IsJumping && !_didJumpDecel)
+        {
+            JumpDecel(); 
+            _didJumpDecel = true; // Because calling this in update it is needed to lock this until grounded.
+        }
+            
 
-        //Falling? Jumping?
+        // Falling? Jumping?
         if (Mathf.Round(_body.velocity.y) > 0f)
         {
             IsJumping = true;
@@ -137,26 +148,28 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
             IsFalling = true;
         }
 
-        //Moving?
+        // Moving?
         Vector2 planeVelocity = new Vector2(_body.velocity.x, _body.velocity.z);
-        if (Mathf.Round(planeVelocity.sqrMagnitude) > 0f) //Using sqr to save on sqrroots.
+        if (Mathf.Round(planeVelocity.sqrMagnitude) > 0f) // Using sqr to save on sqrroots.
             IsMoving = true;
         else
             IsMoving = false;
 
-        //Actually set velocity
+        // Actually set velocity
         _body.velocity = new Vector3(CurrentDirection.x * CurrentSpeed, _body.velocity.y, CurrentDirection.y * CurrentSpeed);
     }
 
-    //Handle Input Events
+    // Handle Input Events
     public void TryJump(InputAction.CallbackContext context)
     {
         if (context.started)
         { 
-            TryingToJump = true;               
+            TryingToJump = true;
+            _jumpButtonIsDown = true;
         } else if (context.canceled)
         {
             JumpDecel();
+            _jumpButtonIsDown = false;
         }
     }
     public void TryJumpAi()
@@ -220,7 +233,7 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
         }
     }
 
-    //Collisions
+    // Collisions
     public void OnCollisionStay(Collision collision)
     {
         if (collision.collider.gameObject.layer == GameManager.Instance.GroundLayer)
@@ -228,6 +241,7 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
             IsGrounded = true;
             IsFalling = false;
             IsJumping = false;
+            _didJumpDecel = false;
         }
             
     }
@@ -240,7 +254,7 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
     }
 
 
-    //Privates
+    // Privates
     private bool _movingInSameDirection()
     {
         return Mathf.Round(Mathf.Atan2(TargetDirection.y, TargetDirection.x)) ==
@@ -257,7 +271,7 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
         if (!_movingInSameDirection())
             _turnTimer.Reset();
 
-        //Allowing quick turns when moving slow
+        // Allowing quick turns when moving slow
         if (TargetSpeed < _quickTurnFactor * MaxMoveSpeed)
             _turnTimer.SetOff();
 

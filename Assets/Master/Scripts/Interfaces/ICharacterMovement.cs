@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 public interface ICharacterMovement
 {
     public ControlSchemeType CurrentControlScheme { get; set; }
+    public int Index { get; set; }
     public bool AiControlled { get; set; }
     public bool CanMove { get; set; }
     public float MaxMoveSpeed { get; set; }
