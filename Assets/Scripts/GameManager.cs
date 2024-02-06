@@ -97,8 +97,8 @@ public class GameManager : MonoBehaviour
         // This must match the number of Heroes found in the scene under "HeroContainer".
         MaxHeroes = _maxHeroes;
 
-        // First, set up for one player.
-        NumberHumanPlayers = 1;
+        // First, set up for an amount of players. (Choose in inspector)
+        NumberHumanPlayers = _numPlayers;
 
         //Makes sure that the GameManger COULD run without an InputManager if that¨s needed.
         if (_inputMan != null)
