@@ -22,6 +22,6 @@ public static class GlobalStrings
     public const string ERR_NUMBER_OF_PLAYERS2 = "Number of players can not be higher than 4. Forced to 4.";
 
     //Misc
-    public const string MISC_INPUT_IGNORE =
-        "XInputControllerWindows;";
+    public const string MISC_INPUT_IGNORE = "";
+        //"XInputControllerWindows;";
 }
