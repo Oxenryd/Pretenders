@@ -5,8 +5,8 @@ using UnityEngine.UIElements;
 
 public class HeadFeet : MonoBehaviour
 {
-    [SerializeField] private BoxCollider _headBox;
-    [SerializeField] private BoxCollider _feetBox;
+    [SerializeField] private Collider _headBox;
+    [SerializeField] private Collider _feetBox;
     [SerializeField] private Hero _hero;
 
     private Vector3 _lastPosition;
