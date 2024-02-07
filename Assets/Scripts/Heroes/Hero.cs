@@ -70,12 +70,12 @@ public class Hero : MonoBehaviour, ICharacter, IJumpHit
     void Start()
     {
         // Set color to prefab instance picked color.
-        var bodyRend = transform.GetChild(0).GetChild(0).GetComponentInChildren<MeshRenderer>();
+        var bodyRend = transform.GetChild(0).GetChild(0).GetComponent<MeshRenderer>();
         bodyRend.sharedMaterial = new Material(_primMat);
         bodyRend.sharedMaterial.color = _primaryColor;
-        var headRend = transform.GetChild(0).GetChild(1).GetComponentInChildren<MeshRenderer>();
-        bodyRend.sharedMaterial = new Material(_secMat);
-        bodyRend.sharedMaterial.color = _secondaryColor;
+        var headRend = transform.GetChild(0).GetChild(1).GetComponent<MeshRenderer>();
+        headRend.sharedMaterial = new Material(_secMat);
+        headRend.sharedMaterial.color = _secondaryColor;
     }
 
     void FixedUpdate()
