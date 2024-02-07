@@ -65,6 +65,7 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
     public bool IsStunned { get; set; } = false;
     public bool IsShoved { get; set; } = false;
     public bool IsBumped { get; set; } = false;
+    public bool IsJumpHitSuceded { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
 
     // Handle Input Events
     public void TryJump(InputAction.CallbackContext context)
