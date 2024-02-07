@@ -18,6 +18,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private InputManager _inputMan;
 
     private ICharacter[] _playableCharacters;
+
     private int _numPlayers = 1;
 
     private static GameManager _instance;
