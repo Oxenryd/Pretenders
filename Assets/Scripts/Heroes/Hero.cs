@@ -11,6 +11,7 @@ public class Hero : MonoBehaviour, ICharacter, IJumpHit
 {
     [SerializeField] private int _index;
     [SerializeField] private AiHeroController _aiControl;
+    [SerializeField] private HeroMovement _movement;
     [SerializeField] private HeroType _heroType = HeroType.Basic;
     [SerializeField] private Collider _bodyCollider; 
     [SerializeField] private HeadFeet _headFeet;
@@ -25,7 +26,8 @@ public class Hero : MonoBehaviour, ICharacter, IJumpHit
         { get { return _index; } set { _index = value; } }
     public HeroType HeroType
         { get { return _heroType; } set { _heroType = value; } }
-    public ICharacterMovement Movement { get; private set; }
+    public ICharacterMovement Movement
+        { get { return _movement; } }
     public AiHeroController AiHeroController
         { get { return _aiControl; }  }
     public bool Playable { get { return true; } }
@@ -52,8 +54,6 @@ public class Hero : MonoBehaviour, ICharacter, IJumpHit
 
     private void Awake()
     {
-        Movement = GetComponent<ICharacterMovement>();
-
         // Register the counter.
         GameManager.Instance.EarlyFixedUpdate += _shoveOffenderColDisableTimer.TickSubscription;
     }

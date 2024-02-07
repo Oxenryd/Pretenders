@@ -3,6 +3,12 @@ using UnityEngine.InputSystem;
 
 public interface ICharacterMovement
 {
+    // Because of the way new InputSystem outputs it's input events
+    // there are version of callbacks that differ between AI control and callbacks
+    // from InputSystem for now because of ease of use. In the best of worlds there
+    // would only be methods like: "PressedJump" and "Released Jump".
+    // That will be for the future
+
     public ControlSchemeType CurrentControlScheme { get; set; }
     public bool AiControlled { get; set; }
     public bool CanMove { get; set; }
@@ -30,11 +36,6 @@ public interface ICharacterMovement
     public void TryMoveAi(Vector2 direction);
     public void TryJumpAi();
     public void TryShove(Vector3 direction, float power);
-    /// <summary>
-    /// Bump is a short shove.
-    /// </summary>
-    /// <param name="direction"></param>
-    /// <param name="power"></param>
     public void TryBump(Vector3 direction, float power);
     public void Halt();
 

@@ -89,6 +89,23 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
         TryingToJump = true;
     }
 
+
+    public void StartMove(Vector2 direction)
+    {
+        if (CanMove && !TryingToMove)
+        {
+            _startMovingFromStandStill(direction);
+        }
+        else if (CanMove && TryingToMove)
+        {
+            _resumeMoving(direction);
+        }
+    }
+    public void StopMoving()
+    {
+        Halt();
+    }
+
     /// <summary>
     /// Events from device to "Move" action trigger these, and its different states.
     /// </summary>
