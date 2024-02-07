@@ -11,7 +11,6 @@ public class Hero : MonoBehaviour, ICharacter, IJumpHit
 {
     [SerializeField] private int _index;
     [SerializeField] private AiHeroController _aiControl;
-    //[SerializeField] private ICharacterMovement _movement;
     [SerializeField] private HeroType _heroType = HeroType.Basic;
     [SerializeField] private Collider _bodyCollider; 
     [SerializeField] private HeadFeet _headFeet;
@@ -40,7 +39,6 @@ public class Hero : MonoBehaviour, ICharacter, IJumpHit
 
     public void OnHeadHit(Hero offender)
     {
-        Debug.Log($"AUCH! I ({this} was hit by {offender}!!!)");
     }
 
     public void OnHitOthersHead(Hero victim)
