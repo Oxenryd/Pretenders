@@ -17,7 +17,6 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
     [SerializeField] private float _moveSpeed = 2.5f;
     [SerializeField] private float _jumpPower = 5f;
     [SerializeField] private float _shoveStunDuration = 1f;
-    [SerializeField] private HeroAnimation _heroAnimation;
 
 
     private EasyTimer _accelTimer;
@@ -33,8 +32,6 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
     private bool _startBump = false;
     private Vector3 _shoveVector = Vector3.zero;
     private Vector3 _bumpVector = Vector3.zero;
-    private Quaternion _originalRotation;
-    private Transform _transform;
 
 
     public HeroType HeroType
@@ -207,9 +204,6 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
         GameManager.Instance.EarlyFixedUpdate += _shoveStunTimer.TickSubscription;
         GameManager.Instance.EarlyFixedUpdate += _bumpTimer.TickSubscription;
 
-        _transform = transform;
-        _originalRotation = Quaternion.Euler(0f, _transform.rotation.eulerAngles.y, 0f);
-        _body.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
     }
 
     // --------------------------------------------------------------------------------------------------------------------------------------------------- FixedUpdate()
