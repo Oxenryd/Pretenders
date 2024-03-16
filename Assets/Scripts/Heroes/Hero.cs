@@ -20,7 +20,7 @@ public class Hero : MonoBehaviour, ICharacter, IJumpHit
     [SerializeField] private Material _primMat;
     [SerializeField] private Material _secMat;
 
-    private EasyTimer _shoveOffenderColDisableTimer = new EasyTimer(GlobalValues.SHOVE_OFFENDCOL_DIS_DUR);
+    private EasyTimer _shoveOffenderColDisableTimer;
     private bool _colShoveDisabled = false;
     private ICharacterMovement _movement;
     
@@ -62,9 +62,6 @@ public class Hero : MonoBehaviour, ICharacter, IJumpHit
     private void Awake()
     {
         _movement = GetComponent<ICharacterMovement>();
-
-        // Register the counter.
-        GameManager.Instance.EarlyFixedUpdate += _shoveOffenderColDisableTimer.TickSubscription;
     }
 
     void Start()
@@ -76,6 +73,8 @@ public class Hero : MonoBehaviour, ICharacter, IJumpHit
         var headRend = transform.GetChild(0).GetChild(1).GetComponent<MeshRenderer>();
         headRend.sharedMaterial = new Material(_secMat);
         headRend.sharedMaterial.color = _secondaryColor;
+
+        _shoveOffenderColDisableTimer = new EasyTimer(GlobalValues.SHOVE_OFFENDCOL_DIS_DUR, false, true);
     }
 
     void FixedUpdate()

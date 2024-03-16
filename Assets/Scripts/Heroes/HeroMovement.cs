@@ -75,7 +75,6 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
     public bool IsStunned { get; set; } = false;
     public bool IsShoved { get; set; } = false;
     public bool IsBumped { get; set; } = false;
-    public bool IsJumpHitSuceded { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
 
     // Handle Input Events
     public void TryJump(InputAction.CallbackContext context)
@@ -201,19 +200,12 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
     {
         // Set the accelTimer, turnTimer and let them subscribe to
         // GameManagers' 'EarlyUpdate' for automatic ticking.
-        _accelTimer = new EasyTimer(_accelerationTime);
-        _turnTimer = new EasyTimer(_turnTime, true);
-        _haltTimer = new EasyTimer(_retardTime);
-        _jumpBufferTimer = new EasyTimer(_jumpBufferTime);
-        _shoveStunTimer = new EasyTimer(_shoveStunDuration);
+        _accelTimer = new EasyTimer(_accelerationTime, false, true);
+        _turnTimer = new EasyTimer(_turnTime, true, true);
+        _haltTimer = new EasyTimer(_retardTime, false, true);
+        _jumpBufferTimer = new EasyTimer(_jumpBufferTime, false, true);
+        _shoveStunTimer = new EasyTimer(_shoveStunDuration, false, true) ;
         _bumpTimer = new EasyTimer(GlobalValues.CHAR_BUMPDURATION);
-        GameManager.Instance.EarlyFixedUpdate += _accelTimer.TickSubscription;
-        GameManager.Instance.EarlyFixedUpdate += _turnTimer.TickSubscription;
-        GameManager.Instance.EarlyFixedUpdate += _haltTimer.TickSubscription;
-        GameManager.Instance.EarlyFixedUpdate += _jumpBufferTimer.TickSubscription;
-        GameManager.Instance.EarlyFixedUpdate += _shoveStunTimer.TickSubscription;
-        GameManager.Instance.EarlyFixedUpdate += _bumpTimer.TickSubscription;
-
     }
 
     // --------------------------------------------------------------------------------------------------------------------------------------------------- FixedUpdate()
@@ -429,5 +421,15 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
         _accelTimer.Reset();
         _turnTimer.Reset();
         TryingToMove = true;
+    }
+
+    public void TryPickup(InputAction.CallbackContext context)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void TryPickupAi()
+    {
+        throw new System.NotImplementedException();
     }
 }
