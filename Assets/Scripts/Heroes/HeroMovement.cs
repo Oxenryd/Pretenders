@@ -75,6 +75,7 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
     public bool IsStunned { get; set; } = false;
     public bool IsShoved { get; set; } = false;
     public bool IsBumped { get; set; } = false;
+    public bool IsJumpHitSuceded { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
 
     // Handle Input Events
     public void TryJump(InputAction.CallbackContext context)
@@ -212,6 +213,7 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
         GameManager.Instance.EarlyFixedUpdate += _jumpBufferTimer.TickSubscription;
         GameManager.Instance.EarlyFixedUpdate += _shoveStunTimer.TickSubscription;
         GameManager.Instance.EarlyFixedUpdate += _bumpTimer.TickSubscription;
+
     }
 
     // --------------------------------------------------------------------------------------------------------------------------------------------------- FixedUpdate()
@@ -364,16 +366,12 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
                     break;
             }
         }
-
         if (!IsGrounded)
         {
             _gndNormal = Vector3.SmoothDamp(_gndNormal, Vector3.up, ref _gndDampVelocity, 0.5f);
         }
 
         transform.up = Vector3.SmoothDamp(transform.up, _gndNormal, ref _gndTargetNormalVel, 0.08f);
-
-
-
     }
 
 

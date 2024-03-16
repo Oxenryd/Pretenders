@@ -34,6 +34,7 @@ public interface ICharacterMovement
     public int NumberOfDoubleJumps { get; set; }
 
 
+
     public void TryMove(InputAction.CallbackContext context);
     public void TryJump(InputAction.CallbackContext context);
     public void TryMoveAi(Vector2 direction);
