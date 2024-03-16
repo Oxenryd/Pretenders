@@ -23,6 +23,7 @@ public class Hero : MonoBehaviour, ICharacter, IJumpHit
     private EasyTimer _shoveOffenderColDisableTimer;
     private bool _colShoveDisabled = false;
     private ICharacterMovement _movement;
+    private IGrabbable? _currentGrab = null;
     
 
     public float ShovePower
@@ -75,6 +76,18 @@ public class Hero : MonoBehaviour, ICharacter, IJumpHit
         headRend.sharedMaterial.color = _secondaryColor;
 
         _shoveOffenderColDisableTimer = new EasyTimer(GlobalValues.SHOVE_OFFENDCOL_DIS_DUR, false, true);
+        _movement.GrabbedGrabbable += OnGrabbedGrabbable;
+    }
+
+    private void OnGrabbedGrabbable(object sender, IGrabbable e)
+    {
+        if (!e.IsGrabbed)
+        {
+            e.Grab(_movement);
+            _currentGrab = e;
+
+        }
+
     }
 
     void FixedUpdate()

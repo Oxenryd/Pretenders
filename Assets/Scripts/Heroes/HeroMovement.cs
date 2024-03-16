@@ -1,6 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -8,7 +6,6 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
 {
     [SerializeField] private float _quickTurnFactor = 0.2f;
     [SerializeField] private float _jumpBufferTime = 0.13f;
-    [SerializeField] private HeroType _heroType = HeroType.Basic;
     [SerializeField] private Rigidbody _body;
     [SerializeField] private PlayerInput _input;
     [SerializeField] private float _accelerationTime = 0.9f;
@@ -19,6 +16,11 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
     [SerializeField] private float _shoveStunDuration = 1f;
 
 
+    // EVENTS
+    public event EventHandler<IGrabbable> GrabbedGrabbable;
+    protected void OnGrabGrabbable(IGrabbable grabbable)
+    { GrabbedGrabbable?.Invoke(this, grabbable); }
+
     private EasyTimer _accelTimer;
     private EasyTimer _turnTimer;
     private EasyTimer _haltTimer;
@@ -27,6 +29,7 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
     private EasyTimer _bumpTimer;
     private float _stopSpeed = 0f;
     private bool _jumpButtonIsDown = false; // (instead of polling device with external calls)
+    private bool _grabButtonIsDown = false;
     private bool _didJumpDecel = false;
     private bool _startShoving = false;
     private bool _startBump = false;
@@ -38,12 +41,14 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
     private int _maxDJumps = 1;
     private Vector3 _gndTargetNormalVel = Vector3.zero;
 
+    public GameObject GameObject
+    { get; private set; }
+    public bool TryingToGrab
+    { get; set; } = false;
     public bool IsDoubleJumping
         { get; set; } = false;
     public int NumberOfDoubleJumps
         { get { return _maxDJumps; } set { _maxDJumps = value; } }
-    public HeroType HeroType
-        { get { return _heroType; } set { _heroType = value; } }
     public bool CanMove { get; set; } = true;
     public float CurrentSpeed { get; set; } = 0f;
     public float MaxMoveSpeed
@@ -89,26 +94,23 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
             _jumpButtonIsDown = false;
         }
     }
+
+    public void TryGrab(InputAction.CallbackContext context)
+    {
+        if (context.started)
+        {
+            TryingToGrab = true;
+            _grabButtonIsDown = true;
+        }
+        else if (context.canceled)
+        {
+            _grabButtonIsDown = false;
+        }
+    }
+
     public void TryJumpAi()
     {
         TryingToJump = true;
-    }
-
-
-    public void StartMove(Vector2 direction)
-    {
-        if (CanMove && !TryingToMove)
-        {
-            _startMovingFromStandStill(direction);
-        }
-        else if (CanMove && TryingToMove)
-        {
-            _resumeMoving(direction);
-        }
-    }
-    public void StopMoving()
-    {
-        Halt();
     }
 
     /// <summary>
@@ -119,10 +121,12 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
     {
         if (CanMove && context.started)
         {
-            _startMovingFromStandStill(context.ReadValue<Vector2>());
+            var inputDir = context.ReadValue<Vector2>();
+            _startMovingFromStandStill(new Vector3(inputDir.x, 0, inputDir.y));
         } else if (CanMove && context.performed)
         {
-            _resumeMoving(context.ReadValue<Vector2>());
+            var inputDir = context.ReadValue<Vector2>();
+            _resumeMoving(new Vector3(inputDir.x, 0, inputDir.y));
         } else if (context.canceled)
         {
             Halt();
@@ -138,11 +142,13 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
     {
         if (CanMove && !TryingToMove)
         {
-            _startMovingFromStandStill(direction);
+            var inputDir = new Vector3(direction.x, 0, direction.y);
+            _startMovingFromStandStill(inputDir);
         }
         else if (CanMove && TryingToMove)
         {
-            _resumeMoving(direction);
+            var inputDir = new Vector3(direction.x, 0, direction.y);
+            _resumeMoving(inputDir);
         }
         else
             Halt();
@@ -200,6 +206,7 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
     {
         // Set the accelTimer, turnTimer and let them subscribe to
         // GameManagers' 'EarlyUpdate' for automatic ticking.
+        this.GameObject = gameObject;
         _accelTimer = new EasyTimer(_accelerationTime, false, true);
         _turnTimer = new EasyTimer(_turnTime, true, true);
         _haltTimer = new EasyTimer(_retardTime, false, true);
@@ -245,6 +252,27 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
             }
             
         }
+
+        // Trying to grab?
+        if (CanMove && TryingToGrab)
+        {
+            RaycastHit hit;
+           
+
+            // Cast a sphere wrapping character controller 10 meters forward
+            // to see if it is about to hit anything.
+            if (Physics.SphereCast(transform.position, GlobalValues.CHAR_GRAB_RADIUS, CurrentDirection.normalized, out hit, GlobalValues.CHAR_GRAB_CHECK_DISTANCE))
+            {
+                var grabbable = hit.collider.gameObject.GetComponent<IGrabbable>();
+                if (grabbable != null)
+                {
+                    OnGrabGrabbable(grabbable);
+                }
+                
+            }
+            TryingToGrab = false;
+        }
+
 
         // Bumped?
         if (_startBump)
@@ -296,7 +324,6 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
             if (!IsGrounded)
                 _dJumpsLeft--;
             _body.velocity = (_gndNormal) * MaxJumpPower + new Vector3(_body.velocity.x, 0, _body.velocity.z);
-            //_body.velocity = (new Vector3(_body.velocity.x, 1, _body.velocity.z) + _gndNormal) * MaxJumpPower;
         }
 
         if (TryingToJump)
@@ -352,7 +379,7 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
             switch (CurrentControlScheme)
             {
                 case ControlSchemeType.TopDown:
-                    _body.velocity = new Vector3(CurrentDirection.x * CurrentSpeed, _body.velocity.y, CurrentDirection.y * CurrentSpeed);
+                    _body.velocity = new Vector3(CurrentDirection.x * CurrentSpeed, _body.velocity.y, CurrentDirection.z * CurrentSpeed);
                     if (_body.velocity.sqrMagnitude > 0f && !IsShoved)
                         FaceDirection = new Vector3(_body.velocity.x, 0f, _body.velocity.z).normalized;
                     break;
@@ -394,8 +421,8 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
     // Privates
     private bool _movingInSameDirection()
     {
-        return Mathf.Round(Mathf.Atan2(TargetDirection.y, TargetDirection.x)) ==
-            Mathf.Round(Mathf.Atan2(CurrentDirection.y, CurrentDirection.x));
+        return Mathf.Round(Mathf.Atan2(TargetDirection.z, TargetDirection.x)) ==
+            Mathf.Round(Mathf.Atan2(CurrentDirection.z, CurrentDirection.x));
     }
     private void _resumeMoving(Vector3 direction)
     {
@@ -423,13 +450,38 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
         TryingToMove = true;
     }
 
-    public void TryPickup(InputAction.CallbackContext context)
+
+
+    public void TryGrabAi()
     {
         throw new System.NotImplementedException();
     }
 
-    public void TryPickupAi()
+
+
+
+
+    void OnDrawGizmos()
     {
-        throw new System.NotImplementedException();
+        //Vector3 sphereDirection = CurrentDirection.normalized;
+
+        // Cast a sphere wrapping character controller 10 meters forward
+        // to see if it is about to hit anything.
+        //if (Physics.SphereCast(transform.position, GlobalValues.CHAR_GRAB_RADIUS, CurrentDirection.normalized, out hit, GlobalValues.CHAR_GRAB_CHECK_DISTANCE))
+
+        Vector3 start = transform.position + new Vector3(0, 1, 0);
+        Vector3 end = start + CurrentDirection.normalized * GlobalValues.CHAR_GRAB_CHECK_DISTANCE;
+
+        // Draw the sphere at the start
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(start, GlobalValues.CHAR_GRAB_RADIUS);
+
+        // Optionally draw the ray/line of the spherecast
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(start, end);
+
+        // Draw the sphere at the end of the cast
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireSphere(end, GlobalValues.CHAR_GRAB_RADIUS);
     }
 }
