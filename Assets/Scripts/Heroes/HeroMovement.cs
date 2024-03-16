@@ -32,8 +32,16 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
     private bool _startBump = false;
     private Vector3 _shoveVector = Vector3.zero;
     private Vector3 _bumpVector = Vector3.zero;
+    private Vector3 _gndNormal = new Vector3(0, 1, 0);
+    private Vector3 _gndDampVelocity = Vector3.zero;
+    private int _dJumpsLeft = 1;
+    private int _maxDJumps = 1;
+    private Vector3 _gndTargetNormalVel = Vector3.zero;
 
-
+    public bool IsDoubleJumping
+        { get; set; } = false;
+    public int NumberOfDoubleJumps
+        { get { return _maxDJumps; } set { _maxDJumps = value; } }
     public HeroType HeroType
         { get { return _heroType; } set { _heroType = value; } }
     public bool CanMove { get; set; } = true;
@@ -49,6 +57,8 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
     public Vector3 CurrentDirection { get; set; } = Vector2.zero;
     public Vector3 TargetDirection { get; set; } = Vector2.zero;
     public Vector3 FaceDirection { get; set; } = Vector2.zero;
+    public Vector3 GroundNormal
+        { get { return _gndNormal; } set { _gndNormal = value; } }
     public float AccelerationTime
         { get { return _accelerationTime; } set { _accelerationTime = value; } }
     public float RetardTime
@@ -288,10 +298,16 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
         // perform the jump then. Always check if jumpbutton is down though,
         // so even the jumpbuffer can jumpDecel() if it's not.
         void _doJump()
-            { _body.velocity = new Vector3(_body.velocity.x, MaxJumpPower, _body.velocity.z); }
+        {
+            if (!IsGrounded)
+                _dJumpsLeft--;
+            _body.velocity = (_gndNormal) * MaxJumpPower + new Vector3(_body.velocity.x, 0, _body.velocity.z);
+            //_body.velocity = (new Vector3(_body.velocity.x, 1, _body.velocity.z) + _gndNormal) * MaxJumpPower;
+        }
+
         if (TryingToJump)
         {
-            if (CanMove && IsGrounded && !InJumpBuffer)
+            if (CanMove && !InJumpBuffer && (IsGrounded  || _dJumpsLeft > 0) )
             {
                 _doJump();
                 TryingToJump = false;
@@ -349,6 +365,15 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
             }
         }
 
+        if (!IsGrounded)
+        {
+            _gndNormal = Vector3.SmoothDamp(_gndNormal, Vector3.up, ref _gndDampVelocity, 0.5f);
+        }
+
+        transform.up = Vector3.SmoothDamp(transform.up, _gndNormal, ref _gndTargetNormalVel, 0.08f);
+
+
+
     }
 
 
@@ -358,6 +383,8 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
     {
         if (collision.collider.gameObject.layer == GameManager.Instance.GroundLayer)
         {
+            _gndNormal = collision.collider.transform.up;
+            _dJumpsLeft = _maxDJumps;
             IsGrounded = true;
             IsFalling = false;
             IsJumping = false;

@@ -389,8 +389,8 @@ MonoBehaviour:
   _accelerationTime: 0.9
   _retardTime: 0.9
   _turnTime: 0.9
-  _moveSpeed: 2.5
-  _jumpPower: 5
+  _moveSpeed: 5
+  _jumpPower: 8
   _shoveStunDuration: 1
 --- !u!114 &5371608993833561220
 MonoBehaviour:

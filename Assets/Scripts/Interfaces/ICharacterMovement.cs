@@ -19,6 +19,7 @@ public interface ICharacterMovement
     public Vector3 FaceDirection { get; set; }
     public Vector3 CurrentDirection { get; set; }
     public Vector3 TargetDirection { get; set; }
+    public Vector3 GroundNormal { get; set; }
     public float CurrentSpeed { get; set; }
     public float AccelerationTime { get; set; }
     public float JumpVelocity { get; set; }
@@ -29,6 +30,8 @@ public interface ICharacterMovement
     public bool IsStunned { get; set; }
     public bool IsShoved { get; set; }
     public bool IsBumped { get; set; }
+    public bool IsDoubleJumping { get; set; }
+    public int NumberOfDoubleJumps { get; set; }
 
 
     public void TryMove(InputAction.CallbackContext context);
