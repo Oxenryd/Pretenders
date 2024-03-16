@@ -10,7 +10,7 @@ public class PickupBall : MonoBehaviour, IGrabbable
     { get { return GrabbablePosition.InFrontTwoHands; } }
 
     public Vector3 GrabPointOffset
-    { get { return Vector3.forward * transform.localScale.z + new Vector3(0, 1.5f, 0); } }
+    { get { return new Vector3(0, 1f, 1f); } }
 
     public GameObject GameObject
     { get { return this.GameObject; } }
@@ -22,8 +22,18 @@ public class PickupBall : MonoBehaviour, IGrabbable
     {
         IsGrabbed = true;
         _grabber = grabber;
+        _grabber.Grab(this);
         _collider.attachedRigidbody.isKinematic = true;
         _collider.enabled = false;
+        
+    }
+    public void Drop()
+    {
+        IsGrabbed = false;
+        _grabber.Drop(this);
+        _grabber = null;
+        _collider.enabled = true;
+        _collider.attachedRigidbody.isKinematic = false;
         
     }
 
@@ -31,7 +41,7 @@ public class PickupBall : MonoBehaviour, IGrabbable
     {
         if (IsGrabbed)
         {
-            transform.position = _grabber.GameObject.transform.position +  _grabber.CurrentDirection + GrabPointOffset;
+            transform.position = _grabber.GameObject.transform.position + (_grabber.CurrentDirection + new Vector3(0, GrabPointOffset.y, 0) * GrabPointOffset.z) ;
         }
     }
 }

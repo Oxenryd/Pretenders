@@ -77,6 +77,17 @@ public class Hero : MonoBehaviour, ICharacter, IJumpHit
 
         _shoveOffenderColDisableTimer = new EasyTimer(GlobalValues.SHOVE_OFFENDCOL_DIS_DUR, false, true);
         _movement.GrabbedGrabbable += OnGrabbedGrabbable;
+        _movement.DroppedGrabbable += OnDropedGrabbable;
+    }
+
+    private void OnDropedGrabbable(object sender, EventArgs e)
+    {
+        if (_movement.IsGrabbing)
+        {
+            _currentGrab.Drop();
+            _currentGrab = null;
+            _movement.IsGrabbing = false;
+        }
     }
 
     private void OnGrabbedGrabbable(object sender, IGrabbable e)
@@ -85,7 +96,6 @@ public class Hero : MonoBehaviour, ICharacter, IJumpHit
         {
             e.Grab(_movement);
             _currentGrab = e;
-
         }
 
     }

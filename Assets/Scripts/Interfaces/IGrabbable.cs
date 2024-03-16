@@ -9,4 +9,5 @@ public interface IGrabbable
     public Vector3 GrabPointOffset { get; }
     public GameObject GameObject { get; }
     public void Grab(ICharacterMovement grabber);
+    public void Drop();
 }

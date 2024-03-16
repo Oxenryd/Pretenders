@@ -18,8 +18,11 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
 
     // EVENTS
     public event EventHandler<IGrabbable> GrabbedGrabbable;
-    protected void OnGrabGrabbable(IGrabbable grabbable)
+    public event EventHandler DroppedGrabbable;
+    public void OnGrabGrabbable(IGrabbable grabbable)
     { GrabbedGrabbable?.Invoke(this, grabbable); }
+    public void OnDropGrabbable()
+    { DroppedGrabbable?.Invoke(this, EventArgs.Empty); }
 
     private EasyTimer _accelTimer;
     private EasyTimer _turnTimer;
@@ -40,6 +43,7 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
     private int _dJumpsLeft = 1;
     private int _maxDJumps = 1;
     private Vector3 _gndTargetNormalVel = Vector3.zero;
+    private bool _droppingGrab = false;
 
     public GameObject GameObject
     { get; private set; }
@@ -80,6 +84,17 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
     public bool IsStunned { get; set; } = false;
     public bool IsShoved { get; set; } = false;
     public bool IsBumped { get; set; } = false;
+    public bool IsGrabbing { get; set; } = false;
+
+    public void Grab(IGrabbable grabbable)
+    {
+        IsGrabbing = true;
+    }
+    public void Drop(IGrabbable grabbable)
+    {
+        _droppingGrab = true;
+    }
+
 
     // Handle Input Events
     public void TryJump(InputAction.CallbackContext context)
@@ -99,8 +114,14 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
     {
         if (context.started)
         {
-            TryingToGrab = true;
-            _grabButtonIsDown = true;
+            if (!IsGrabbing)
+            {
+                TryingToGrab = true;
+                _grabButtonIsDown = true;
+            } else
+            {
+                _droppingGrab = true;
+            }
         }
         else if (context.canceled)
         {
@@ -256,9 +277,7 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
         // Trying to grab?
         if (CanMove && TryingToGrab)
         {
-            RaycastHit hit;
-           
-
+            RaycastHit hit;           
             // Cast a sphere wrapping character controller 10 meters forward
             // to see if it is about to hit anything.
             if (Physics.SphereCast(transform.position, GlobalValues.CHAR_GRAB_RADIUS, CurrentDirection.normalized, out hit, GlobalValues.CHAR_GRAB_CHECK_DISTANCE))
@@ -266,11 +285,17 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
                 var grabbable = hit.collider.gameObject.GetComponent<IGrabbable>();
                 if (grabbable != null)
                 {
-                    OnGrabGrabbable(grabbable);
+                    OnGrabGrabbable(grabbable);                  
                 }
                 
             }
             TryingToGrab = false;
+        }
+
+        if (_droppingGrab)
+        {
+            OnDropGrabbable();
+            _droppingGrab = false;
         }
 
 

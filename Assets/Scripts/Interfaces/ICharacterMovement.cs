@@ -34,7 +34,11 @@ public interface ICharacterMovement
     public bool IsBumped { get; set; }
     public bool IsDoubleJumping { get; set; }
     public int NumberOfDoubleJumps { get; set; }
+    public bool IsGrabbing { get; set; }
+    public void Grab(IGrabbable grabbable);
+    public void Drop(IGrabbable grabbable);
     public event EventHandler<IGrabbable> GrabbedGrabbable;
+    public event EventHandler DroppedGrabbable;
 
 
     public void TryGrab(InputAction.CallbackContext context);
