@@ -34,11 +34,12 @@ public interface ICharacterMovement
     public int NumberOfDoubleJumps { get; set; }
 
 
-
+    public void TryPickup(InputAction.CallbackContext context);
     public void TryMove(InputAction.CallbackContext context);
     public void TryJump(InputAction.CallbackContext context);
     public void TryMoveAi(Vector2 direction);
     public void TryJumpAi();
+    public void TryPickupAi();
     public void TryShove(Vector3 direction, float power);
     public void TryBump(Vector3 direction, float power);
     public void Halt();

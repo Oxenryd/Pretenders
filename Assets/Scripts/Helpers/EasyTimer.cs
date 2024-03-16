@@ -23,6 +23,9 @@ public class EasyTimer
         Timed.Invoke(this, deltaTime);
     }
 
+    public bool TickInFixedUpdate
+    { get; private set; }
+
     /// <summary>
     /// Returns a ratio between 0-1 how far into its current cycle this timer currently is at.
     /// </summary>
@@ -77,19 +80,24 @@ public class EasyTimer
     public bool CountingDownwards
     { get { return _countDown; } set { _countDown = value; } }
 
+
+    public EasyTimer(float time, bool countingDownwards) : this(time, countingDownwards, false) { }
     /// <summary>
     /// Class for quick to setup and super simple to use Timers & Counters.
     /// </summary>
     /// <param name="time"></param>
-    public EasyTimer(float time) : this(time, false) { }
+    public EasyTimer(float time) : this(time, false, false) { }
     /// <summary>
-    /// Class for quick to setup and super simple to use Timers & Counters.
+    /// <BR>Setting the fixedUpdate to 'True' makes the timer tick in fixedUpdate instead of default update.</BR>
+    ///  Please make sure to set the correct tickinterval for in what Method the timer is being checked.
     /// </summary>
     /// <param name="time"></param>
-    /// <param name="countingDown"></param>
-    public EasyTimer(float time, bool countingDown)
+    /// <param name="countingDownwards"></param>
+    /// <param name="fixedUpdate"></param>
+    public EasyTimer(float time, bool countingDownwards, bool fixedUpdate)
     {
-        if (countingDown)
+        TickInFixedUpdate = fixedUpdate;
+        if (countingDownwards)
         {
             _countDown = true;
             _counter = _time;
@@ -98,6 +106,25 @@ public class EasyTimer
             _counter = 0;
         }
         _time = time;
+
+        if (!TickInFixedUpdate)
+        {
+            GameManager.Instance.EarlyUpdate += tickSubscription;
+        } else
+        {
+            GameManager.Instance.EarlyFixedUpdate += tickSubscription;
+        }
+    }
+    ~EasyTimer()
+    {
+        if (!TickInFixedUpdate)
+        {
+            GameManager.Instance.EarlyUpdate -= tickSubscription;
+        }
+        else
+        {
+            GameManager.Instance.EarlyFixedUpdate -= tickSubscription;
+        }
     }
 
     /// <summary>
@@ -105,7 +132,7 @@ public class EasyTimer
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    public void TickSubscription(object sender, float e)
+    private void tickSubscription(object sender, float e)
     { Tick(e); }
 
     /// <summary>
