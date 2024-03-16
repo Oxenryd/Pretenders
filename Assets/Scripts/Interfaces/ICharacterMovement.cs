@@ -29,6 +29,7 @@ public interface ICharacterMovement
     public bool IsStunned { get; set; }
     public bool IsShoved { get; set; }
     public bool IsBumped { get; set; }
+    public bool IsJumpHitSuceded { get; set; }
 
 
     public void TryMove(InputAction.CallbackContext context);

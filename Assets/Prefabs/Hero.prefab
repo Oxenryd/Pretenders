@@ -83,6 +83,10 @@ MonoBehaviour:
   _bodyCollider: {fileID: 4204377662574618820}
   _headFeet: {fileID: 5842487314143625631}
   _shovePower: 25
+  _primaryColor: {r: 0, g: 0, b: 0, a: 0}
+  _secondaryColor: {r: 0, g: 0, b: 0, a: 0}
+  _primMat: {fileID: 0}
+  _secMat: {fileID: 0}
 --- !u!114 &3260374244989247857
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -130,7 +134,6 @@ MonoBehaviour:
   _jumpBufferTime: 0.13
   _heroType: 0
   _body: {fileID: 8671508830724818732}
-  _mat: {fileID: 2100000, guid: c8baab115a67ce745abecc61596733f9, type: 2}
   _input: {fileID: 0}
   _accelerationTime: 0.9
   _retardTime: 0.9
@@ -138,8 +141,7 @@ MonoBehaviour:
   _moveSpeed: 2.5
   _jumpPower: 9
   _shoveStunDuration: 0.6
-  _primaryColor: {r: 0, g: 0, b: 0, a: 0}
-  _secondaryColor: {r: 0, g: 0, b: 0, a: 0}
+  _heroAnimation: {fileID: 0}
 --- !u!114 &6531976082880102069
 MonoBehaviour:
   m_ObjectHideFlags: 0
