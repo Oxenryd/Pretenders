@@ -161,7 +161,7 @@ public class InputManager : MonoBehaviour
     public void UpdateDevices()
     {
         _inputDevices.Clear();
-        var ignoreList = GlobalStrings.MISC_INPUT_IGNORE.Split(';');
+        var ignoreList = GlobalStrings.INPUT_IGNORE.Split(';');
         foreach (var device in InputSystem.devices)
         {
             if (device is Mouse || device is Keyboard) // Skip mouse and keyboard
