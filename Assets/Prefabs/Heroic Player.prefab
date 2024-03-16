@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 8742045589013128107}
   - component: {fileID: 8825902452370842778}
   - component: {fileID: 2223603048121142004}
+  - component: {fileID: 3080979761909453151}
   m_Layer: 0
   m_Name: Player Visual
   m_TagString: Untagged
@@ -69,6 +70,19 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &3080979761909453151
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 886176767555818164}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ed9c8ff349313649919e481a92b8ea8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 7935964025310328597}
 --- !u!1 &1626359566867667698
 GameObject:
   m_ObjectHideFlags: 0
@@ -392,6 +406,7 @@ MonoBehaviour:
   _moveSpeed: 2.5
   _jumpPower: 5
   _shoveStunDuration: 1
+  _heroAnimation: {fileID: 8825902452370842778}
 --- !u!114 &5371608993833561220
 MonoBehaviour:
   m_ObjectHideFlags: 0
