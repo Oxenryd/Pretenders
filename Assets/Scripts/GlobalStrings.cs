@@ -17,6 +17,7 @@ public static class GlobalStrings
     // Action names
     public const string INPUT_MOVE = "Move";
     public const string INPUT_MOVE_JUMP = "Jump";
+    public const string INPUT_MOVE_GRAB = "Grab";
 
     //Error msg
     public const string ERR_NUMBER_OF_PLAYERS1 = "Number of players can not be lower than 0. Forced to 0.";
