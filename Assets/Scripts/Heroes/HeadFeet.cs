@@ -27,11 +27,6 @@ public class HeadFeet : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //Just reset this transform for good measure.
-        transform.localPosition = Vector3.zero;
-        transform.localRotation = Quaternion.identity;
-        transform.localScale = Vector3.one;
-
         _heroBody = _hero.gameObject.GetComponent<Rigidbody>();
     }
 
