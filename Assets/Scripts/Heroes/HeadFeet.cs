@@ -5,8 +5,8 @@ using UnityEngine.UIElements;
 
 public class HeadFeet : MonoBehaviour
 {
-    [SerializeField] private BoxCollider _headBox;
-    [SerializeField] private BoxCollider _feetBox;
+    [SerializeField] private Collider _headBox;
+    [SerializeField] private Collider _feetBox;
     [SerializeField] private Hero _hero;
 
     private Vector3 _lastPosition;
@@ -27,11 +27,6 @@ public class HeadFeet : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //Just reset this transform for good measure.
-        transform.localPosition = Vector3.zero;
-        transform.localRotation = Quaternion.identity;
-        transform.localScale = Vector3.one;
-
         _heroBody = _hero.gameObject.GetComponent<Rigidbody>();
     }
 

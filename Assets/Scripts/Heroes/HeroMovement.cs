@@ -10,7 +10,6 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
     [SerializeField] private float _jumpBufferTime = 0.13f;
     [SerializeField] private HeroType _heroType = HeroType.Basic;
     [SerializeField] private Rigidbody _body;
-    [SerializeField] private Material _mat;
     [SerializeField] private PlayerInput _input;
     [SerializeField] private float _accelerationTime = 0.9f;
     [SerializeField] private float _retardTime = 0.9f;
@@ -18,8 +17,7 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
     [SerializeField] private float _moveSpeed = 2.5f;
     [SerializeField] private float _jumpPower = 5f;
     [SerializeField] private float _shoveStunDuration = 1f;
-    [ColorUsage(false)][SerializeField] private Color _primaryColor;
-    [ColorUsage(false)][SerializeField] private Color _secondaryColor;
+
 
     private EasyTimer _accelTimer;
     private EasyTimer _turnTimer;
@@ -35,10 +33,7 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
     private Vector3 _shoveVector = Vector3.zero;
     private Vector3 _bumpVector = Vector3.zero;
 
-    public Color PrimaryColor
-        { get { return _primaryColor; } set { _primaryColor = value; } }
-    public Color SecondaryColor
-        { get { return _secondaryColor; } set { _secondaryColor = value; } }
+
     public HeroType HeroType
         { get { return _heroType; } set { _heroType = value; } }
     public bool CanMove { get; set; } = true;
@@ -193,11 +188,6 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
     // Start is called before the first frame update
     void Start()
     {
-        // Set color to prefab instance picked color.
-        var thisRenderer = GetComponentInChildren<MeshRenderer>();
-        thisRenderer.sharedMaterial = new Material(_mat);
-        thisRenderer.sharedMaterial.color = _primaryColor;
-
         // Set the accelTimer, turnTimer and let them subscribe to
         // GameManagers' 'EarlyUpdate' for automatic ticking.
         _accelTimer = new EasyTimer(_accelerationTime);
