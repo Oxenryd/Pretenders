@@ -15,10 +15,15 @@ public class Hero : MonoBehaviour, ICharacter, IJumpHit
     [SerializeField] private Collider _bodyCollider; 
     [SerializeField] private HeadFeet _headFeet;
     [SerializeField] private float _shovePower = 22f;
+    [ColorUsage(false)][SerializeField] private Color _primaryColor;
+    [ColorUsage(false)][SerializeField] private Color _secondaryColor;
+    [SerializeField] private Material _primMat;
+    [SerializeField] private Material _secMat;
 
     private EasyTimer _shoveOffenderColDisableTimer = new EasyTimer(GlobalValues.SHOVE_OFFENDCOL_DIS_DUR);
     private bool _colShoveDisabled = false;
     private ICharacterMovement _movement;
+    
 
     public float ShovePower
         { get { return _shovePower; } set { _shovePower = value; } }
@@ -35,7 +40,10 @@ public class Hero : MonoBehaviour, ICharacter, IJumpHit
         { get { return _headFeet; } }
     public Collider BodyCollider
         { get { return _bodyCollider; } }
-
+    public Color PrimaryColor
+    { get { return _primaryColor; } set { _primaryColor = value; } }
+    public Color SecondaryColor
+    { get { return _secondaryColor; } set { _secondaryColor = value; } }
 
     public void OnHeadHit(Hero offender)
     {
@@ -57,6 +65,17 @@ public class Hero : MonoBehaviour, ICharacter, IJumpHit
 
         // Register the counter.
         GameManager.Instance.EarlyFixedUpdate += _shoveOffenderColDisableTimer.TickSubscription;
+    }
+
+    void Start()
+    {
+        // Set color to prefab instance picked color.
+        var bodyRend = transform.GetChild(0).GetChild(0).GetComponent<MeshRenderer>();
+        bodyRend.sharedMaterial = new Material(_primMat);
+        bodyRend.sharedMaterial.color = _primaryColor;
+        var headRend = transform.GetChild(0).GetChild(1).GetComponent<MeshRenderer>();
+        headRend.sharedMaterial = new Material(_secMat);
+        headRend.sharedMaterial.color = _secondaryColor;
     }
 
     void FixedUpdate()
