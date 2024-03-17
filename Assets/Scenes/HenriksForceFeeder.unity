@@ -1096,7 +1096,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b61dff8a6da294c8f46d8d54a0ffb8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _foodPrefab: {fileID: 2802165427724109305, guid: e3e384443d53b644183156f46d8c1018,
+  _bananaPrefab: {fileID: 7507692543192646934, guid: 94514f5088fe14c4c91bc353512b419e,
     type: 3}
   _foodContainer: {fileID: 920977037}
 --- !u!1 &1555419241

@@ -67,8 +67,9 @@ public class Grabbable : MonoBehaviour
         _collider.attachedRigidbody.isKinematic = false;
     }
 
-    public void Start()
+    public void Awake()
     {
+        _collider = gameObject.GetComponent<Collider>();
         _rBody = _collider.attachedRigidbody;
     }
 
