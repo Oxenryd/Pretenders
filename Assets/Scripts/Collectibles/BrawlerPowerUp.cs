@@ -15,7 +15,6 @@ namespace Assets.Scripts.Collectibles
         void Start()
         {
             _timeToActivate = new EasyTimer(ActivateTime);
-            GameManager.Instance.EarlyUpdate += _timeToActivate.TickSubscription;
             OnSpawn();
         }
 
