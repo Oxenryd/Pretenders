@@ -22,10 +22,8 @@ namespace Assets.Scripts
         public void Start()
         {
             _timeToRespawn = new EasyTimer(_respawnTime);
-            GameManager.Instance.EarlyUpdate += _timeToRespawn.TickSubscription;  
             _timeToRespawn.Reset();
             _timeActive = new EasyTimer(WeightGain.LifeTime);
-            GameManager.Instance.EarlyUpdate += _timeActive.TickSubscription;
         }
 
         public void Update()
