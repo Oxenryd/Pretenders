@@ -37,9 +37,9 @@ public interface ICharacterMovement
     public bool IsGrabbing { get; set; }
     public bool IsDraggingOther { get; set; }
     public bool isDraggedByOther { get; set; }
-    public void Grab(IGrabbable grabbable);
-    public void Drop(IGrabbable grabbable);
-    public event EventHandler<IGrabbable> GrabbedGrabbable;
+    public void Grab(Grabbable grabbable);
+    public void Drop(Grabbable grabbable);
+    public event EventHandler<Grabbable> GrabbedGrabbable;
     public event EventHandler DroppedGrabbable;
 
 
