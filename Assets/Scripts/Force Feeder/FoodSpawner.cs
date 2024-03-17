@@ -14,19 +14,25 @@ public class FoodSpawner : MonoBehaviour
     private float _timeSinceLastFoodSpawn = 0f;
 
     [SerializeField] private Banana _bananaPrefab;
+    [SerializeField] private Watermelon _waterMelonPrefab;
+    [SerializeField] private HotDog _hotDogPrefab;
+    [SerializeField] private Hamburger _hamburgerPrefab;
     [SerializeField] private GameObject _foodContainer;
 
-    private Food[] _foodArray = new Food[10];
-
+    private Food[] _foodArray = new Food[50];
+    private int _spawnIndex = 0;
 
     // Start is called before the first frame update
     void Start()
     {
+
         for (int i = 0; i < _foodArray.Length; i++)
         {
-            //Food foodItem = Instantiate();
-
+            Food foodItem = Random.Range(0, 10) < 5 ? Instantiate(_bananaPrefab) : Random.Range(0, 10) < 5 ? Instantiate(_hotDogPrefab) : Random.Range(0, 10) < 7 ? Instantiate(_hamburgerPrefab) : Instantiate(_waterMelonPrefab);
+            foodItem.Hide();
+            _foodArray[i] = foodItem;
         }
+
         // Generate a random angle in radians
         float angle = Random.Range(0f, 2f * Mathf.PI); // Range is 0 to 2π (360 degrees)
 
@@ -46,10 +52,10 @@ public class FoodSpawner : MonoBehaviour
         _timeSinceLastFoodSpawn += GameManager.Instance.DeltaTime;
 
 
-        //if (_timeSinceLastFoodSpawn > _spawnSpeed)
-        //{
-        //    SpawnFood();
-        //}
+        if (_timeSinceLastFoodSpawn > _spawnSpeed)
+        {
+            SpawnFood();
+        }
 
     }
 
@@ -85,21 +91,11 @@ public class FoodSpawner : MonoBehaviour
 
     void SpawnFood()
     {
-        //GameObject newFood = Instantiate(_foodPrefab, transform.position, transform.rotation);
 
-        // Set the _foodContainer as the parent of the newly spawned food
-        //if (_foodContainer != null)
-        //{
-        //    newFood.transform.parent = _foodContainer.transform;
-        //}
-        //else
-        //{
-        //    Debug.LogError("Food Container is not assigned!");
-        //}
+        _foodArray[_spawnIndex % _foodArray.Length].Show(transform.position);
+        _spawnIndex++;
 
         _timeSinceLastFoodSpawn = 0;
-        _spawnSpeed = Random.Range(2, 4);
-        Debug.Log(_spawnSpeed);
     }
 
 }

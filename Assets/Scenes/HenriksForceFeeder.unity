@@ -502,37 +502,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _maxControllables: 4
   _inputMan: {fileID: 991589034}
---- !u!1 &648599644
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 648599645}
-  m_Layer: 0
-  m_Name: Banana
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &648599645
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 648599644}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.68840075, y: 6.148205, z: 2.0304265}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &656321825
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -874,7 +843,7 @@ PrefabInstance:
     - target: {fileID: 6489844388526602600, guid: 7b6732808af22394a9c20166b6694181,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 1.31
       objectReference: {fileID: 0}
     - target: {fileID: 6489844388526602600, guid: 7b6732808af22394a9c20166b6694181,
         type: 3}
@@ -884,7 +853,7 @@ PrefabInstance:
     - target: {fileID: 6489844388526602600, guid: 7b6732808af22394a9c20166b6694181,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -6.03
+      value: -8.46
       objectReference: {fileID: 0}
     - target: {fileID: 6489844388526602600, guid: 7b6732808af22394a9c20166b6694181,
         type: 3}
@@ -1096,7 +1065,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b61dff8a6da294c8f46d8d54a0ffb8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _foodPrefab: {fileID: 2802165427724109305, guid: e3e384443d53b644183156f46d8c1018,
+  _bananaPrefab: {fileID: 7507692543192646934, guid: 94514f5088fe14c4c91bc353512b419e,
+    type: 3}
+  _waterMelonPrefab: {fileID: -2544235193546257176, guid: e514891052e061e44a962681e1ac2d01,
+    type: 3}
+  _hotDogPrefab: {fileID: -4842037824341041297, guid: 014e78e1b05b56f43b6926cf345b4084,
+    type: 3}
+  _hamburgerPrefab: {fileID: 7426170503979677382, guid: a32c9a2214e227c48b6e0b544dd1bccb,
     type: 3}
   _foodContainer: {fileID: 920977037}
 --- !u!1 &1555419241
@@ -1453,4 +1428,3 @@ SceneRoots:
   - {fileID: 1003636552}
   - {fileID: 1543812644}
   - {fileID: 851615010}
-  - {fileID: 648599645}
