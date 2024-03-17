@@ -30,8 +30,8 @@ public class AiHeroController : MonoBehaviour
         // Subscribe to GameManager EarlyUpdate
         _directionTimer = new EasyTimer(2f);
         _jumpTimer = new EasyTimer(Random.Range(0.8f, 10f));
-        GameManager.Instance.EarlyUpdate += _directionTimer.TickSubscription;
-        GameManager.Instance.EarlyUpdate += _jumpTimer.TickSubscription;
+      //  GameManager.Instance.EarlyUpdate += _directionTimer.tickSubscription;
+      //  GameManager.Instance.EarlyUpdate += _jumpTimer.tickSubscription;
         _heroMove = GetComponent<ICharacterMovement>();
     }
 

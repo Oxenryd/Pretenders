@@ -1,14 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class HeroMovement : MonoBehaviour, ICharacterMovement
+public class HeroMovement : MonoBehaviour, ICharacterMovement, IDraggable
 {
     [SerializeField] private float _quickTurnFactor = 0.2f;
     [SerializeField] private float _jumpBufferTime = 0.13f;
-    [SerializeField] private HeroType _heroType = HeroType.Basic;
     [SerializeField] private Rigidbody _body;
     [SerializeField] private PlayerInput _input;
     [SerializeField] private float _accelerationTime = 0.9f;
@@ -19,6 +17,14 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
     [SerializeField] private float _shoveStunDuration = 1f;
 
 
+    // EVENTS
+    public event EventHandler<Grabbable> GrabbedGrabbable;
+    public event EventHandler DroppedGrabbable;
+    public void OnGrabGrabbable(Grabbable grabbable)
+    { GrabbedGrabbable?.Invoke(this, grabbable); }
+    public void OnDropGrabbable()
+    { DroppedGrabbable?.Invoke(this, EventArgs.Empty); }
+
     private EasyTimer _accelTimer;
     private EasyTimer _turnTimer;
     private EasyTimer _haltTimer;
@@ -27,15 +33,27 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
     private EasyTimer _bumpTimer;
     private float _stopSpeed = 0f;
     private bool _jumpButtonIsDown = false; // (instead of polling device with external calls)
+    private bool _grabButtonIsDown = false;
     private bool _didJumpDecel = false;
     private bool _startShoving = false;
     private bool _startBump = false;
     private Vector3 _shoveVector = Vector3.zero;
     private Vector3 _bumpVector = Vector3.zero;
+    private Vector3 _gndNormal = new Vector3(0, 1, 0);
+    private Vector3 _gndDampVelocity = Vector3.zero;
+    private int _dJumpsLeft = 1;
+    private int _maxDJumps = 1;
+    private Vector3 _gndTargetNormalVel = Vector3.zero;
+    private bool _droppingGrab = false;
 
-
-    public HeroType HeroType
-        { get { return _heroType; } set { _heroType = value; } }
+    public GameObject GameObject
+    { get; private set; }
+    public bool TryingToGrab
+    { get; set; } = false;
+    public bool IsDoubleJumping
+        { get; set; } = false;
+    public int NumberOfDoubleJumps
+        { get { return _maxDJumps; } set { _maxDJumps = value; } }
     public bool CanMove { get; set; } = true;
     public float CurrentSpeed { get; set; } = 0f;
     public float MaxMoveSpeed
@@ -49,6 +67,8 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
     public Vector3 CurrentDirection { get; set; } = Vector2.zero;
     public Vector3 TargetDirection { get; set; } = Vector2.zero;
     public Vector3 FaceDirection { get; set; } = Vector2.zero;
+    public Vector3 GroundNormal
+        { get { return _gndNormal; } set { _gndNormal = value; } }
     public float AccelerationTime
         { get { return _accelerationTime; } set { _accelerationTime = value; } }
     public float RetardTime
@@ -65,7 +85,24 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
     public bool IsStunned { get; set; } = false;
     public bool IsShoved { get; set; } = false;
     public bool IsBumped { get; set; } = false;
-    public bool IsJumpHitSuceded { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+    public bool IsGrabbing { get; set; } = false;
+    public bool IsDraggingOther { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    public bool IsDraggedByOther { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+    public void StartTug(Tug tug)
+    {
+
+    }
+
+    public void Grab(Grabbable grabbable)
+    {
+        IsGrabbing = true;
+    }
+    public void Drop(Grabbable grabbable)
+    {
+        _droppingGrab = true;
+    }
+
 
     // Handle Input Events
     public void TryJump(InputAction.CallbackContext context)
@@ -80,26 +117,29 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
             _jumpButtonIsDown = false;
         }
     }
+
+    public void TryGrab(InputAction.CallbackContext context)
+    {
+        if (context.started)
+        {
+            if (!IsGrabbing)
+            {
+                TryingToGrab = true;
+                _grabButtonIsDown = true;
+            } else
+            {
+                _droppingGrab = true;
+            }
+        }
+        else if (context.canceled)
+        {
+            _grabButtonIsDown = false;
+        }
+    }
+
     public void TryJumpAi()
     {
         TryingToJump = true;
-    }
-
-
-    public void StartMove(Vector2 direction)
-    {
-        if (CanMove && !TryingToMove)
-        {
-            _startMovingFromStandStill(direction);
-        }
-        else if (CanMove && TryingToMove)
-        {
-            _resumeMoving(direction);
-        }
-    }
-    public void StopMoving()
-    {
-        Halt();
     }
 
     /// <summary>
@@ -110,10 +150,12 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
     {
         if (CanMove && context.started)
         {
-            _startMovingFromStandStill(context.ReadValue<Vector2>());
+            var inputDir = context.ReadValue<Vector2>();
+            _startMovingFromStandStill(new Vector3(inputDir.x, 0, inputDir.y));
         } else if (CanMove && context.performed)
         {
-            _resumeMoving(context.ReadValue<Vector2>());
+            var inputDir = context.ReadValue<Vector2>();
+            _resumeMoving(new Vector3(inputDir.x, 0, inputDir.y));
         } else if (context.canceled)
         {
             Halt();
@@ -129,11 +171,13 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
     {
         if (CanMove && !TryingToMove)
         {
-            _startMovingFromStandStill(direction);
+            var inputDir = new Vector3(direction.x, 0, direction.y);
+            _startMovingFromStandStill(inputDir);
         }
         else if (CanMove && TryingToMove)
         {
-            _resumeMoving(direction);
+            var inputDir = new Vector3(direction.x, 0, direction.y);
+            _resumeMoving(inputDir);
         }
         else
             Halt();
@@ -191,19 +235,13 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
     {
         // Set the accelTimer, turnTimer and let them subscribe to
         // GameManagers' 'EarlyUpdate' for automatic ticking.
-        _accelTimer = new EasyTimer(_accelerationTime);
-        _turnTimer = new EasyTimer(_turnTime, true);
-        _haltTimer = new EasyTimer(_retardTime);
-        _jumpBufferTimer = new EasyTimer(_jumpBufferTime);
-        _shoveStunTimer = new EasyTimer(_shoveStunDuration);
+        this.GameObject = gameObject;
+        _accelTimer = new EasyTimer(_accelerationTime, false, true);
+        _turnTimer = new EasyTimer(_turnTime, true, true);
+        _haltTimer = new EasyTimer(_retardTime, false, true);
+        _jumpBufferTimer = new EasyTimer(_jumpBufferTime, false, true);
+        _shoveStunTimer = new EasyTimer(_shoveStunDuration, false, true) ;
         _bumpTimer = new EasyTimer(GlobalValues.CHAR_BUMPDURATION);
-        GameManager.Instance.EarlyFixedUpdate += _accelTimer.TickSubscription;
-        GameManager.Instance.EarlyFixedUpdate += _turnTimer.TickSubscription;
-        GameManager.Instance.EarlyFixedUpdate += _haltTimer.TickSubscription;
-        GameManager.Instance.EarlyFixedUpdate += _jumpBufferTimer.TickSubscription;
-        GameManager.Instance.EarlyFixedUpdate += _shoveStunTimer.TickSubscription;
-        GameManager.Instance.EarlyFixedUpdate += _bumpTimer.TickSubscription;
-
     }
 
     // --------------------------------------------------------------------------------------------------------------------------------------------------- FixedUpdate()
@@ -243,6 +281,21 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
             }
             
         }
+
+        // Trying to grab?
+        if (CanMove && TryingToGrab)
+        {
+            doGrabbingDraggingChecks();                
+            
+            TryingToGrab = false;
+        }
+
+        if (_droppingGrab)
+        {
+            OnDropGrabbable();
+            _droppingGrab = false;
+        }
+
 
         // Bumped?
         if (_startBump)
@@ -290,10 +343,15 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
         // perform the jump then. Always check if jumpbutton is down though,
         // so even the jumpbuffer can jumpDecel() if it's not.
         void _doJump()
-            { _body.velocity = new Vector3(_body.velocity.x, MaxJumpPower, _body.velocity.z); }
+        {
+            if (!IsGrounded)
+                _dJumpsLeft--;
+            _body.velocity = (_gndNormal) * MaxJumpPower + new Vector3(_body.velocity.x, 0, _body.velocity.z);
+        }
+
         if (TryingToJump)
         {
-            if (CanMove && IsGrounded && !InJumpBuffer)
+            if (CanMove && !InJumpBuffer && (IsGrounded  || _dJumpsLeft > 0) )
             {
                 _doJump();
                 TryingToJump = false;
@@ -344,22 +402,56 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
             switch (CurrentControlScheme)
             {
                 case ControlSchemeType.TopDown:
-                    _body.velocity = new Vector3(CurrentDirection.x * CurrentSpeed, _body.velocity.y, CurrentDirection.y * CurrentSpeed);
+                    _body.velocity = new Vector3(CurrentDirection.x * CurrentSpeed, _body.velocity.y, CurrentDirection.z * CurrentSpeed);
                     if (_body.velocity.sqrMagnitude > 0f && !IsShoved)
                         FaceDirection = new Vector3(_body.velocity.x, 0f, _body.velocity.z).normalized;
                     break;
             }
         }
-        
+        if (!IsGrounded)
+        {
+            _gndNormal = Vector3.SmoothDamp(_gndNormal, Vector3.up, ref _gndDampVelocity, 0.5f);
+        }
+
+        transform.up = Vector3.SmoothDamp(transform.up, _gndNormal, ref _gndTargetNormalVel, 0.08f);
     }
 
-
+    private void doGrabbingDraggingChecks()
+    {
+        RaycastHit hit;
+        if (Physics.SphereCast(transform.position, GlobalValues.CHAR_GRAB_RADIUS, CurrentDirection.normalized, out hit, GlobalValues.CHAR_GRAB_CHECK_DISTANCE))
+        {
+            var grabbable = hit.collider.gameObject.GetComponent<Grabbable>();
+            if (grabbable != null)
+            {
+                OnGrabGrabbable(grabbable);
+            }
+            else
+            {
+                var draggable = hit.collider.gameObject.GetComponent<IDraggable>();
+                if (draggable == null)
+                    return;
+                
+                var dot = Vector3.Dot(transform.position, draggable.GameObject.transform.position);
+                if (dot > GlobalValues.CHAR_DRAG_DOT_MIN)
+                {
+                    if (!draggable.IsDraggedByOther)
+                    {
+                        
+                    }
+                }
+                
+            }
+        }
+    }
 
     // Collisions
     public void OnCollisionStay(Collision collision)
     {
         if (collision.collider.gameObject.layer == GameManager.Instance.GroundLayer)
         {
+            _gndNormal = collision.collider.transform.up;
+            _dJumpsLeft = _maxDJumps;
             IsGrounded = true;
             IsFalling = false;
             IsJumping = false;
@@ -379,8 +471,8 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
     // Privates
     private bool _movingInSameDirection()
     {
-        return Mathf.Round(Mathf.Atan2(TargetDirection.y, TargetDirection.x)) ==
-            Mathf.Round(Mathf.Atan2(CurrentDirection.y, CurrentDirection.x));
+        return Mathf.Round(Mathf.Atan2(TargetDirection.z, TargetDirection.x)) ==
+            Mathf.Round(Mathf.Atan2(CurrentDirection.z, CurrentDirection.x));
     }
     private void _resumeMoving(Vector3 direction)
     {
@@ -406,5 +498,28 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
         _accelTimer.Reset();
         _turnTimer.Reset();
         TryingToMove = true;
+    }
+
+
+
+    public void TryGrabAi()
+    {
+        throw new System.NotImplementedException();
+    }
+
+
+
+
+
+    void OnDrawGizmos()
+    {
+        Vector3 start = transform.position + new Vector3(0, 1, 0);
+        Vector3 end = start + CurrentDirection.normalized * GlobalValues.CHAR_GRAB_CHECK_DISTANCE;
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(start, GlobalValues.CHAR_GRAB_RADIUS);
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(start, end);
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireSphere(end, GlobalValues.CHAR_GRAB_RADIUS);
     }
 }

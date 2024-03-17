@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -9,6 +10,7 @@ public interface ICharacterMovement
     // would only be methods like: "PressedJump" and "Released Jump".
     // That will be for the future
 
+    public GameObject GameObject { get; }
     public ControlSchemeType CurrentControlScheme { get; set; }
     public bool AiControlled { get; set; }
     public bool CanMove { get; set; }
@@ -19,6 +21,7 @@ public interface ICharacterMovement
     public Vector3 FaceDirection { get; set; }
     public Vector3 CurrentDirection { get; set; }
     public Vector3 TargetDirection { get; set; }
+    public Vector3 GroundNormal { get; set; }
     public float CurrentSpeed { get; set; }
     public float AccelerationTime { get; set; }
     public float JumpVelocity { get; set; }
@@ -29,13 +32,21 @@ public interface ICharacterMovement
     public bool IsStunned { get; set; }
     public bool IsShoved { get; set; }
     public bool IsBumped { get; set; }
-    public bool IsJumpHitSuceded { get; set; }
+    public bool IsDoubleJumping { get; set; }
+    public int NumberOfDoubleJumps { get; set; }
+    public bool IsGrabbing { get; set; }
+    public void Grab(Grabbable grabbable);
+    public void Drop(Grabbable grabbable);
+    public event EventHandler<Grabbable> GrabbedGrabbable;
+    public event EventHandler DroppedGrabbable;
 
 
+    public void TryGrab(InputAction.CallbackContext context);
     public void TryMove(InputAction.CallbackContext context);
     public void TryJump(InputAction.CallbackContext context);
     public void TryMoveAi(Vector2 direction);
     public void TryJumpAi();
+    public void TryGrabAi();
     public void TryShove(Vector3 direction, float power);
     public void TryBump(Vector3 direction, float power);
     public void Halt();
