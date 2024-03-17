@@ -17,6 +17,7 @@ public class PickupBall : MonoBehaviour, IGrabbable
 
     public bool IsGrabbed
     { get; set; }
+    public bool BeingGrabbed { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
 
     public void Grab(ICharacterMovement grabber)
     {

@@ -85,6 +85,8 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
     public bool IsShoved { get; set; } = false;
     public bool IsBumped { get; set; } = false;
     public bool IsGrabbing { get; set; } = false;
+    public bool IsDraggingOther { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    public bool isDraggedByOther { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
     public void Grab(IGrabbable grabbable)
     {
@@ -286,6 +288,9 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
                 if (grabbable != null)
                 {
                     OnGrabGrabbable(grabbable);                  
+                } else
+                {
+                    var draggable = hit.collider.gameObject.GetComponent<IDraggable>();
                 }
                 
             }
