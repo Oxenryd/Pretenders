@@ -1,8 +1,9 @@
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class HeroMovement : MonoBehaviour, ICharacterMovement
+public class HeroMovement : MonoBehaviour, ICharacterMovement, IDraggable
 {
     [SerializeField] private float _quickTurnFactor = 0.2f;
     [SerializeField] private float _jumpBufferTime = 0.13f;
@@ -86,7 +87,12 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
     public bool IsBumped { get; set; } = false;
     public bool IsGrabbing { get; set; } = false;
     public bool IsDraggingOther { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-    public bool isDraggedByOther { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    public bool IsDraggedByOther { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+    public void StartTug(Tug tug)
+    {
+
+    }
 
     public void Grab(Grabbable grabbable)
     {
@@ -279,25 +285,8 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
         // Trying to grab?
         if (CanMove && TryingToGrab)
         {
-            RaycastHit hit;           
-            // Cast a sphere wrapping character controller 10 meters forward
-            // to see if it is about to hit anything.
-            if (Physics.SphereCast(transform.position, GlobalValues.CHAR_GRAB_RADIUS, CurrentDirection.normalized, out hit, GlobalValues.CHAR_GRAB_CHECK_DISTANCE))
-            {
-                var grabbable = hit.collider.gameObject.GetComponent<Grabbable>();
-                if (grabbable != null)
-                {
-                    OnGrabGrabbable(grabbable);                  
-                } else
-                {
-                    var draggable = hit.collider.gameObject.GetComponent<IDraggable>();
-                    if (draggable != null)
-                    {
-
-                    }
-                }
-                
-            }
+            doGrabbingDraggingChecks();                
+            
             TryingToGrab = false;
         }
 
@@ -427,7 +416,34 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
         transform.up = Vector3.SmoothDamp(transform.up, _gndNormal, ref _gndTargetNormalVel, 0.08f);
     }
 
-
+    private void doGrabbingDraggingChecks()
+    {
+        RaycastHit hit;
+        if (Physics.SphereCast(transform.position, GlobalValues.CHAR_GRAB_RADIUS, CurrentDirection.normalized, out hit, GlobalValues.CHAR_GRAB_CHECK_DISTANCE))
+        {
+            var grabbable = hit.collider.gameObject.GetComponent<Grabbable>();
+            if (grabbable != null)
+            {
+                OnGrabGrabbable(grabbable);
+            }
+            else
+            {
+                var draggable = hit.collider.gameObject.GetComponent<IDraggable>();
+                if (draggable == null)
+                    return;
+                
+                var dot = Vector3.Dot(transform.position, draggable.GameObject.transform.position);
+                if (dot > GlobalValues.CHAR_DRAG_DOT_MIN)
+                {
+                    if (!draggable.IsDraggedByOther)
+                    {
+                        
+                    }
+                }
+                
+            }
+        }
+    }
 
     // Collisions
     public void OnCollisionStay(Collision collision)
@@ -497,24 +513,12 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
 
     void OnDrawGizmos()
     {
-        //Vector3 sphereDirection = CurrentDirection.normalized;
-
-        // Cast a sphere wrapping character controller 10 meters forward
-        // to see if it is about to hit anything.
-        //if (Physics.SphereCast(transform.position, GlobalValues.CHAR_GRAB_RADIUS, CurrentDirection.normalized, out hit, GlobalValues.CHAR_GRAB_CHECK_DISTANCE))
-
         Vector3 start = transform.position + new Vector3(0, 1, 0);
         Vector3 end = start + CurrentDirection.normalized * GlobalValues.CHAR_GRAB_CHECK_DISTANCE;
-
-        // Draw the sphere at the start
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(start, GlobalValues.CHAR_GRAB_RADIUS);
-
-        // Optionally draw the ray/line of the spherecast
         Gizmos.color = Color.red;
         Gizmos.DrawLine(start, end);
-
-        // Draw the sphere at the end of the cast
         Gizmos.color = Color.blue;
         Gizmos.DrawWireSphere(end, GlobalValues.CHAR_GRAB_RADIUS);
     }
