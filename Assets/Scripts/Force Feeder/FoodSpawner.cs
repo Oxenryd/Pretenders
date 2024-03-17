@@ -13,7 +13,7 @@ public class FoodSpawner : MonoBehaviour
     private float _spawnSpeed = 2f;
     private float _timeSinceLastFoodSpawn = 0f;
 
-    [SerializeField] private GameObject _foodPrefab;
+    [SerializeField] private Banana _bananaPrefab;
     [SerializeField] private GameObject _foodContainer;
 
     private Food[] _foodArray = new Food[10];
@@ -22,12 +22,9 @@ public class FoodSpawner : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        void PopulateFoodArray()
+        for (int i = 0; i < _foodArray.Length; i++)
         {
-            for (int i = 0; i < _foodArray.Length; i++)
-            {
-                _foodArray[i] = Instantiate();
-            }
+            //Food foodItem = Instantiate();
         }
         // Generate a random angle in radians
         float angle = Random.Range(0f, 2f * Mathf.PI); // Range is 0 to 2π (360 degrees)
@@ -48,10 +45,10 @@ public class FoodSpawner : MonoBehaviour
         _timeSinceLastFoodSpawn += GameManager.Instance.DeltaTime;
 
 
-        if (_timeSinceLastFoodSpawn > _spawnSpeed)
-        {
-            SpawnFood();
-        }
+        //if (_timeSinceLastFoodSpawn > _spawnSpeed)
+        //{
+        //    SpawnFood();
+        //}
 
     }
 
@@ -87,17 +84,17 @@ public class FoodSpawner : MonoBehaviour
 
     void SpawnFood()
     {
-        GameObject newFood = Instantiate(_foodPrefab, transform.position, transform.rotation);
+        //GameObject newFood = Instantiate(_foodPrefab, transform.position, transform.rotation);
 
         // Set the _foodContainer as the parent of the newly spawned food
-        if (_foodContainer != null)
-        {
-            newFood.transform.parent = _foodContainer.transform;
-        }
-        else
-        {
-            Debug.LogError("Food Container is not assigned!");
-        }
+        //if (_foodContainer != null)
+        //{
+        //    newFood.transform.parent = _foodContainer.transform;
+        //}
+        //else
+        //{
+        //    Debug.LogError("Food Container is not assigned!");
+        //}
 
         _timeSinceLastFoodSpawn = 0;
         _spawnSpeed = Random.Range(2, 4);
