@@ -23,7 +23,7 @@ public class Hero : MonoBehaviour, ICharacter, IJumpHit
     private EasyTimer _shoveOffenderColDisableTimer;
     private bool _colShoveDisabled = false;
     private ICharacterMovement _movement;
-    private IGrabbable? _currentGrab = null;
+    private Grabbable _currentGrab = null;
     
 
     public float ShovePower
@@ -90,7 +90,7 @@ public class Hero : MonoBehaviour, ICharacter, IJumpHit
         }
     }
 
-    private void OnGrabbedGrabbable(object sender, IGrabbable e)
+    private void OnGrabbedGrabbable(object sender, Grabbable e)
     {
         if (!e.IsGrabbed)
         {

@@ -26,7 +26,7 @@ public class FoodSpawner : MonoBehaviour
         {
             for (int i = 0; i < _foodArray.Length; i++)
             {
-                _foodArray[i] = Instantiate();
+               
             }
         }
         // Generate a random angle in radians

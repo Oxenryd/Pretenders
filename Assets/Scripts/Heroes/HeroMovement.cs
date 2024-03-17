@@ -17,9 +17,9 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
 
 
     // EVENTS
-    public event EventHandler<IGrabbable> GrabbedGrabbable;
+    public event EventHandler<Grabbable> GrabbedGrabbable;
     public event EventHandler DroppedGrabbable;
-    public void OnGrabGrabbable(IGrabbable grabbable)
+    public void OnGrabGrabbable(Grabbable grabbable)
     { GrabbedGrabbable?.Invoke(this, grabbable); }
     public void OnDropGrabbable()
     { DroppedGrabbable?.Invoke(this, EventArgs.Empty); }
@@ -88,11 +88,11 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
     public bool IsDraggingOther { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
     public bool isDraggedByOther { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
-    public void Grab(IGrabbable grabbable)
+    public void Grab(Grabbable grabbable)
     {
         IsGrabbing = true;
     }
-    public void Drop(IGrabbable grabbable)
+    public void Drop(Grabbable grabbable)
     {
         _droppingGrab = true;
     }
@@ -284,13 +284,17 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
             // to see if it is about to hit anything.
             if (Physics.SphereCast(transform.position, GlobalValues.CHAR_GRAB_RADIUS, CurrentDirection.normalized, out hit, GlobalValues.CHAR_GRAB_CHECK_DISTANCE))
             {
-                var grabbable = hit.collider.gameObject.GetComponent<IGrabbable>();
+                var grabbable = hit.collider.gameObject.GetComponent<Grabbable>();
                 if (grabbable != null)
                 {
                     OnGrabGrabbable(grabbable);                  
                 } else
                 {
                     var draggable = hit.collider.gameObject.GetComponent<IDraggable>();
+                    if (draggable != null)
+                    {
+
+                    }
                 }
                 
             }
