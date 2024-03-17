@@ -37,14 +37,15 @@ public class HeroParticles : MonoBehaviour
         dustParticles.Emit(emitParams, 5);
     }
 
-    void EmitLandParticle()
+    void EmitLandParticle(ICharacterMovement characterMovement)
     {
         ParticleSystem landParticles = GameObject.Find("Land_Particles").GetComponent<ParticleSystem>();
 
         var emitParams = new ParticleSystem.EmitParams();
-        emitParams.startColor = Color.green;
+        emitParams.startColor = Color.gray;
         //emitParams.startSize = 0.25f;
         emitParams.position = gameObject.transform.position;
+        //emitParams.velocity = characterMovement.CurrentDirection * -1;
         emitParams.applyShapeToPosition = true;
 
         landParticles.Emit(emitParams, 10);
@@ -55,7 +56,7 @@ public class HeroParticles : MonoBehaviour
         ParticleSystem jumpParticles = GameObject.Find("Jump_Particles").GetComponent<ParticleSystem>();
 
         var emitParams = new ParticleSystem.EmitParams();
-        emitParams.startColor = Color.red;
+        emitParams.startColor = Color.white;
         //emitParams.startSize = 0.25f;
         emitParams.position = gameObject.transform.position;
         emitParams.applyShapeToPosition = true;
@@ -77,7 +78,7 @@ public class HeroParticles : MonoBehaviour
 
         if (wasFalling && characterMovement.IsGrounded)
         {
-            EmitLandParticle();
+            EmitLandParticle(characterMovement);
             wasFalling = false;
         }
 
