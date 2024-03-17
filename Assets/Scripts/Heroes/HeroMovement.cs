@@ -20,10 +20,13 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IDraggable
     // EVENTS
     public event EventHandler<Grabbable> GrabbedGrabbable;
     public event EventHandler DroppedGrabbable;
+    public event EventHandler StoppedGrabInProgress;
     public void OnGrabGrabbable(Grabbable grabbable)
     { GrabbedGrabbable?.Invoke(this, grabbable); }
     public void OnDropGrabbable()
     { DroppedGrabbable?.Invoke(this, EventArgs.Empty); }
+    protected void OnStoppedGrabInProgress()
+    { StoppedGrabInProgress?.Invoke(this, EventArgs.Empty); }
 
     private EasyTimer _accelTimer;
     private EasyTimer _turnTimer;
@@ -46,6 +49,7 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IDraggable
     private Vector3 _gndTargetNormalVel = Vector3.zero;
     private bool _droppingGrab = false;
 
+    public Grabbable CurrentGrab { get; set; } = null;
     public GameObject GameObject
     { get; private set; }
     public bool TryingToGrab
@@ -86,8 +90,10 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IDraggable
     public bool IsShoved { get; set; } = false;
     public bool IsBumped { get; set; } = false;
     public bool IsGrabbing { get; set; } = false;
+    public bool IsGrabInProgress { get; set; } = false;
     public bool IsDraggingOther { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
     public bool IsDraggedByOther { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
 
     public void StartTug(Tug tug)
     {
@@ -97,6 +103,7 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IDraggable
     public void Grab(Grabbable grabbable)
     {
         IsGrabbing = true;
+        IsGrabInProgress = false;
     }
     public void Drop(Grabbable grabbable)
     {
@@ -289,12 +296,28 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IDraggable
             
             TryingToGrab = false;
         }
-
         if (_droppingGrab)
         {
             OnDropGrabbable();
             _droppingGrab = false;
+            if (IsGrabbing)
+            {
+                CurrentGrab.Drop();
+                CurrentGrab = null;
+                IsGrabbing = false;
+            }
         }
+        if (IsGrabInProgress)
+        {
+            if (!checkStillTryingToGrab())
+            {
+                CurrentGrab.AbortGrab();
+                CurrentGrab = null;
+                IsGrabInProgress = false;
+                OnStoppedGrabInProgress();
+            }
+        }
+
 
 
         // Bumped?
@@ -416,6 +439,20 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IDraggable
         transform.up = Vector3.SmoothDamp(transform.up, _gndNormal, ref _gndTargetNormalVel, 0.08f);
     }
 
+    private bool checkStillTryingToGrab()
+    {
+        RaycastHit hit;
+        if (Physics.SphereCast(transform.position, GlobalValues.CHAR_GRAB_RADIUS, CurrentDirection.normalized, out hit, GlobalValues.CHAR_GRAB_CHECK_DISTANCE))
+        {
+            var grabbable = hit.collider.gameObject.GetComponent<Grabbable>();
+            if (grabbable == CurrentGrab)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private void doGrabbingDraggingChecks()
     {
         RaycastHit hit;
@@ -425,9 +462,10 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IDraggable
             if (grabbable != null)
             {
                 OnGrabGrabbable(grabbable);
+                grabbable.TryGrab(this);
             }
             else
-            {
+            {             
                 var draggable = hit.collider.gameObject.GetComponent<IDraggable>();
                 if (draggable == null)
                     return;

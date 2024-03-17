@@ -35,11 +35,13 @@ public interface ICharacterMovement
     public bool IsDoubleJumping { get; set; }
     public int NumberOfDoubleJumps { get; set; }
     public bool IsGrabbing { get; set; }
+    public bool IsGrabInProgress { get; set; }
     public void Grab(Grabbable grabbable);
     public void Drop(Grabbable grabbable);
     public event EventHandler<Grabbable> GrabbedGrabbable;
     public event EventHandler DroppedGrabbable;
-
+    public event EventHandler StoppedGrabInProgress;
+    public Grabbable CurrentGrab { get; set; }
 
     public void TryGrab(InputAction.CallbackContext context);
     public void TryMove(InputAction.CallbackContext context);
