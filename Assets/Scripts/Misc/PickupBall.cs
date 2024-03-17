@@ -18,6 +18,9 @@ public class PickupBall : MonoBehaviour, IGrabbable
     public bool IsGrabbed
     { get; set; }
 
+    public bool BeingGrabbed { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+
+
     public void Grab(ICharacterMovement grabber)
     {
         IsGrabbed = true;
@@ -34,14 +37,15 @@ public class PickupBall : MonoBehaviour, IGrabbable
         _grabber = null;
         _collider.enabled = true;
         _collider.attachedRigidbody.isKinematic = false;
-
     }
 
     public void Update()
     {
         if (IsGrabbed)
         {
-            transform.position = _grabber.GameObject.transform.position + (_grabber.CurrentDirection + new Vector3(0, GrabPointOffset.y, 0) * GrabPointOffset.z);
+
+            transform.position = _grabber.GameObject.transform.position + (_grabber.CurrentDirection + new Vector3(0, GrabPointOffset.y, 0) * GrabPointOffset.z) ;
         }
     }
 }
+

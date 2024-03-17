@@ -5,4 +5,7 @@ public static class GlobalValues
 
     public const float CHAR_BUMPFORCE = 2f;
     public const float CHAR_BUMPDURATION = 0.28f;
+    public const float CHAR_GRAB_CHECK_DISTANCE = 1f;
+    public const float CHAR_GRAB_POSITION_OFFSET = 0.5f;
+    public const float CHAR_GRAB_RADIUS = 0.5f;
 }
