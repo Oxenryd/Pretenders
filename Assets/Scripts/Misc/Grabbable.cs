@@ -8,10 +8,16 @@ public class Grabbable : MonoBehaviour
     [SerializeField] Collider _collider;
     private ICharacterMovement _grabber;
     private Rigidbody _rBody;
-    
+    private EasyTimer _grabbedTimer;
+    private List<int> _beingGrabbedBy = new List<int>();
+    private Tug _tugOWar = null;
+
 
     public GrabbablePosition GrabbablePosition
     { get { return GrabbablePosition.InFrontTwoHands; } }
+
+    public float TimeToGrab
+    { get; set; } = 0.3f;
 
     public void Hide()
     {
@@ -67,9 +73,11 @@ public class Grabbable : MonoBehaviour
         _collider.attachedRigidbody.isKinematic = false;
     }
 
-    public void Start()
+    public void Awake()
     {
+        _collider = gameObject.GetComponent<Collider>();
         _rBody = _collider.attachedRigidbody;
+        _grabbedTimer = new EasyTimer(TimeToGrab);      
     }
 
     public void Update()
