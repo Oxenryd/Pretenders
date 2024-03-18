@@ -289,12 +289,39 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IDraggable
             
         }
 
-        // Trying to grab?
-        if (CanMove && TryingToGrab)
+        // Can grab?
+        RaycastHit hit;
+        object foundObject;
+        var hitSomething = checkGrabDragAvailable(out foundObject, out hit);
+        if (hitSomething)
         {
-            doGrabbingDraggingChecks();                
+            var foundGrab = (foundObject as Grabbable);
+            if (foundGrab != null)
+            {
+                foundGrab.SignalCanGrab(this);
+                CurrentGrab = foundGrab;
+            }
+            
+        } else if (!IsGrabbing)
+        { 
+            if (CurrentGrab != null)
+                CurrentGrab.SignalCanNotGrab(this);
+            CurrentGrab = null;
+        } else if (IsGrabInProgress && (foundObject as Grabbable) != CurrentGrab)
+        {
+            CurrentGrab.AbortGrab();
+            CurrentGrab = null;
+            IsGrabInProgress = false;
+            OnStoppedGrabInProgress();
+        }
+
+        // Trying to grab?
+        if (CanMove && TryingToGrab && hitSomething)
+        {
+            doGrabbingDragging(foundObject);                
             
             TryingToGrab = false;
+            Halt();
         }
         if (_droppingGrab)
         {
@@ -307,16 +334,16 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IDraggable
                 IsGrabbing = false;
             }
         }
-        if (IsGrabInProgress)
-        {
-            if (!checkStillTryingToGrab())
-            {
-                CurrentGrab.AbortGrab();
-                CurrentGrab = null;
-                IsGrabInProgress = false;
-                OnStoppedGrabInProgress();
-            }
-        }
+        //if (IsGrabInProgress)
+        //{
+        //    if (!checkStillTryingToGrab())
+        //    {
+        //        CurrentGrab.AbortGrab();
+        //        CurrentGrab = null;
+        //        IsGrabInProgress = false;
+        //        OnStoppedGrabInProgress();
+        //    }
+        //}
 
 
 
@@ -425,6 +452,8 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IDraggable
             switch (CurrentControlScheme)
             {
                 case ControlSchemeType.TopDown:
+                    if (IsGrabInProgress)
+                        CurrentSpeed = CurrentSpeed * 0.15f;
                     _body.velocity = new Vector3(CurrentDirection.x * CurrentSpeed, _body.velocity.y, CurrentDirection.z * CurrentSpeed);
                     if (_body.velocity.sqrMagnitude > 0f && !IsShoved)
                         FaceDirection = new Vector3(_body.velocity.x, 0f, _body.velocity.z).normalized;
@@ -436,51 +465,76 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IDraggable
             _gndNormal = Vector3.SmoothDamp(_gndNormal, Vector3.up, ref _gndDampVelocity, 0.5f);
         }
 
+        // Turn poco a poco to upright
         transform.up = Vector3.SmoothDamp(transform.up, _gndNormal, ref _gndTargetNormalVel, 0.08f);
     }
 
-    private bool checkStillTryingToGrab()
-    {
-        RaycastHit hit;
-        if (Physics.SphereCast(transform.position, GlobalValues.CHAR_GRAB_RADIUS, CurrentDirection.normalized, out hit, GlobalValues.CHAR_GRAB_CHECK_DISTANCE))
-        {
-            var grabbable = hit.collider.gameObject.GetComponent<Grabbable>();
-            if (grabbable == CurrentGrab)
-            {
-                return true;
-            }
-        }
-        return false;
-    }
+    //private bool checkStillTryingToGrab()
+    //{
+    //    RaycastHit hit;
+    //    if (Physics.SphereCast(transform.position, GlobalValues.CHAR_GRAB_RADIUS, CurrentDirection.normalized, out hit, GlobalValues.CHAR_GRAB_CHECK_DISTANCE))
+    //    {
+    //        var grabbable = hit.collider.gameObject.GetComponent<Grabbable>();
+    //        if (grabbable == CurrentGrab)
+    //        {
+    //            grabbable.SignalCanGrab(this);
+    //            return true;               
+    //        }
+    //    }
+    //    return false;
+    //}
 
-    private void doGrabbingDraggingChecks()
+    private bool checkGrabDragAvailable(out object foundObject, out RaycastHit hit)
     {
-        RaycastHit hit;
         if (Physics.SphereCast(transform.position, GlobalValues.CHAR_GRAB_RADIUS, CurrentDirection.normalized, out hit, GlobalValues.CHAR_GRAB_CHECK_DISTANCE))
         {
             var grabbable = hit.collider.gameObject.GetComponent<Grabbable>();
             if (grabbable != null)
             {
-                OnGrabGrabbable(grabbable);
-                grabbable.TryGrab(this);
-            }
-            else
-            {             
+                foundObject = grabbable;
+                return true;
+            } else
+            {
                 var draggable = hit.collider.gameObject.GetComponent<IDraggable>();
-                if (draggable == null)
-                    return;
-                
-                var dot = Vector3.Dot(transform.position, draggable.GameObject.transform.position);
-                if (dot > GlobalValues.CHAR_DRAG_DOT_MIN)
+                if (draggable != null)
                 {
-                    if (!draggable.IsDraggedByOther)
-                    {
-                        
-                    }
+                    foundObject = draggable;
+                    return true;
                 }
-                
+                    
             }
         }
+        foundObject = null;
+        return false;
+    }
+
+    private void doGrabbingDragging(object hitObject)
+    {
+        var grabbable = hitObject as Grabbable;
+        if (grabbable != null)
+        {
+            OnGrabGrabbable(grabbable);
+            if (grabbable.TryGrab(this))
+            {
+                _body.velocity = new Vector3(0, _body.velocity.y, 0);
+                IsGrabInProgress = true;
+            }
+        }
+        else
+        {
+            var draggable = hitObject as IDraggable;
+            if (draggable == null)
+                return;
+
+            var dot = Vector3.Dot(transform.position, draggable.GameObject.transform.position);
+            if (dot > GlobalValues.CHAR_DRAG_DOT_MIN)
+            {
+                if (!draggable.IsDraggedByOther)
+                {
+
+                }
+            }
+        }        
     }
 
     // Collisions
@@ -515,6 +569,16 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IDraggable
     private void _resumeMoving(Vector3 direction)
     {
         TargetDirection = direction;
+
+        if (IsGrabInProgress)
+        {
+            var dirToGrab = (CurrentGrab.gameObject.transform.position - _body.position).normalized;
+            if (Vector3.Dot(dirToGrab, TargetDirection.normalized) > 0.49f)
+            {
+                return;
+            }
+        }
+
         if (direction.magnitude * MaxMoveSpeed >= CurrentSpeed)
             TargetSpeed = direction.magnitude * MaxMoveSpeed;
         else

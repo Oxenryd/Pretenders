@@ -4,7 +4,8 @@ public static class GlobalStrings
     public const string NAME_INPUTMANAGER = "InputManager";
     public const string NAME_GAMEMANAGER = "GameManager";
     public static string NAME_BOMBERCRATE = "BombCrate";
-    
+    public static string NAME_UIOVERLAY = "UiOverlay";
+
     //CONTAINERS
     public const string CONT_HEROCONTAINER = "HeroContainer";
     public static string CONT_MISCCONTAINER = "MiscContainer";
