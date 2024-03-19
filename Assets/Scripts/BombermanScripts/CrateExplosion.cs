@@ -18,12 +18,12 @@ public class CrateExplosion : MonoBehaviour
         
     }
 
-    private void CreatePowerUpAfterExplosion()
-    {
-        if(isDestroyed)
-        {
-            GameObject instantiatePowerUp = Instantiate(powerUpObject, transform.position, transform.rotation);
+    //private void CreatePowerUpAfterExplosion()
+    //{
+        //if(isDestroyed)
+        //{
+        //    GameObject instantiatePowerUp = Instantiate(powerUpObject, transform.position, transform.rotation);
 
-        }
-    }
+        //}
+    //}
 }
