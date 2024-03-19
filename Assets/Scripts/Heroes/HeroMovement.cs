@@ -37,6 +37,7 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IDraggable
     private EasyTimer _jumpBufferTimer;
     private EasyTimer _shoveStunTimer;
     private EasyTimer _bumpTimer;
+    private EasyTimer _grabTimout;
     private float _stopSpeed = 0f;
     private bool _jumpButtonIsDown = false; // (instead of polling device with external calls)
     private bool _grabButtonIsDown = false;
@@ -281,6 +282,7 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IDraggable
         _jumpBufferTimer = new EasyTimer(_jumpBufferTime, false, true);
         _shoveStunTimer = new EasyTimer(_shoveStunDuration, false, true) ;
         _bumpTimer = new EasyTimer(GlobalValues.CHAR_BUMPDURATION);
+        _grabTimout = new EasyTimer(GlobalValues.CHAR_GRAB_TIMEOUT);
     }
 
     // --------------------------------------------------------------------------------------------------------------------------------------------------- FixedUpdate()
@@ -321,50 +323,11 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IDraggable
             
         }
 
-        // Can grab?
-        RaycastHit hit;
-        object foundObject;
-        var hitSomething = checkGrabDragAvailable(out foundObject, out hit);
-        if (hitSomething)
-        {
-            var foundGrab = (foundObject as Grabbable);
-            if (foundGrab != null)
-            {
-                foundGrab.SignalCanGrab(this);
-                CurrentGrab = foundGrab;
-            }
-            
-        } else if (!IsGrabbing)
-        { 
-            if (CurrentGrab != null)
-                CurrentGrab.SignalCanNotGrab(this);
-            CurrentGrab = null;                                          // Very suspicious. Maybe this is the random null reference bug. Will check out /Pierre
-        } else if (IsGrabInProgress && (foundObject as Grabbable) != CurrentGrab)
-        {
-            CurrentGrab.AbortGrab();
-            CurrentGrab = null;
-            IsGrabInProgress = false;
-            OnStoppedGrabInProgress();
-        }
 
-        // Trying to grab?
-        if (CanMove && TryingToGrab && hitSomething)
+        // Grab/Drag Stuff
+        if (_grabTimout.Done)
         {
-            doGrabbingDragging(foundObject);                
-            
-            TryingToGrab = false;
-            Halt();
-        }
-        if (_droppingGrab)
-        {
-            OnDropGrabbable();
-            _droppingGrab = false;
-            if (IsGrabbing)
-            {
-                CurrentGrab.Drop();
-                CurrentGrab = null;
-                IsGrabbing = false;
-            }
+            grabDragStuffs();
         }
 
 
@@ -514,6 +477,58 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IDraggable
     //    }
     //    return false;
     //}
+
+    private void grabDragStuffs()
+    {
+        // Can grab?
+        RaycastHit hit;
+        object foundObject;
+        var hitSomething = checkGrabDragAvailable(out foundObject, out hit);
+        if (hitSomething)
+        {
+            var foundGrab = (foundObject as Grabbable);
+            if (foundGrab != null)
+            {
+                foundGrab.SignalCanGrab(this);
+                CurrentGrab = foundGrab;
+            }
+
+        }
+        else if (!IsGrabbing)
+        {
+            if (CurrentGrab != null)
+                CurrentGrab.SignalCanNotGrab(this);
+            //CurrentGrab = null;                                          // Very suspicious. Maybe this is the random null reference bug. Will check out /Pierre
+        }
+        else if (IsGrabInProgress && (foundObject as Grabbable) != CurrentGrab)
+        {
+            CurrentGrab.AbortGrab();
+            CurrentGrab = null;
+            IsGrabInProgress = false;
+            OnStoppedGrabInProgress();
+        }
+
+        // Trying to grab?
+        if (CanMove && TryingToGrab && hitSomething)
+        {
+            doGrabbingDragging(foundObject);
+
+            TryingToGrab = false;
+            Halt();
+        }
+        if (_droppingGrab)
+        {
+            OnDropGrabbable();
+            _droppingGrab = false;
+            if (IsGrabbing)
+            {
+                CurrentGrab.Drop();
+                _grabTimout.Reset();
+                CurrentGrab = null;
+                IsGrabbing = false;
+            }
+        }
+    }
 
     private bool checkGrabDragAvailable(out object foundObject, out RaycastHit hit)
     {
