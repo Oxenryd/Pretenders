@@ -6,6 +6,10 @@ public static class GlobalValues
     public const float CHAR_BUMPFORCE = 2f;
     public const float CHAR_BUMPDURATION = 0.28f;
 
+   
+    
+
+    public const int   BASKET_MAX_SIZE = 5;
     public const float CHAR_GRAB_CHECK_DISTANCE = 1f;
     public const float CHAR_GRAB_POSITION_OFFSET = 0.5f;
     public const float CHAR_GRAB_RADIUS = 0.5f;
@@ -16,6 +20,5 @@ public static class GlobalValues
     public const float GRABBABLE_COLLIDER_TIMEOUT_DEFAULTTIME = 0.3f;
 
     public const float CHAR_DRAG_DOT_MIN = 0.4f;
-    
     
 }
