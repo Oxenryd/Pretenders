@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Tug : MonoBehaviour
 {
-    [SerializeField] private Camera _camera;
+    private Camera _camera;
     [SerializeField] private TextMeshPro _text;
     private Hero _heroOne;
     private Hero _heroTwo;
@@ -33,6 +33,10 @@ public class Tug : MonoBehaviour
     public void IncreaseValue(float amount)
     { _value += amount; }
 
+    void Start()
+    {
+        _camera = Camera.main;
+    }
     void Update()
     {
        // if (!Active) return;
