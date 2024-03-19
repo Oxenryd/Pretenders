@@ -10,32 +10,30 @@ public class Bomb : MonoBehaviour
     public GameObject explosion;
     public float explosionForce;
     public float radius;
-    public float delayBeforeExplosion = 2;
+    public float delayBeforeExplosion = 4;
     void Start()
     {
-        
+        ExplodeAfterSomeTime();
     }
 
-    // Update is called once per frame
     void Update()
     {
         
     }
 
-    private void OnCollisionEnter(Collision other)
+    private void ExplodeAfterSomeTime()
     {
-        StartCoroutine(ExplodeAfterDelay(other));
+        StartCoroutine(ExplodeAfterDelay());
     }
 
 
-    private IEnumerator ExplodeAfterDelay(Collision other)
+    private IEnumerator ExplodeAfterDelay()
     {
 
         yield return new WaitForSeconds(delayBeforeExplosion);
 
-        GameObject instantiateExplosion = Instantiate(explosion, transform.position, transform.rotation);
+        Instantiate(explosion, transform.position, transform.rotation);
         KnockBack();
-        Destroy(instantiateExplosion, 3);
         Destroy(gameObject);
     }
 
