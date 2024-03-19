@@ -6,9 +6,10 @@ using UnityEngine;
 
 public class Grabbable : MonoBehaviour
 {
-    [SerializeField] Collider _collider;
+    
     [SerializeField] protected PickupMeter _meter;
     [SerializeField] protected PickupAlert _alert;
+    private Collider _collider;
     private ICharacterMovement _grabber;
     private Vector3 _lastVelocity;
     private Rigidbody _rBody;
@@ -107,12 +108,12 @@ public class Grabbable : MonoBehaviour
 
             // TODO!! If another grabber enter the grabbing -> Start a tug!!!
 
-            _alert.Deactivate();
+            _alert.Hide();
             GrabInProgress = true;
             _lastVelocity = _rBody.velocity;
             _rBody.isKinematic = true;
             _grabber = grabber;
-            _meter.Activate(_grabber.GameObject.transform.position + new Vector3(0, 2, 0) + _grabber.TargetDirection.normalized * 1f);
+            _meter.Activate(_grabber.GameObject.transform.position + new Vector3(0, 2.3f, 0));
             return true;
         }
         return false;
@@ -124,7 +125,8 @@ public class Grabbable : MonoBehaviour
         IsGrabbed = true;
         _grabber.Grab(this);      
         _collider.enabled = false;
-        _alert.Deactivate();
+        _alert.Deactivate();      
+        StraightenUp();
     }
     public void Drop()
     {
@@ -171,6 +173,9 @@ public class Grabbable : MonoBehaviour
         if (Hidden)
             return;
 
+        if (_potentialGrabbersGrabbing.Count == 0)
+            _alert.Deactivate();
+
         if (_pendingColliderEnable)
         {
             _collider.enabled = true;
@@ -179,8 +184,14 @@ public class Grabbable : MonoBehaviour
 
         if (IsGrabbed)
         {
-            transform.position = _grabber.GameObject.transform.position + (_grabber.CurrentDirection + new Vector3(0, GrabPointOffset.y, 0) * GrabPointOffset.z) ;
+            transform.position = _grabber.GameObject.transform.position + (_grabber.FaceDirection + new Vector3(0, GrabPointOffset.y, 0) * GrabPointOffset.z);
+            transform.rotation = Quaternion.FromToRotation(Vector3.forward, _grabber.FaceDirection);
         }
+    }
+
+    protected virtual void StraightenUp()
+    {
+        transform.rotation = Quaternion.identity;
     }
 }
 

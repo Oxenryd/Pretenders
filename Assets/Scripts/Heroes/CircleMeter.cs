@@ -7,7 +7,6 @@ public class CircleMeter : MonoBehaviour
 {
     public bool Active = false;
     private Camera _camera;
-    [SerializeField] private Vector3 _positionOffset = new Vector3(0, 0, 0);
     [SerializeField] private RectTransform _meter;
     [SerializeField] private float _defaultLengthScale = 10;
     [SerializeField][Range(0f, 1f)] private float _value;

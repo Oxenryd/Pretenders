@@ -38,12 +38,14 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
     private EasyTimer _shoveStunTimer;
     private EasyTimer _bumpTimer;
     private EasyTimer _grabTimout;
+    private EasyTimer _dragCooldown;
     private float _stopSpeed = 0f;
     private bool _jumpButtonIsDown = false; // (instead of polling device with external calls)
     private bool _grabButtonIsDown = false;
     private bool _didJumpDecel = false;
     private bool _startShoving = false;
     private bool _startBump = false;
+    private bool _doDrop = false;
     private Vector3 _shoveVector = Vector3.zero;
     private Vector3 _bumpVector = Vector3.zero;
     private Vector3 _gndNormal = new Vector3(0, 1, 0);
@@ -51,10 +53,14 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
     private int _dJumpsLeft = 1;
     private int _maxDJumps = 1;
     private Vector3 _gndTargetNormalVel = Vector3.zero;
-    private bool _droppingGrab = false;
+    private bool _tryingToDrop = false;
     private bool _triedToTrigger = false;
-    public bool _triggerButtonDown = false;
+    private bool _triggerButtonDown = false;
+    private bool _signalingGrab = false;
 
+    public Vector3 Velocity
+    { get { return _body.velocity; } }
+    public ICharacterMovement Dragger { get; set; }
     public bool CanBeDragged { get; set; } = true;
     public bool CanTrigger { get; set; } = true;
     public Grabbable CurrentGrab { get; set; } = null;
@@ -104,6 +110,12 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
     public bool IsDraggingOther { get; set; } = false;
     public bool IsDraggedByOther { get; set; } = false;
 
+    public void ReleaseFromDrag()
+    {
+        CanBeDragged = false;
+        _dragCooldown.Reset();
+    }
+
     public void StartTug(Tug tug)
     {
 
@@ -111,12 +123,14 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
 
     public void Grab(Grabbable grabbable)
     {
+        CurrentGrab = grabbable;
         IsGrabbing = true;
+        TryingToGrab = false;
         IsGrabInProgress = false;
     }
     public void Drop(Grabbable grabbable)
     {
-        _droppingGrab = true;
+        _doDrop = true;
     }
 
 
@@ -138,13 +152,13 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
     {
         if (context.started)
         {
-            if (!IsGrabbing)
+            if (!IsGrabbing && !IsGrabInProgress)
             {
                 TryingToGrab = true;
                 _grabButtonIsDown = true;
             } else
             {
-                _droppingGrab = true;
+                _tryingToDrop = true;
             }
         }
         else if (context.canceled)
@@ -281,8 +295,10 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
         _haltTimer = new EasyTimer(_retardTime, false, true);
         _jumpBufferTimer = new EasyTimer(_jumpBufferTime, false, true);
         _shoveStunTimer = new EasyTimer(_shoveStunDuration, false, true) ;
-        _bumpTimer = new EasyTimer(GlobalValues.CHAR_BUMPDURATION);
-        _grabTimout = new EasyTimer(GlobalValues.CHAR_GRAB_TIMEOUT);
+        _bumpTimer = new EasyTimer(GlobalValues.CHAR_BUMPDURATION, false, true);
+        _grabTimout = new EasyTimer(GlobalValues.CHAR_GRAB_TIMEOUT, false, true);
+        _dragCooldown = new EasyTimer(GlobalValues.CHAR_DRAG_DRAGGED_COOLDOWN, false, true);
+        _dragCooldown.SetOff();
     }
 
     // --------------------------------------------------------------------------------------------------------------------------------------------------- FixedUpdate()
@@ -323,12 +339,18 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
             
         }
 
+        // Drag
+        if (!_dragCooldown.Done)
+            CanBeDragged = false;
+        else
+            CanBeDragged = true;
 
         // Grab/Drag Stuff
         if (_grabTimout.Done)
         {
             grabDragStuffs();
         }
+        TryingToGrab = false;
 
 
         // Triggered?
@@ -445,16 +467,25 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
         // Also storing last face direction
         if (!IsShoved && !IsBumped)
         {
+            if (IsGrabInProgress)
+                CurrentSpeed = CurrentSpeed * 0.15f;
+            else if (IsDraggingOther)
+                CurrentSpeed = CurrentSpeed * 0.75f;
+
+            Vector3 velocity = Vector3.zero;
             switch (CurrentControlScheme)
             {
                 case ControlSchemeType.TopDown:
-                    if (IsGrabInProgress)
-                        CurrentSpeed = CurrentSpeed * 0.15f;
-                    _body.velocity = new Vector3(CurrentDirection.x * CurrentSpeed, _body.velocity.y, CurrentDirection.z * CurrentSpeed);
-                    if (_body.velocity.sqrMagnitude > 0f && !IsShoved)
-                        FaceDirection = new Vector3(_body.velocity.x, 0f, _body.velocity.z).normalized;
+                    if (!IsDraggedByOther)
+                        velocity = new Vector3(CurrentDirection.x * CurrentSpeed, _body.velocity.y, CurrentDirection.z * CurrentSpeed);
+                    else
+                        velocity = Dragger.Velocity;
                     break;
             }
+
+            _body.velocity = velocity;
+            if (_body.velocity.sqrMagnitude > 0.001f && !IsShoved)
+                FaceDirection = new Vector3(_body.velocity.x, 0f, _body.velocity.z).normalized;
         }
         if (!IsGrounded)
         {
@@ -463,6 +494,7 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
 
         // Turn poco a poco to upright
         transform.up = Vector3.SmoothDamp(transform.up, _gndNormal, ref _gndTargetNormalVel, 0.08f);
+
     }
 
     private void grabDragStuffs()
@@ -471,12 +503,14 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
         RaycastHit hit;
         object foundObject;
         var hitSomething = checkGrabDragAvailable(out foundObject, out hit);
-        if (hitSomething)
+        _signalingGrab = false;
+        if (hitSomething && !IsGrabbing)
         {
             var foundGrab = (foundObject as Grabbable);
-            if (foundGrab != null)
+            if (foundGrab != null && !_signalingGrab)
             {
                 foundGrab.SignalCanGrab(this);
+                _signalingGrab = true;
                 CurrentGrab = foundGrab;
             }
 
@@ -484,8 +518,10 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
         else if (!IsGrabbing)
         {
             if (CurrentGrab != null)
+            {
                 CurrentGrab.SignalCanNotGrab(this);
-            //CurrentGrab = null;                                          // Very suspicious. Maybe this is the random null reference bug. Will check out /Pierre
+                _signalingGrab = false;
+            }
         }
         else if (IsGrabInProgress && (foundObject as Grabbable) != CurrentGrab)
         {
@@ -498,27 +534,32 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
         // Trying to grab?
         if (CanMove && TryingToGrab && hitSomething)
         {
-            TryingToGrab = false;
             doGrabbingDragging(foundObject);   
             Halt();
         }
-        if (_droppingGrab)
+
+        if (_tryingToDrop)
         {
             OnDropGrabbable();
-            _droppingGrab = false;
+            _tryingToDrop = false;
             if (IsGrabbing)
             {
                 CurrentGrab.Drop();
-                _grabTimout.Reset();
-                CurrentGrab = null;
-                IsGrabbing = false;
+                if (_doDrop)
+                {
+                    _doDrop = false;
+                    _grabTimout.Reset();
+                    CurrentGrab = null;
+                    IsGrabbing = false;
+                } else
+                    Debug.Log("THIS LINE SHOULD BE REACHED: HeroMovement.cs: grabDragStuff()");
             }
         }
     }
 
     private bool checkGrabDragAvailable(out object foundObject, out RaycastHit hit)
     {
-        if (Physics.SphereCast(transform.position, GlobalValues.CHAR_GRAB_RADIUS, CurrentDirection.normalized, out hit, GlobalValues.CHAR_GRAB_CHECK_DISTANCE))
+        if (Physics.SphereCast(transform.position, GlobalValues.CHAR_GRAB_RADIUS, FaceDirection, out hit, GlobalValues.CHAR_GRAB_CHECK_DISTANCE))
         {
             var grabbable = hit.collider.gameObject.GetComponent<Grabbable>();
             if (grabbable != null)
@@ -604,7 +645,7 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
     {
         TargetDirection = direction;
 
-        if (IsGrabInProgress)
+        if (IsGrabInProgress && CurrentGrab != null)
         {
             var dirToGrab = (CurrentGrab.gameObject.transform.position - _body.position).normalized;
             if (Vector3.Dot(dirToGrab, TargetDirection.normalized) > 0.49f)
@@ -644,7 +685,7 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
     void OnDrawGizmos()
     {
         Vector3 start = transform.position + new Vector3(0, 1, 0);
-        Vector3 end = start + CurrentDirection.normalized * GlobalValues.CHAR_GRAB_CHECK_DISTANCE;
+        Vector3 end = start + FaceDirection * GlobalValues.CHAR_GRAB_CHECK_DISTANCE;
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(start, GlobalValues.CHAR_GRAB_RADIUS);
         Gizmos.color = Color.red;
