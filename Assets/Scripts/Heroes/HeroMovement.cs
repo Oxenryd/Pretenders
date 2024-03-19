@@ -3,7 +3,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class HeroMovement : MonoBehaviour, ICharacterMovement, IDraggable
+public class HeroMovement : MonoBehaviour, ICharacterMovement
 {
     [SerializeField] private float _quickTurnFactor = 0.2f;
     [SerializeField] private float _jumpBufferTime = 0.13f;
@@ -15,7 +15,7 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IDraggable
     [SerializeField] private float _moveSpeed = 2.5f;
     [SerializeField] private float _jumpPower = 5f;
     [SerializeField] private float _shoveStunDuration = 1f;
-
+    [SerializeField] private DragStruggle _struggle;
 
     // EVENTS
     public event EventHandler<Grabbable> GrabbedGrabbable;
@@ -37,6 +37,7 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IDraggable
     private EasyTimer _jumpBufferTimer;
     private EasyTimer _shoveStunTimer;
     private EasyTimer _bumpTimer;
+    private EasyTimer _grabTimout;
     private float _stopSpeed = 0f;
     private bool _jumpButtonIsDown = false; // (instead of polling device with external calls)
     private bool _grabButtonIsDown = false;
@@ -54,6 +55,7 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IDraggable
     private bool _triedToTrigger = false;
     public bool _triggerButtonDown = false;
 
+    public bool CanBeDragged { get; set; } = true;
     public bool CanTrigger { get; set; } = true;
     public Grabbable CurrentGrab { get; set; } = null;
     public GameObject GameObject
@@ -99,9 +101,8 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IDraggable
     public bool IsBumped { get; set; } = false;
     public bool IsGrabbing { get; set; } = false;
     public bool IsGrabInProgress { get; set; } = false;
-    public bool IsDraggingOther { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-    public bool IsDraggedByOther { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-    public bool IsTriggeredLastFrame { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    public bool IsDraggingOther { get; set; } = false;
+    public bool IsDraggedByOther { get; set; } = false;
 
     public void StartTug(Tug tug)
     {
@@ -281,6 +282,7 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IDraggable
         _jumpBufferTimer = new EasyTimer(_jumpBufferTime, false, true);
         _shoveStunTimer = new EasyTimer(_shoveStunDuration, false, true) ;
         _bumpTimer = new EasyTimer(GlobalValues.CHAR_BUMPDURATION);
+        _grabTimout = new EasyTimer(GlobalValues.CHAR_GRAB_TIMEOUT);
     }
 
     // --------------------------------------------------------------------------------------------------------------------------------------------------- FixedUpdate()
@@ -321,50 +323,11 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IDraggable
             
         }
 
-        // Can grab?
-        RaycastHit hit;
-        object foundObject;
-        var hitSomething = checkGrabDragAvailable(out foundObject, out hit);
-        if (hitSomething)
-        {
-            var foundGrab = (foundObject as Grabbable);
-            if (foundGrab != null)
-            {
-                foundGrab.SignalCanGrab(this);
-                CurrentGrab = foundGrab;
-            }
-            
-        } else if (!IsGrabbing)
-        { 
-            if (CurrentGrab != null)
-                CurrentGrab.SignalCanNotGrab(this);
-            CurrentGrab = null;                                          // Very suspicious. Maybe this is the random null reference bug. Will check out /Pierre
-        } else if (IsGrabInProgress && (foundObject as Grabbable) != CurrentGrab)
-        {
-            CurrentGrab.AbortGrab();
-            CurrentGrab = null;
-            IsGrabInProgress = false;
-            OnStoppedGrabInProgress();
-        }
 
-        // Trying to grab?
-        if (CanMove && TryingToGrab && hitSomething)
+        // Grab/Drag Stuff
+        if (_grabTimout.Done)
         {
-            doGrabbingDragging(foundObject);                
-            
-            TryingToGrab = false;
-            Halt();
-        }
-        if (_droppingGrab)
-        {
-            OnDropGrabbable();
-            _droppingGrab = false;
-            if (IsGrabbing)
-            {
-                CurrentGrab.Drop();
-                CurrentGrab = null;
-                IsGrabbing = false;
-            }
+            grabDragStuffs();
         }
 
 
@@ -468,6 +431,8 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IDraggable
             IsFalling = true;
         }
 
+        
+
         // Moving?
         Vector2 planeVelocity = new Vector2(_body.velocity.x, _body.velocity.z);
         if (Mathf.Round(planeVelocity.sqrMagnitude) > 0f) // Using sqr to save on sqrroots.
@@ -500,20 +465,56 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IDraggable
         transform.up = Vector3.SmoothDamp(transform.up, _gndNormal, ref _gndTargetNormalVel, 0.08f);
     }
 
-    //private bool checkStillTryingToGrab()
-    //{
-    //    RaycastHit hit;
-    //    if (Physics.SphereCast(transform.position, GlobalValues.CHAR_GRAB_RADIUS, CurrentDirection.normalized, out hit, GlobalValues.CHAR_GRAB_CHECK_DISTANCE))
-    //    {
-    //        var grabbable = hit.collider.gameObject.GetComponent<Grabbable>();
-    //        if (grabbable == CurrentGrab)
-    //        {
-    //            grabbable.SignalCanGrab(this);
-    //            return true;               
-    //        }
-    //    }
-    //    return false;
-    //}
+    private void grabDragStuffs()
+    {
+        // Can grab?
+        RaycastHit hit;
+        object foundObject;
+        var hitSomething = checkGrabDragAvailable(out foundObject, out hit);
+        if (hitSomething)
+        {
+            var foundGrab = (foundObject as Grabbable);
+            if (foundGrab != null)
+            {
+                foundGrab.SignalCanGrab(this);
+                CurrentGrab = foundGrab;
+            }
+
+        }
+        else if (!IsGrabbing)
+        {
+            if (CurrentGrab != null)
+                CurrentGrab.SignalCanNotGrab(this);
+            //CurrentGrab = null;                                          // Very suspicious. Maybe this is the random null reference bug. Will check out /Pierre
+        }
+        else if (IsGrabInProgress && (foundObject as Grabbable) != CurrentGrab)
+        {
+            CurrentGrab.AbortGrab();
+            CurrentGrab = null;
+            IsGrabInProgress = false;
+            OnStoppedGrabInProgress();
+        }
+
+        // Trying to grab?
+        if (CanMove && TryingToGrab && hitSomething)
+        {
+            TryingToGrab = false;
+            doGrabbingDragging(foundObject);   
+            Halt();
+        }
+        if (_droppingGrab)
+        {
+            OnDropGrabbable();
+            _droppingGrab = false;
+            if (IsGrabbing)
+            {
+                CurrentGrab.Drop();
+                _grabTimout.Reset();
+                CurrentGrab = null;
+                IsGrabbing = false;
+            }
+        }
+    }
 
     private bool checkGrabDragAvailable(out object foundObject, out RaycastHit hit)
     {
@@ -526,7 +527,7 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IDraggable
                 return true;
             } else
             {
-                var draggable = hit.collider.gameObject.GetComponent<IDraggable>();
+                var draggable = hit.collider.gameObject.transform.GetComponentInParent<ICharacterMovement>();
                 if (draggable != null)
                 {
                     foundObject = draggable;
@@ -539,7 +540,7 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IDraggable
         return false;
     }
 
-    private void doGrabbingDragging(object hitObject)
+    private bool doGrabbingDragging(object hitObject)
     {
         var grabbable = hitObject as Grabbable;
         if (grabbable != null)
@@ -549,23 +550,25 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IDraggable
             {
                 _body.velocity = new Vector3(0, _body.velocity.y, 0);
                 IsGrabInProgress = true;
+                return true;
             }
-        }
-        else
+        } else
         {
-            var draggable = hitObject as IDraggable;
+            var draggable = hitObject as ICharacterMovement;
             if (draggable == null)
-                return;
+                return false;
 
-            var dot = Vector3.Dot(transform.position, draggable.GameObject.transform.position);
+            var dot = Vector3.Dot(CurrentDirection, draggable.CurrentDirection);
             if (dot > GlobalValues.CHAR_DRAG_DOT_MIN)
             {
-                if (!draggable.IsDraggedByOther)
+                if (!draggable.IsDraggedByOther && draggable.CanBeDragged)
                 {
-
+                    
+                    return true;
                 }
             }
-        }        
+        }
+        return false;
     }
 
     // Collisions
@@ -633,13 +636,10 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IDraggable
         TryingToMove = true;
     }
 
+    public void StartDragStruggle(ICharacterMovement dragger, ICharacterMovement dragged)
+    {
 
-
-
-
-
-
-
+    }
 
     void OnDrawGizmos()
     {
