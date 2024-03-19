@@ -35,18 +35,25 @@ public interface ICharacterMovement
     public bool IsDoubleJumping { get; set; }
     public int NumberOfDoubleJumps { get; set; }
     public bool IsGrabbing { get; set; }
+    public bool CanTrigger { get; set; }
     public void Grab(Grabbable grabbable);
     public void Drop(Grabbable grabbable);
     public event EventHandler<Grabbable> GrabbedGrabbable;
     public event EventHandler DroppedGrabbable;
+    public event EventHandler StoppedGrabInProgress;
+    public event EventHandler Triggered;
+    public Grabbable CurrentGrab { get; set; }
 
-
+    public void TryTrigger(InputAction.CallbackContext context);
     public void TryGrab(InputAction.CallbackContext context);
     public void TryMove(InputAction.CallbackContext context);
     public void TryJump(InputAction.CallbackContext context);
     public void TryMoveAi(Vector2 direction);
+
     public void TryJumpAi();
     public void TryGrabAi();
+    public void TryTriggerAi();
+
     public void TryShove(Vector3 direction, float power);
     public void TryBump(Vector3 direction, float power);
     public void Halt();
