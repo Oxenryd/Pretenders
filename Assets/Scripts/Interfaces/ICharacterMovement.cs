@@ -36,6 +36,9 @@ public interface ICharacterMovement
     public int NumberOfDoubleJumps { get; set; }
     public bool IsGrabbing { get; set; }
     public bool CanTrigger { get; set; }
+    public bool CanBeDragged { get; set; }
+    public bool IsDraggingOther { get; set; }
+    public bool IsDraggedByOther { get; set; }
     public void Grab(Grabbable grabbable);
     public void Drop(Grabbable grabbable);
     public event EventHandler<Grabbable> GrabbedGrabbable;

@@ -276,17 +276,6 @@
                 },
                 {
                     "name": "",
-                    "id": "938f56d1-e0e1-4fd3-a2e2-82feeab473f2",
-                    "path": "<HID::Padix Co. Ltd. USB,2-axis 8-button gamepad>/button4",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Grab",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "d468d106-08b9-4910-ad1d-de5e03ba96d5",
                     "path": "<Gamepad>/buttonEast",
                     "interactions": "",

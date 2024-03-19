@@ -10069,6 +10069,9 @@ MonoBehaviour:
   _moveSpeed: 5
   _jumpPower: 8
   _shoveStunDuration: 1
+  _struggle: {fileID: 3106891501571637019, guid: 2398adf7cf9b8e149aa3e7b68b51a094,
+    type: 3}
+  _triggerButtonDown: 0
 --- !u!114 &5371608993833561220
 MonoBehaviour:
   m_ObjectHideFlags: 0
