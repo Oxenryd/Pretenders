@@ -21,12 +21,15 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IDraggable
     public event EventHandler<Grabbable> GrabbedGrabbable;
     public event EventHandler DroppedGrabbable;
     public event EventHandler StoppedGrabInProgress;
+    public event EventHandler Triggered;
     public void OnGrabGrabbable(Grabbable grabbable)
     { GrabbedGrabbable?.Invoke(this, grabbable); }
     public void OnDropGrabbable()
     { DroppedGrabbable?.Invoke(this, EventArgs.Empty); }
     protected void OnStoppedGrabInProgress()
     { StoppedGrabInProgress?.Invoke(this, EventArgs.Empty); }
+    protected void OnTriggered()
+    { Triggered?.Invoke(this, EventArgs.Empty); }
 
     private EasyTimer _accelTimer;
     private EasyTimer _turnTimer;
@@ -48,10 +51,15 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IDraggable
     private int _maxDJumps = 1;
     private Vector3 _gndTargetNormalVel = Vector3.zero;
     private bool _droppingGrab = false;
+    private bool _triedToTrigger = false;
+    public bool _triggerButtonDown = false;
 
+    public bool CanTrigger { get; set; } = true;
     public Grabbable CurrentGrab { get; set; } = null;
     public GameObject GameObject
     { get; private set; }
+    public bool TryingToTrigger
+    { get { return _triedToTrigger; } set { _triedToTrigger = value; } }
     public bool TryingToGrab
     { get; set; } = false;
     public bool IsDoubleJumping
@@ -93,7 +101,7 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IDraggable
     public bool IsGrabInProgress { get; set; } = false;
     public bool IsDraggingOther { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
     public bool IsDraggedByOther { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
+    public bool IsTriggeredLastFrame { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
     public void StartTug(Tug tug)
     {
@@ -143,6 +151,30 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IDraggable
             _grabButtonIsDown = false;
         }
     }
+
+    public void TryTrigger(InputAction.CallbackContext context)
+    {
+        if (context.started)
+        {
+            _triedToTrigger = true;
+            _triggerButtonDown = true;
+        }
+        else if (context.canceled)
+        {
+            _triggerButtonDown = false;
+        }
+    }
+
+    public void TryTriggerAi()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void TryGrabAi()
+    {
+        throw new System.NotImplementedException();
+    }
+
 
     public void TryJumpAi()
     {
@@ -306,7 +338,7 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IDraggable
         { 
             if (CurrentGrab != null)
                 CurrentGrab.SignalCanNotGrab(this);
-            CurrentGrab = null;
+            CurrentGrab = null;                                          // Very suspicious. Maybe this is the random null reference bug. Will check out /Pierre
         } else if (IsGrabInProgress && (foundObject as Grabbable) != CurrentGrab)
         {
             CurrentGrab.AbortGrab();
@@ -334,17 +366,16 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IDraggable
                 IsGrabbing = false;
             }
         }
-        //if (IsGrabInProgress)
-        //{
-        //    if (!checkStillTryingToGrab())
-        //    {
-        //        CurrentGrab.AbortGrab();
-        //        CurrentGrab = null;
-        //        IsGrabInProgress = false;
-        //        OnStoppedGrabInProgress();
-        //    }
-        //}
 
+
+        // Triggered?
+        CanTrigger = true; // TODO: set conditions for triggering
+
+        if (CanMove && CanTrigger && _triedToTrigger)
+        {
+            _triedToTrigger = false;
+            OnTriggered();
+        }
 
 
         // Bumped?
@@ -604,10 +635,7 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IDraggable
 
 
 
-    public void TryGrabAi()
-    {
-        throw new System.NotImplementedException();
-    }
+
 
 
 
