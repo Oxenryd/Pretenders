@@ -7,8 +7,8 @@ using UnityEngine;
 public class Grabbable : MonoBehaviour
 {
     [SerializeField] Collider _collider;
-    [SerializeField] private PickupMeter _meter;
-    [SerializeField] private PickupAlert _alert;
+    [SerializeField] protected PickupMeter _meter;
+    [SerializeField] protected PickupAlert _alert;
     private ICharacterMovement _grabber;
     private Vector3 _lastVelocity;
     private Rigidbody _rBody;
@@ -150,7 +150,7 @@ public class Grabbable : MonoBehaviour
         _alert.gameObject.SetActive(false);
 
     }
-    private void Start()
+    protected void Start()
     {
         _meter.PickupComplete += OnPickupComplete;
         _meter.PickupAborted += OnPickupAborted;
@@ -166,7 +166,7 @@ public class Grabbable : MonoBehaviour
         Grab(_grabber);
     }
 
-    public void Update()
+    protected void Update()
     {
         if (Hidden)
             return;

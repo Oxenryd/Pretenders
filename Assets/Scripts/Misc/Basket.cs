@@ -12,13 +12,14 @@ public class Basket : Grabbable, IRecievable
     // Start is called before the first frame update
     void Start()
     {
+        base.Start();
         _heldObjects = new List<Food>(GlobalValues.BASKET_MAX_SIZE);        
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        base.Update();
     }
 
     public int Transfer(object[] recievedObject)
