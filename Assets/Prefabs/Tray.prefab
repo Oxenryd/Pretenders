@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 1358785060980299772}
   - component: {fileID: 4861391959557479728}
   m_Layer: 0
-  m_Name: Basket
+  m_Name: Tray
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -100,6 +100,7 @@ MonoBehaviour:
   _meter: {fileID: 2574891146964797387, guid: eda705f58eed7bc4fbf14b74cdb6c247, type: 3}
   _alert: {fileID: 5685868278306586147, guid: b9e2e76fafb519b4a9b923db20cbb25b, type: 3}
   _tugOWar: {fileID: 0}
+  _heldObjects: []
 --- !u!33 &1358785060980299772
 MeshFilter:
   m_ObjectHideFlags: 0

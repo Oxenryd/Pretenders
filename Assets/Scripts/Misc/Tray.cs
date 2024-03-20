@@ -3,11 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Basket : Grabbable, IRecievable
+public class Tray : Grabbable, IRecievable
 {
-    private List<Food> _heldObjects; // List to hold 5 items
-
-    public List<Food> HeldObjects => _heldObjects;
+    [SerializeField] private List<Food> _heldObjects; // List to hold 5 items
 
     // Start is called before the first frame update
     void Start()
@@ -20,6 +18,10 @@ public class Basket : Grabbable, IRecievable
     void Update()
     {
         base.Update();
+        for(int i =0; i< _heldObjects.Count; i++)
+        {
+            _heldObjects[i].transform.position = this.transform.position;
+        }
     }
 
     public int Transfer(object[] recievedObject)
@@ -37,7 +39,7 @@ public class Basket : Grabbable, IRecievable
         {
             if (_heldObjects.Count < GlobalValues.BASKET_MAX_SIZE)
             {
-                _heldObjects.Add((Food)recievedObject[i]);
+                _heldObjects.Add(foodArray[i]);
             }
             else
             {
