@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour
     // Don't forget to alter these in Inspector.  
     [SerializeField] private int _maxControllables = 4;
     [SerializeField] private InputManager _inputMan;
+    [SerializeField] private SceneManager _curSceneman;
 
     private ICharacter[] _playableCharacters;
 
@@ -51,8 +52,10 @@ public class GameManager : MonoBehaviour
         NumOfPlayersChanged.Invoke(this, NumOfPlayers);
     }
 
+    public SceneManager SceneManager
+    { get { return _curSceneman; } }
     public InputManager InputManager
-        { get { return _inputMan; } }
+    { get { return _inputMan; } }
     public float DeltaTime { get; private set; }
     public float FixedDeltaTime { get; private set; }
     public int GroundLayer { get; private set; }
@@ -83,6 +86,8 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
+        this.tag = GlobalStrings.NAME_GAMEMANAGER;
+
         if (this != Instance && Instance != null)
         {
             Destroy(this);

@@ -15,6 +15,7 @@ TagManager:
   - UiOverlay
   - BombermanWall
   - BombermanGrid
+  - SceneManager
   layers:
   - Default
   - TransparentFX

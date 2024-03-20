@@ -38,8 +38,13 @@ public class InputManager : MonoBehaviour
     public List<InputDevice> InputDevices
         { get { return _inputDevices; } }
     public int MaxControllableCharacters
-        { get { return GameManager.Instance.MaxControllableCharacters; } } 
+        { get { return GameManager.Instance.MaxControllableCharacters; } }
 
+
+    void Awake()
+    {
+        this.tag = GlobalStrings.NAME_INPUTMANAGER;
+    }
 
     /// <summary>
     /// Needs to be run before anything else on the manager to assign controllable characters and such.

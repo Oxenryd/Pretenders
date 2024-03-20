@@ -105,10 +105,6 @@ public class TransferAlert : MonoBehaviour
 
             case AlertMode.Inactive: return;
         }
-
-        //var noZPos = new Vector3(_alert.transform.position.x, _alert.transform.position.y, 0f);
-        
-
         _counter += GameManager.Instance.DeltaTime;  
     }
 
