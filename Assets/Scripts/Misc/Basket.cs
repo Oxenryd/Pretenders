@@ -5,9 +5,14 @@ using UnityEngine;
 
 public class Basket : Grabbable, IRecievable
 {
+    [SerializeField] private TransferAlert _transferAlert;
     private List<Food> _heldObjects; // List to hold 5 items
 
     public List<Food> HeldObjects => _heldObjects;
+
+    public TransferAlert TransferAlert
+    { get { return _transferAlert; } }
+
 
     // Start is called before the first frame update
     void Start()

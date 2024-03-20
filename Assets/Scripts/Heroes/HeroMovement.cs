@@ -484,7 +484,7 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
             }
 
             _body.velocity = velocity;
-            if (_body.velocity.sqrMagnitude > 0.001f && !IsShoved)
+            if (_body.velocity.sqrMagnitude > 0.005f && !IsShoved && !IsJumping && !IsFalling)
                 FaceDirection = new Vector3(_body.velocity.x, 0f, _body.velocity.z).normalized;
         }
         if (!IsGrounded)
@@ -529,6 +529,21 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
             CurrentGrab = null;
             IsGrabInProgress = false;
             OnStoppedGrabInProgress();
+        } else if (IsGrabbing && (foundObject as IRecievable) != null)
+        {
+            var recievable = (foundObject as IRecievable);
+            recievable.TransferAlert.Ping(this, recievable.transform);
+            if (_tryingToDrop)
+            {
+                _tryingToDrop = false;
+                var result = recievable.Transfer(CurrentGrab.GetTransferables());
+                CurrentGrab.ProcessTransferResponse(result);
+
+                if (result == 0)
+                {
+                    actualDrop();
+                }
+            }
         }
 
         // Trying to grab?
@@ -547,20 +562,35 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
                 CurrentGrab.Drop();
                 if (_doDrop)
                 {
-                    _doDrop = false;
-                    _grabTimout.Reset();
-                    CurrentGrab = null;
-                    IsGrabbing = false;
+                    actualDrop();
                 } else
                     Debug.Log("THIS LINE SHOULD BE REACHED: HeroMovement.cs: grabDragStuff()");
             }
         }
     }
 
+    private void actualDrop()
+    {
+        _doDrop = false;
+        _grabTimout.Reset();
+        CurrentGrab = null;
+        IsGrabbing = false;
+    }
+
     private bool checkGrabDragAvailable(out object foundObject, out RaycastHit hit)
     {
         if (Physics.SphereCast(transform.position, GlobalValues.CHAR_GRAB_RADIUS, FaceDirection, out hit, GlobalValues.CHAR_GRAB_CHECK_DISTANCE))
         {
+            if (IsGrabbing)
+            {
+                var recievable = hit.collider.gameObject.GetComponent<IRecievable>();
+                if (recievable != null)
+                {
+                    foundObject = recievable;
+                    return true;
+                }
+            }
+
             var grabbable = hit.collider.gameObject.GetComponent<Grabbable>();
             if (grabbable != null)
             {

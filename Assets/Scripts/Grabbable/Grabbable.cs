@@ -48,7 +48,8 @@ public class Grabbable : MonoBehaviour
         Hidden = false;
         gameObject.SetActive(true);
         //_collider.enabled = true;
-        _pendingColliderEnable = true;
+        _pendingColliderEnable = false;
+        _collider.enabled = true;
         _colliderTimer.Reset();
         _rBody.isKinematic = false;
         gameObject.SetActive(true);
@@ -176,7 +177,9 @@ public class Grabbable : MonoBehaviour
         if (_potentialGrabbersGrabbing.Count == 0)
             _alert.Deactivate();
 
-        if (_pendingColliderEnable)
+
+
+        if (_pendingColliderEnable && !IsGrabbed && _colliderTimer.Done)
         {
             _collider.enabled = true;
             _pendingColliderEnable = false;
@@ -189,9 +192,15 @@ public class Grabbable : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Default behaviour is to just Drop() which also makes the Grabber to be set to drop.
+    /// </summary>
+    /// <param name="response"></param>
+    public virtual void ProcessTransferResponse(int response) { if (response == 0) Drop(); }
+    public virtual object[] GetTransferables() { return new GameObject[] { this.gameObject }; }
+
     protected virtual void StraightenUp()
     {
         transform.rotation = Quaternion.identity;
     }
 }
-
