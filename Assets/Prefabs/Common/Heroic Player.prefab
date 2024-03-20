@@ -9974,6 +9974,7 @@ GameObject:
   - component: {fileID: 5371608993833561220}
   - component: {fileID: 3862673316221454617}
   - component: {fileID: 5351979854073472389}
+  - component: {fileID: 6817491469289521284}
   m_Layer: 0
   m_Name: Heroic Player
   m_TagString: Character
@@ -10069,6 +10070,7 @@ MonoBehaviour:
   _moveSpeed: 5
   _jumpPower: 8
   _shoveStunDuration: 1
+  _triggerButtonDown: 0
 --- !u!114 &5371608993833561220
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10139,6 +10141,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6717e29aa4603c64e8b0fa3e39a67a2f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &6817491469289521284
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5729848038938094816}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3c685a1b5959e1489e61cd4555a5e58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bombPrefab: {fileID: 170936541569395615, guid: 2b48f418bddb8a74694b19e7c4a8ebcd,
+    type: 3}
+  heroGameObject: {fileID: 7935964025310328597}
 --- !u!1 &7206268277096017480
 GameObject:
   m_ObjectHideFlags: 0
