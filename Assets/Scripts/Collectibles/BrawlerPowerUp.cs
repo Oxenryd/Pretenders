@@ -23,7 +23,7 @@ namespace Assets.Scripts.Collectibles
             if (_timeToActivate.Done)
             {
                 OnActivation();
-            }
+            }          
         }
 
         public void OnSpawn()
@@ -36,8 +36,7 @@ namespace Assets.Scripts.Collectibles
         }
         public void OnPickup()
         {
-            Collected = true;
-           
+            Collected = true;          
             IsCollectable = false;
             ApplyEffect();
         }
@@ -47,13 +46,9 @@ namespace Assets.Scripts.Collectibles
         }
         public void OnExpire()
         {
-            Expired = true;
+            
         }
-        public void OnEffectEnd()
-        {
-            OnExpire();
-            //reset the changed values for the player
-        }
+        
         
         /*---------------------------------------The Loop ---------------------------------------*/ //this probably aint true no more tbh
         //CanSpawn is true --> Manager can spawn item

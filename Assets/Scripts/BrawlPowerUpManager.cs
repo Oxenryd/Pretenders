@@ -1,29 +1,33 @@
 ﻿using Assets.Scripts.Collectibles;
+using Assets.Scripts.Interfaces;
 using System;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace Assets.Scripts
 {
     public class BrawlPowerUpManager : MonoBehaviour
     {
-        public BrawlerPowerUp WeightGain;
-        public BrawlerPowerUp SpeedUp;
-        public BrawlerPowerUp UltraShove;
-        public BrawlerPowerUp MegaJump;
-
+        public BrawlerLevelBounds BrawlerLevelBounds;
+        public GameObject[] powerUpObjects;
+        private BrawlerPowerUp[] powerUps;
         private BrawlerPowerUp _currentPowerUp;
         public BrawlerPowerType CurrentPowerUpInRotation { get; set; }
         private float _respawnTime { get; set; } = 20f;
+        private float _minRespawnBuffer { get; set; } = 0f;
+        private float _maxRespawnBuffer { get; set; } = 15f;
+        private float _timeBeforeFirstSpawn = 10f;
         private EasyTimer _timeToRespawn;
-        private EasyTimer _timeActive;
-        
-        
+        private EasyTimer _timeActive; 
 
+        // -15, 15   50,51   1, 14
+                     
         public void Start()
         {
             _timeToRespawn = new EasyTimer(_respawnTime);
             _timeToRespawn.Reset();
-            _timeActive = new EasyTimer(WeightGain.LifeTime);
+            _timeActive = new EasyTimer(_timeBeforeFirstSpawn);
+            LoadPowerUps();
         }
 
         public void Update()
@@ -34,50 +38,81 @@ namespace Assets.Scripts
             }
             if (_currentPowerUp != null && _timeActive.Done)
             {
+                _currentPowerUp.OnExpire();
                 DespawnPowerUp();
             }
 
         }
 
-        void SpawnPowerUp()
+        private void LoadPowerUps()
         {
-            RandomisePowerUp();
+            powerUps = new BrawlerPowerUp[powerUpObjects.Length];
 
-            BrawlerPowerUp _powerUp = GetPowerUpType(CurrentPowerUpInRotation);
-            if (_powerUp != null)
+            for (int i = 0; i < powerUpObjects.Length; i++)
             {
-                _currentPowerUp = Instantiate(_powerUp, transform.position, Quaternion.identity);
-                _timeActive.Reset();
+                if (powerUpObjects[i] != null)
+                {
+                    powerUps[i] = powerUpObjects[i].GetComponent<BrawlerPowerUp>();
+                    powerUps[i].gameObject.SetActive(false); 
+                }
             }
         }
 
-        void DespawnPowerUp()
+        private void SpawnPowerUp()
         {
-            Destroy(_currentPowerUp.gameObject);
-            _respawnTime = 20f + UnityEngine.Random.Range(0, 15);
+            RandomisePowerUp();
+            BrawlerPowerType type = CurrentPowerUpInRotation;
+           
+                _currentPowerUp = powerUps[(int)type];
+
+                Collider[] colliders = Physics.OverlapBox(_currentPowerUp.transform.position, 
+                    _currentPowerUp.GetComponent<Collider>().bounds.extents);
+
+                foreach (Collider collider in colliders)
+                {
+                if (collider.CompareTag(GlobalStrings.PLATFORM_TAG)
+                || collider.CompareTag(GlobalStrings.CHARACTER_TAG))
+                    {
+                        Vector3 newRandomPosition = RandomiseSpawnPoint();
+                        _currentPowerUp.transform.position = newRandomPosition;
+                        return; 
+                    }
+                }
+                _currentPowerUp.transform.position = RandomiseSpawnPoint();
+                _currentPowerUp.gameObject.SetActive(true);
+                _timeActive.Reset();                                   
+        }
+
+        private void DespawnPowerUp()
+        {
+            _currentPowerUp.gameObject.SetActive(false);
+            _currentPowerUp = null;
+            _respawnTime = _respawnTime + UnityEngine.Random.Range(_minRespawnBuffer, _maxRespawnBuffer);
             _timeToRespawn.Reset();
         }
 
-        void RandomisePowerUp()
+        private Vector3 RandomiseSpawnPoint()
         {
-            CurrentPowerUpInRotation = (BrawlerPowerType)Enum.ToObject(typeof(BrawlerPowerType), UnityEngine.Random.Range(0, 4));
+            Vector3 topSpawn = BrawlerLevelBounds.TopSpawnPosition;
+            Vector3 bottomSpawn = BrawlerLevelBounds.BottomSpawnPosition;
+            Vector3 leftSpawn = BrawlerLevelBounds.LeftSpawnPosition;
+            Vector3 rightSpawn = BrawlerLevelBounds.RightSpawnPosition;
+            Vector3 backSpawn = BrawlerLevelBounds.BackSpawnPosition;
+            Vector3 frontSpawn = BrawlerLevelBounds.FrontSpawnPosition;
+            Vector3 _randomPosition = new Vector3(UnityEngine.Random.Range(leftSpawn.x, rightSpawn.x),
+                UnityEngine.Random.Range(bottomSpawn.y, topSpawn.y), UnityEngine.Random.Range(backSpawn.z, frontSpawn.z));
+            return _randomPosition;
         }
 
-        private BrawlerPowerUp GetPowerUpType(BrawlerPowerType brawlerPowerType)
+        
+
+
+
+        private void RandomisePowerUp()
         {
-            switch (brawlerPowerType)
-            {
-                case BrawlerPowerType.WeightGain:
-                    return WeightGain;
-                case BrawlerPowerType.SpeedUp:
-                    return SpeedUp;
-                case BrawlerPowerType.UltraShove:
-                    return UltraShove;
-                case BrawlerPowerType.MegaJump:
-                    return MegaJump;
-                default: 
-                    return null;
-            }
+            CurrentPowerUpInRotation = (BrawlerPowerType)Enum.ToObject(typeof(BrawlerPowerType), UnityEngine.Random.Range(0, 400)/100);
         }
+
+        
     }
 }
