@@ -7,6 +7,8 @@ public class Tray : Grabbable, IRecievable
 {
     [SerializeField] private List<Food> _heldObjects; // List to hold 5 items
 
+    public TransferAlert TransferAlert => throw new NotImplementedException();
+
     // Start is called before the first frame update
     void Start()
     {
