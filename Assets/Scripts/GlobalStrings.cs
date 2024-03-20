@@ -29,6 +29,10 @@ public static class GlobalStrings
     public const string ERR_NUMBER_OF_PLAYERS1 = "Number of players can not be lower than 0. Forced to 0.";
     public const string ERR_NUMBER_OF_PLAYERS2 = "Number of players can not be higher than 4. Forced to 4.";
 
+    //Tags
+    public const string PLATFORM_TAG = "Platform";
+    public const string CHARACTER_TAG = "Character";
+
     //Misc
-    
+
 }

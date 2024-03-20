@@ -6,6 +6,5 @@
         public float ActivateTime { get; set; }
         public bool Expired { get; set; }
         public void ApplyEffect(); 
-        public void OnEffectEnd();
     }
 }
