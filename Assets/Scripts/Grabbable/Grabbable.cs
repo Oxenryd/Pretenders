@@ -214,7 +214,7 @@ public class Grabbable : MonoBehaviour
         }
 
         if (IsGrabbed && !IsAttached)
-        {
+        {    
             transform.rotation = Quaternion.FromToRotation(Vector3.forward, _grabber.FaceDirection);
             transform.position = _grabber.GameObject.transform.position + (_grabber.FaceDirection + new Vector3(0, GrabPointOffset.y, 0) * GrabPointOffset.z);
         }

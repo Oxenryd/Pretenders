@@ -484,8 +484,10 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
             }
 
             _body.velocity = velocity;
-            if (_body.velocity.sqrMagnitude > 0.005f && !IsShoved && !IsJumping && !IsFalling)
+            var dirVelocity = new Vector3(velocity.x, 0, velocity.z).normalized;
+            if (dirVelocity.sqrMagnitude > 0.005f && !IsShoved && !IsJumping && !IsFalling)
                 FaceDirection = new Vector3(_body.velocity.x, 0f, _body.velocity.z).normalized;
+            //FaceDirection = new Vector3(_body.velocity.x, 0f, _body.velocity.z).normalized;
         }
         if (!IsGrounded)
         {
@@ -536,7 +538,7 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
             if (_tryingToDrop)
             {
                 _tryingToDrop = false;
-                var result = recievable.Transfer(CurrentGrab.GetTransferables());
+                var result = recievable.Transfer( CurrentGrab.GetTransferables() );
                 CurrentGrab.ProcessTransferResponse(result);
 
                 if (result == 0)

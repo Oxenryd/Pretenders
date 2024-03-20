@@ -26,7 +26,7 @@ public class Tray : Grabbable, IRecievable
     void Update()
     {
         base.Update();
-        for(int i =0; i< _heldObjects.Count; i++)
+        for (int i = 0; i < _heldObjects.Count; i++)
         {
             _heldObjects[i].transform.position = this.transform.position;
             _heldObjects[i].transform.rotation = this.transform.rotation;
