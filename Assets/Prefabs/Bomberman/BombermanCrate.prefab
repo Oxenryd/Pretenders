@@ -135,4 +135,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aacb5696424cb72429fe01ddeb91145f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isDestroyed: 0
+  powerUpObject: {fileID: 6428703486456274486, guid: 94514f5088fe14c4c91bc353512b419e,
+    type: 3}
