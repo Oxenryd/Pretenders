@@ -4,27 +4,26 @@ using UnityEngine;
 
 public class CrateExplosion : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject powerUpObject;
-
-    private Bomb powerUp;
+    public bool isDestroyed = false;
+    GameObject powerUpObject;
+    // Start is called before the first frame update
     void Start()
     {
+        
     }
 
-    private void SetInactive()
-    {
-        gameObject.SetActive(false);
-    }
-
-    public void Explode()
-    {
-        //Instantiate(powerUpObject, transform.position, transform.rotation);
-        SetInactive();
-    }
-
+    // Update is called once per frame
     void Update()
     {
         
+    }
+
+    private void CreatePowerUpAfterExplosion()
+    {
+        if(isDestroyed)
+        {
+            GameObject instantiatePowerUp = Instantiate(powerUpObject, transform.position, transform.rotation);
+
+        }
     }
 }

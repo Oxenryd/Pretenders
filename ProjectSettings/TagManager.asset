@@ -10,10 +10,6 @@ TagManager:
   - Character
   - BomberBlock
   - BombCrate
-  - MiscContainer
-  - UiOverlay
-  - BombermanWall
-  - BombermanGrid
   layers:
   - Default
   - TransparentFX
