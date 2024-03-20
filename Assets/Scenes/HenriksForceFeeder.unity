@@ -625,6 +625,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tray
       objectReference: {fileID: 0}
+    - target: {fileID: 4788731742750845312, guid: 875aea70ee4fa4a499c1c4aad52bb940,
+        type: 3}
+      propertyPath: m_Size.x
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 4788731742750845312, guid: 875aea70ee4fa4a499c1c4aad52bb940,
+        type: 3}
+      propertyPath: m_Size.y
+      value: 0.21
+      objectReference: {fileID: 0}
+    - target: {fileID: 4788731742750845312, guid: 875aea70ee4fa4a499c1c4aad52bb940,
+        type: 3}
+      propertyPath: m_Center.y
+      value: 0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 7622460033111009068, guid: 875aea70ee4fa4a499c1c4aad52bb940,
         type: 3}
       propertyPath: m_LocalPosition.x
