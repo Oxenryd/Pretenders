@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class Grabbable : MonoBehaviour
 {
-    
+
     [SerializeField] protected PickupMeter _meter;
     [SerializeField] protected PickupAlert _alert;
     private Collider _collider;
@@ -102,7 +102,7 @@ public class Grabbable : MonoBehaviour
         _rBody.velocity = _lastVelocity;
         GrabInProgress = false;
         _meter.Abort();
-        _grabber = null;       
+        _grabber = null;
     }
 
     public void SignalCanNotGrab(ICharacterMovement potentialGrabber)
@@ -152,9 +152,9 @@ public class Grabbable : MonoBehaviour
     {
         _potentialGrabbersGrabbing.Clear();
         IsGrabbed = true;
-        _grabber.Grab(this);      
+        _grabber.Grab(this);
         _collider.enabled = false;
-        _alert.Deactivate();      
+        _alert.Deactivate();
         StraightenUp();
     }
     public void Drop()

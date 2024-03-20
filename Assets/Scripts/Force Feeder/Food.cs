@@ -5,10 +5,9 @@ using UnityEngine;
 public class Food : Grabbable
 {
 
-    // Update is called once per frame
-    public void Update()
+    public override object[] GetTransferables()
     {
-        base.Update();
+        return new Food[] { this };
     }
 
 }
