@@ -37,16 +37,26 @@ public class PickupAlert : MonoBehaviour
 
     public void Deactivate()
     {
+        if (_mode != AlertMode.DeAnimating)
+            _deAnimateTimer.Reset();
         _mode = AlertMode.DeAnimating;
-        _deAnimateTimer.Reset();
+        
     }
+    public void Hide()
+    {
+        _image.enabled = false;
+        _text.enabled = false;
+    }
+
     public void Activate(Transform target, Color color)
     {
+        _image.enabled = true;
+        _text.enabled = true;
         _image.color = new Color(color.r, color.g, color.b, 1f);
         _text.color = _image.color;
         _text.fontSize = _textStartSize - _wobbleRange * 0.5f;
         _mode = AlertMode.Animating;
-        _target = target; //_alert.parent.transform.position = _camera.WorldToScreenPoint(position + _positionOffset);
+        _target = target;
         gameObject.SetActive(true);
         _animateTimer.Reset();
     }
@@ -55,7 +65,7 @@ public class PickupAlert : MonoBehaviour
     void Awake()
     {
         _animateTimer = new EasyTimer(_animTime);
-        _deAnimateTimer = new EasyTimer(_animTime/2, true);
+        _deAnimateTimer = new EasyTimer(_animTime/2);
         _wobbleTextTimer = new EasyTimer(_wobbleTextTime);
         _wobbleButtonTimer = new EasyTimer(_wobbleButtonTime);
         _camera = Camera.main;
@@ -101,7 +111,7 @@ public class PickupAlert : MonoBehaviour
     private void doDeAnimating()
     {
         _alert.parent.transform.localScale = _orgScale - (_deAnimateTimer.Ratio * _orgScale);
-        if (_animateTimer.Done)
+        if (_deAnimateTimer.Done)
         {
             _mode = AlertMode.Inactive;
             gameObject.SetActive(false);

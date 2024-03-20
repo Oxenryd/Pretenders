@@ -22,6 +22,7 @@ public interface ICharacterMovement
     public Vector3 CurrentDirection { get; set; }
     public Vector3 TargetDirection { get; set; }
     public Vector3 GroundNormal { get; set; }
+    public Vector3 Velocity { get; }
     public float CurrentSpeed { get; set; }
     public float AccelerationTime { get; set; }
     public float JumpVelocity { get; set; }
@@ -46,6 +47,9 @@ public interface ICharacterMovement
     public event EventHandler StoppedGrabInProgress;
     public event EventHandler Triggered;
     public Grabbable CurrentGrab { get; set; }
+    public ICharacterMovement Dragger { get; set; }
+    public void ReleaseFromDrag();
+
 
     public void TryTrigger(InputAction.CallbackContext context);
     public void TryGrab(InputAction.CallbackContext context);
