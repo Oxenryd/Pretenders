@@ -3,7 +3,13 @@ guid: 12b61dff8a6da294c8f46d8d54a0ffb8
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - _bananaPrefab: {instanceID: 0}
+  - _waterMelonPrefab: {fileID: -2544235193546257176, guid: e514891052e061e44a962681e1ac2d01,
+      type: 3}
+  - _hotDogPrefab: {instanceID: 0}
+  - _hamburgerPrefab: {instanceID: 0}
+  - _foodContainer: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
