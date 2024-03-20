@@ -30,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 6428703486456274486}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.303, y: 6.807, z: 5.924}
+  m_LocalPosition: {x: -1.303, y: 6.755, z: 5.924}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -101,6 +101,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _collider: {fileID: 5217964138362460754}
+  _meter: {fileID: 2574891146964797387, guid: eda705f58eed7bc4fbf14b74cdb6c247, type: 3}
+  _alert: {fileID: 5685868278306586147, guid: b9e2e76fafb519b4a9b923db20cbb25b, type: 3}
+  _tugOWar: {fileID: 3262859204791985545, guid: 867c8cbe6c2c9254290218c68f3dcf0d,
+    type: 3}
 --- !u!54 &3948502442681919527
 Rigidbody:
   m_ObjectHideFlags: 0
