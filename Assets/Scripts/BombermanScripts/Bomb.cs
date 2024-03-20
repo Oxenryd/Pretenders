@@ -1,53 +1,83 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
+using UnityEngine.UIElements;
 
 public class Bomb : MonoBehaviour
 {
 
     //Flames
 
-    public GameObject explosion;
-    public float explosionForce;
-    public float radius;
-    public float delayBeforeExplosion = 2;
+    [SerializeField]
+    private GameObject explosion;
+
+    [SerializeField]
+    private float explosionForce;
+
+    [SerializeField]
+    private float radius;
+
+    [SerializeField]
+    private float delayBeforeExplosion = 4;
+
+    private Grid grid;
+    public bool IsActive
+    { get; set; } = false;
+
+    private Collider[] colliders;
+
+    //Cacha instantiate och destroy här
     void Start()
     {
-        
-    }
+        GameObject gridObject = GameObject.FindWithTag(GlobalStrings.NAME_BOMBERGRID);
+        grid = gridObject.GetComponent<Grid>();
 
-    // Update is called once per frame
+    }
     void Update()
     {
-        
+
     }
 
-    private void OnCollisionEnter(Collision other)
+    public void SetInactive()
     {
-        StartCoroutine(ExplodeAfterDelay(other));
+        gameObject.SetActive(false);
+        IsActive = false;
     }
 
-
-    private IEnumerator ExplodeAfterDelay(Collision other)
+    public void SpawnBomb(Vector3 charPosition)
     {
+        IsActive = true;
+        gameObject.SetActive(true);
+        gameObject.transform.position = charPosition;
+        StartCoroutine(StartExplosion());
+    }
 
+    //kolla easytimer
+    private IEnumerator StartExplosion()
+    {
         yield return new WaitForSeconds(delayBeforeExplosion);
 
-        GameObject instantiateExplosion = Instantiate(explosion, transform.position, transform.rotation);
-        KnockBack();
-        Destroy(instantiateExplosion, 3);
-        Destroy(gameObject);
+        ExplosionCheckNearby();
+        SetInactive();
     }
 
-    private void KnockBack()
+    private void ExplosionCheckNearby()
     {
-        Collider[] colliders = Physics.OverlapSphere(transform.position, radius);
+        Instantiate(explosion, transform.position, Quaternion.identity);
 
-        foreach (Collider closeCollider in colliders)
+        colliders = Physics.OverlapSphere(transform.position, radius);
+
+        for (int j = 0; j < colliders.Length; j++)
         {
-            if (closeCollider.CompareTag(GlobalStrings.NAME_BOMBERCRATE))
+            if (colliders[j].CompareTag(GlobalStrings.NAME_BOMBERCRATE))
             {
-                Destroy(closeCollider.gameObject);
+                var crate = colliders[j].gameObject.GetComponent<CrateExplosion>();
+                crate.Explode();
+            }
+            if (colliders[j].CompareTag(GlobalStrings.NAME_BOMBERMANWALL))
+            {
             }
 
         }

@@ -31,6 +31,15 @@
                     "processors": "",
                     "interactions": "Press(behavior=2)",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Trigger",
+                    "type": "Button",
+                    "id": "f5badbd0-288f-4f2b-b7f8-6838c0c92632",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=2)",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -267,12 +276,23 @@
                 },
                 {
                     "name": "",
-                    "id": "938f56d1-e0e1-4fd3-a2e2-82feeab473f2",
-                    "path": "<HID::Padix Co. Ltd. USB,2-axis 8-button gamepad>/button4",
+                    "id": "d468d106-08b9-4910-ad1d-de5e03ba96d5",
+                    "path": "<Gamepad>/buttonEast",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Grab",
+                    "action": "Trigger",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f0308e19-be33-4813-86c1-36c74fc211cb",
+                    "path": "<Keyboard>/l",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Trigger",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
