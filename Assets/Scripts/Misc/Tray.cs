@@ -7,38 +7,48 @@ public class Tray : Grabbable, IRecievable
 {
     [SerializeField] private List<Food> _heldObjects; // List to hold 5 items
 
-    // Start is called before the first frame update
+    [SerializeField] private TransferAlert _transferAlert;
+    public TransferAlert TransferAlert
+    { get { return _transferAlert; } }
+
+
     void Start()
     {
         base.Start();
-        _heldObjects = new List<Food>(GlobalValues.BASKET_MAX_SIZE);        
+        _heldObjects = new List<Food>(GlobalValues.BASKET_MAX_SIZE);
+
+        var container = GameObject.FindWithTag(GlobalStrings.NAME_UIOVERLAY);
+        _transferAlert = GameObject.Instantiate(_transferAlert, container.transform);
+        _transferAlert.gameObject.SetActive(false);
     }
 
-    // Update is called once per frame
+
     void Update()
     {
         base.Update();
         for(int i =0; i< _heldObjects.Count; i++)
         {
             _heldObjects[i].transform.position = this.transform.position;
+            _heldObjects[i].transform.rotation = this.transform.rotation;
         }
+
     }
 
     public int Transfer(object[] recievedObject)
     {
-        // Find an empty slot in the basket
-
-        var foodArray = recievedObject as Food[];
+        var foodArray = (recievedObject as Food[]);
 
         if (foodArray == null)
         {
             return recievedObject.Length;
         }
 
+        // Find an empty slot on the tray
         for (int i = 0; i < recievedObject.Length; i++)
         {
             if (_heldObjects.Count < GlobalValues.BASKET_MAX_SIZE)
             {
+                foodArray[i].Attach(this);
                 _heldObjects.Add(foodArray[i]);
             }
             else
@@ -47,8 +57,6 @@ public class Tray : Grabbable, IRecievable
             }
         }
         return 0;
-
-
     }
 
 
