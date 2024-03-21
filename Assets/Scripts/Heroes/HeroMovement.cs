@@ -514,6 +514,15 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
         // Turn poco a poco to upright
         transform.up = Vector3.SmoothDamp(transform.up, _gndNormal, ref _gndTargetNormalVel, 0.08f);
 
+        // Rotate
+        Quaternion rotation;
+        var diff = Math.Abs(FaceDirection.z + 1f);
+        if (diff >= 0.01f)
+            rotation = Quaternion.FromToRotation(Vector3.forward, FaceDirection);
+        else
+            rotation = Quaternion.Euler(0, -180, 0);
+        transform.rotation = rotation;
+
     }
 
     private void grabDragStuffs()
@@ -599,8 +608,9 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
     private bool checkGrabDragAvailable(out object foundObject, out RaycastHit hit)
     {
         var XZY = new Vector3(transform.position.x, transform.position.y + GlobalValues.CHAR_GRAB_CYLINDER_COLLIDER_Y_OFFSET, transform.position.z);
+        var hits = Physics.CapsuleCastAll(XZY, XZY + Vector3.up, GlobalValues.CHAR_GRAB_RADIUS, FaceDirection, GlobalValues.CHAR_GRAB_CHECK_DISTANCE, 1 << GlobalValues.OBJECTS_LAYER);
 
-        if (Physics.CapsuleCast(XZY, XZY + Vector3.up, GlobalValues.CHAR_GRAB_RADIUS, FaceDirection, out hit, GlobalValues.CHAR_GRAB_CHECK_DISTANCE)) //(Physics.CapsuleCast(transform.position, GlobalValues.CHAR_GRAB_RADIUS, FaceDirection, out hit, GlobalValues.CHAR_GRAB_CHECK_DISTANCE))
+        if (Physics.CapsuleCast(XZY, XZY + Vector3.up, GlobalValues.CHAR_GRAB_RADIUS, FaceDirection, out hit, GlobalValues.CHAR_GRAB_CHECK_DISTANCE, 1 << GlobalValues.OBJECTS_LAYER))
         {
             if (IsGrabbing)
             {

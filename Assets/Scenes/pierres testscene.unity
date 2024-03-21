@@ -671,6 +671,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tray
       objectReference: {fileID: 0}
+    - target: {fileID: 209682305888156723, guid: 5cca420f08409fc40b26f2caa81055dd,
+        type: 3}
+      propertyPath: m_Layer
+      value: 22
+      objectReference: {fileID: 0}
     - target: {fileID: 6308323368703564915, guid: 5cca420f08409fc40b26f2caa81055dd,
         type: 3}
       propertyPath: _grabPointOffset.y
@@ -731,6 +736,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8726778954105356364, guid: 5cca420f08409fc40b26f2caa81055dd,
+        type: 3}
+      propertyPath: m_CollisionDetection
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -747,7 +757,7 @@ GameObject:
   - component: {fileID: 909482085}
   - component: {fileID: 909482084}
   - component: {fileID: 909482083}
-  m_Layer: 0
+  m_Layer: 22
   m_Name: DummyRecievable
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1073,6 +1083,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Banana
+      objectReference: {fileID: 0}
+    - target: {fileID: 6428703486456274486, guid: 94514f5088fe14c4c91bc353512b419e,
+        type: 3}
+      propertyPath: m_Layer
+      value: 22
       objectReference: {fileID: 0}
     - target: {fileID: 7507692543192646934, guid: 94514f5088fe14c4c91bc353512b419e,
         type: 3}
@@ -1464,7 +1479,7 @@ GameObject:
   - component: {fileID: 1746695137}
   - component: {fileID: 1746695136}
   - component: {fileID: 1746695141}
-  m_Layer: 0
+  m_Layer: 22
   m_Name: PickBall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
