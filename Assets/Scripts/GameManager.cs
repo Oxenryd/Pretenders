@@ -108,8 +108,8 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        // First, set up for one player.
-        NumOfPlayers = 1;
+        // First, set up for none players.
+        NumOfPlayers = 0;
 
         // Makes sure that the GameManger COULD run without an InputManager if that¨s needed.
         if (_inputMan != null)
@@ -150,7 +150,8 @@ public class GameManager : MonoBehaviour
             _inputMan.Initialize(iMoveList.ToArray());
 
             // Setting up first Player with simple keyboard Control.
-            _inputMan.SetupDefaultInput();
+            //_inputMan.SetupKeyboardPlayerOne();
+            _inputMan.SetupDefaultEmptyInputs();
         }
     }
 

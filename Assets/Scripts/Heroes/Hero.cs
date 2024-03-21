@@ -13,7 +13,7 @@ public class Hero : MonoBehaviour, ICharacter, IJumpHit
     [SerializeField] private AiHeroController _aiControl;
     [SerializeField] private HeroType _heroType = HeroType.Basic;
     [SerializeField] private Collider _bodyCollider; 
-    [SerializeField] private HeadFeet _headFeet;
+    [SerializeField] private HeadBody _headFeet;
     [SerializeField] private float _shovePower = 22f;
     [ColorUsage(false)][SerializeField] private Color _primaryColor;
     [ColorUsage(false)][SerializeField] private Color _secondaryColor;
@@ -37,7 +37,7 @@ public class Hero : MonoBehaviour, ICharacter, IJumpHit
     public AiHeroController AiHeroController
         { get { return _aiControl; }  }
     public bool Playable { get { return true; } }
-    public HeadFeet HeadFeet
+    public HeadBody HeadFeet
         { get { return _headFeet; } }
     public Collider BodyCollider
         { get { return _bodyCollider; } }
@@ -99,7 +99,7 @@ public class Hero : MonoBehaviour, ICharacter, IJumpHit
         {
             // Check if my head is in collision with others' feet
             // (Just using 'this' for clarification
-            if (otherHero.HeadFeet.FeetBox.bounds.Intersects(this.HeadFeet.HeadBox.bounds))
+            if (otherHero.HeadFeet.BodyBox.bounds.Intersects(this.HeadFeet.HeadBox.bounds))
             {
                 // Don't shove if this hero is already being shoved around
                 if (!this.Movement.IsShoved && otherHero.Movement.IsFalling)

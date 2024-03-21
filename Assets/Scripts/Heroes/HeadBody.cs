@@ -1,12 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 
-public class HeadFeet : MonoBehaviour
+public class HeadBody : MonoBehaviour
 {
     [SerializeField] private Collider _headBox;
-    [SerializeField] private Collider _feetBox;
+    [SerializeField] private Collider _bodyBox;
     [SerializeField] private Hero _hero;
 
     private Vector3 _lastPosition;
@@ -15,10 +12,9 @@ public class HeadFeet : MonoBehaviour
 
     public Collider HeadBox
         { get { return _headBox; } }
-
-    public Collider FeetBox
-        { get { return _feetBox; } }
-    public Rigidbody OwnerBody
+    public Collider BodyBox
+        { get { return _bodyBox; } }
+    public Rigidbody OwnerRigidBody
         { get { return _heroBody; } }
 
     public Vector3 BodyDirection

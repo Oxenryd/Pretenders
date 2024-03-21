@@ -608,9 +608,9 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement
     private bool checkGrabDragAvailable(out object foundObject, out RaycastHit hit)
     {
         var XZY = new Vector3(transform.position.x, transform.position.y + GlobalValues.CHAR_GRAB_CYLINDER_COLLIDER_Y_OFFSET, transform.position.z);
-        var hits = Physics.CapsuleCastAll(XZY, XZY + Vector3.up, GlobalValues.CHAR_GRAB_RADIUS, FaceDirection, GlobalValues.CHAR_GRAB_CHECK_DISTANCE, 1 << GlobalValues.OBJECTS_LAYER);
+        var hits = Physics.CapsuleCastAll(XZY, XZY + Vector3.up, GlobalValues.CHAR_GRAB_RADIUS, FaceDirection, GlobalValues.CHAR_GRAB_CHECK_DISTANCE, LayerUtil.Include(GlobalValues.OBJECTS_LAYER));
 
-        if (Physics.CapsuleCast(XZY, XZY + Vector3.up, GlobalValues.CHAR_GRAB_RADIUS, FaceDirection, out hit, GlobalValues.CHAR_GRAB_CHECK_DISTANCE, 1 << GlobalValues.OBJECTS_LAYER))
+        if (Physics.CapsuleCast(XZY, XZY + Vector3.up, GlobalValues.CHAR_GRAB_RADIUS, FaceDirection, out hit, GlobalValues.CHAR_GRAB_CHECK_DISTANCE, LayerUtil.Include(GlobalValues.OBJECTS_LAYER)))
         {
             if (IsGrabbing)
             {
