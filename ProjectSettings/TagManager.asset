@@ -15,6 +15,10 @@ TagManager:
   - UiOverlay
   - BombermanWall
   - BombermanGrid
+  - SceneManager
+  - BodyCollider
+  - StompCollider
+  - FeetCollider
   - BomberTree
   layers:
   - Default
@@ -39,7 +43,7 @@ TagManager:
   - 
   - 
   - 
-  - 
+  - Objects
   - 
   - 
   - 

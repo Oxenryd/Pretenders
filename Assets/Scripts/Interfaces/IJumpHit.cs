@@ -3,6 +3,6 @@ using UnityEngine;
 
 public interface IJumpHit
 {    
-    public void OnHeadHit(Hero offender);  
-    public void OnHitOthersHead(Hero victim);
+    public void OnHeadHit(HeroMovement offender);  
+    public void OnHitOthersHead(HeroMovement victim);
 }

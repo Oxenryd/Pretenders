@@ -38,8 +38,13 @@ public class InputManager : MonoBehaviour
     public List<InputDevice> InputDevices
         { get { return _inputDevices; } }
     public int MaxControllableCharacters
-        { get { return GameManager.Instance.MaxControllableCharacters; } } 
+        { get { return GameManager.Instance.MaxControllableCharacters; } }
 
+
+    void Awake()
+    {
+        this.tag = GlobalStrings.NAME_INPUTMANAGER;
+    }
 
     /// <summary>
     /// Needs to be run before anything else on the manager to assign controllable characters and such.
@@ -56,12 +61,17 @@ public class InputManager : MonoBehaviour
     /// <br>Can be used to set up a default inputs. Keyboard only for player one, and attached gamepads to following players.</br>
     /// </summary>
     /// <param name="numberOfHumanPlayers"></param>
-    public void SetupDefaultInput()
+    public void SetupKeyboardPlayerOne()
     {
         _deviceCharCouple.Clear();
+        setKeyboardToPlayerOne();
+    }
+
+    private void setKeyboardToPlayerOne()
+    {
         var players = GameManager.Instance.NumOfPlayers;
         for (int i = 0; i < MaxControllableCharacters; i++)
-        {        
+        {
             if (players > 0 && i < players)
             {
                 if (i == 0)
@@ -75,10 +85,20 @@ public class InputManager : MonoBehaviour
                     _characters[i].AiControlled = false;
             } else
             {
-                SetHeroControl(i, true, new InputDevice[] { } );
+                SetHeroControl(i, true, new InputDevice[] { });
             }
         }
     }
+    public void SetupDefaultEmptyInputs()
+    {
+        _deviceCharCouple.Clear();
+        var players = GameManager.Instance.NumOfPlayers;
+        for (int i = 0; i < MaxControllableCharacters; i++)
+        {
+            SetHeroControl(i, true, new InputDevice[] { });          
+        }
+    }
+
 
    
     /// <summary>
@@ -180,7 +200,7 @@ public class InputManager : MonoBehaviour
         var ignoreList = GlobalStrings.INPUT_IGNORE.Split(';');
         foreach (var device in InputSystem.devices)
         {
-            if (device is Mouse || device is Keyboard) // Skip mouse and keyboard
+            if (device is Mouse) // Skip mouse and keyboard
                 continue;
 
             // Check ignores
@@ -214,12 +234,15 @@ public class InputManager : MonoBehaviour
             for (int j = 0; j < controls.Count; j++)
             {
                 if (controls[j] is ButtonControl && (controls[j] as ButtonControl).wasPressedThisFrame)
-                {
-                    int newIndex = GameManager.Instance.NumOfPlayers++;
-                    _deviceCharCouple.Add(_inputDevices[i], newIndex);
-                    SetHeroControl(newIndex, false, new InputDevice[] { _inputDevices[i] });
-                    Debug.Log(PLAYERJOIN + newIndex + DEVICECONNECTED + _inputDevices[i].name);
-                    _characters[newIndex].Halt();
+                {                  
+                    if (!_deviceCharCouple.ContainsKey(_inputDevices[i]))
+                    {
+                        int newIndex = GameManager.Instance.NumOfPlayers++;
+                        _deviceCharCouple.Add(_inputDevices[i], newIndex);
+                        SetHeroControl(newIndex, false, new InputDevice[] { _inputDevices[i] });
+                        Debug.Log(PLAYERJOIN + newIndex + DEVICECONNECTED + _inputDevices[i].name);
+                        _characters[newIndex].Halt();
+                    }
                 }
             }    
         }

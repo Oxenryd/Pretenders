@@ -6,5 +6,5 @@ public interface IRecievable
 {
     public Transform transform { get; }
     public TransferAlert TransferAlert { get; }
-    public int Transfer(object[] recievedObject);
+    public int Transfer(object[] recievedObjects);
 }

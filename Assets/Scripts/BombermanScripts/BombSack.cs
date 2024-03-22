@@ -6,7 +6,7 @@ using UnityEngine.TextCore.Text;
 
 public class BombSack : MonoBehaviour
 {
-
+    [SerializeField] private bool _enabled = false;
     [SerializeField]
     private GameObject bombPrefab;
 
@@ -65,6 +65,7 @@ public class BombSack : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
 
     }
 }
