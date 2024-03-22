@@ -53,7 +53,6 @@ public class BombSack : MonoBehaviour
         {
             //Stuck on this work with later
             Vector3 middlePoint = GridCellMiddlePoint.Get(grid, character.GameObject.transform.position);
-
             bombs[_currentBombIndex].SpawnBomb(middlePoint);
 
             _currentBombIndex++;
