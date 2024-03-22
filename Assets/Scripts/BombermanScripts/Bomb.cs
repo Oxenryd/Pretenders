@@ -20,19 +20,21 @@ public class Bomb : MonoBehaviour
     private float radius;
 
     [SerializeField]
-    private float delayBeforeExplosion = 4;
+    private LayerMask levelMask;
 
-    private Grid grid;
+    [SerializeField]
+    private float delayBeforeExplosion = 1;
+
     public bool IsActive
     { get; set; } = false;
 
     private Collider[] colliders;
 
+
     //Cacha instantiate och destroy här
     void Start()
     {
-        GameObject gridObject = GameObject.FindWithTag(GlobalStrings.NAME_BOMBERGRID);
-        grid = gridObject.GetComponent<Grid>();
+
 
     }
     void Update()
@@ -48,38 +50,67 @@ public class Bomb : MonoBehaviour
 
     public void SpawnBomb(Vector3 charPosition)
     {
+        Instantiate(explosion, transform.position, explosion.transform.rotation);
         IsActive = true;
         gameObject.SetActive(true);
         gameObject.transform.position = charPosition;
-        StartCoroutine(StartExplosion());
+        StartCoroutine(CreateExplosions());
     }
-
     //kolla easytimer
-    private IEnumerator StartExplosion()
+    private IEnumerator CreateExplosions()
     {
         yield return new WaitForSeconds(delayBeforeExplosion);
 
-        ExplosionCheckNearby();
-        SetInactive();
-    }
 
-    private void ExplosionCheckNearby()
-    {
-        Instantiate(explosion, transform.position, Quaternion.identity);
+        Vector3[] directions = { Vector3.back, Vector3.forward, Vector3.left, Vector3.right };
 
-        colliders = Physics.OverlapSphere(transform.position, radius);
-
-        for (int j = 0; j < colliders.Length; j++)
+        for (int i = 0; i < directions.Length; i++)
         {
-            if (colliders[j].CompareTag(GlobalStrings.NAME_BOMBERCRATE))
-            {
-                var crate = colliders[j].gameObject.GetComponent<CrateExplosion>();
-                crate.Explode();
-            }
-            if (colliders[j].CompareTag(GlobalStrings.NAME_BOMBERMANWALL))
-            {
-            }
-
+            StartCoroutine(ExplosionCheckNearby(directions[i]));
         }
     }
+
+    private IEnumerator ExplosionCheckNearby(Vector3 direction)
+    {
+        for (int i = 1; i < 10; i++)
+        {
+            RaycastHit hit;
+            if (Physics.Raycast(gameObject.transform.position, direction, out hit, levelMask,i))
+            {
+
+                if (hit.collider.CompareTag(GlobalStrings.NAME_BOMBERTREE))
+                {
+                    break;
+                }
+                else if(hit.collider.CompareTag(GlobalStrings.NAME_BOMBERMANWALL))
+                {
+                    break;
+                }
+
+                else if (hit.collider != null)
+                {
+                    if (hit.collider.gameObject.TryGetComponent<CrateExplosion>(out var crate))
+                    {
+                        crate.Explode();
+                        break;
+                    }
+
+
+                }
+
+            }
+            else
+            {
+
+                Instantiate(explosion, transform.position + (i * direction), explosion.transform.rotation);
+
+            }
+            yield return new WaitForSeconds(0.15f);
+
+
+        }
+
+
+    }
+
 }

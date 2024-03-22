@@ -7,6 +7,7 @@ public static class GlobalStrings
     public static string NAME_BOMBERCRATE = "BombCrate";
     public static string NAME_BOMBERMANWALL = "BombermanWall";
     public static string NAME_BOMBERGRID = "BombermanGrid";
+    public static string NAME_BOMBERTREE = "BomberTree";
     public static string NAME_UIOVERLAY = "UiOverlay";
 
     //CONTAINERS

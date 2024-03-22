@@ -19,11 +19,12 @@ TagManager:
   - BodyCollider
   - StompCollider
   - FeetCollider
+  - BomberTree
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Blocks
   - Water
   - UI
   - BoundsCollider
