@@ -47,6 +47,7 @@ public interface ICharacterMovement
     public event EventHandler StoppedGrabInProgress;
     public event EventHandler Triggered;
     public Grabbable CurrentGrab { get; set; }
+    public DragStruggle DragStruggle { get; set; }
     public ICharacterMovement Dragger { get; set; }
     public void ReleaseFromDrag();
 

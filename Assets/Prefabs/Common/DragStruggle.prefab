@@ -25,17 +25,17 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1376837505919887450}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 0.33}
+  m_LocalScale: {x: 2, y: 2, z: 0.33}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 850497691372002339}
+  m_Father: {fileID: 1750535891288311157}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -33.6}
-  m_SizeDelta: {x: 78.3, y: 66.5}
+  m_AnchoredPosition: {x: 0, y: -142.1}
+  m_SizeDelta: {x: 76.29999, y: 66.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &675654350978943363
 CanvasRenderer:
@@ -108,7 +108,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1750535891288311157}
-  - {fileID: 91756701088721521}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -151,12 +150,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 640, y: 360}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
+  m_MatchWidthOrHeight: 0.5
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
@@ -248,12 +247,12 @@ PrefabInstance:
     - target: {fileID: 3091943298976284577, guid: 8167997b386f4ce49a2dd30529902658,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 869
+      value: 318.2
       objectReference: {fileID: 0}
     - target: {fileID: 3091943298976284577, guid: 8167997b386f4ce49a2dd30529902658,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 489
+      value: 458.9
       objectReference: {fileID: 0}
     - target: {fileID: 3091943298976284577, guid: 8167997b386f4ce49a2dd30529902658,
         type: 3}
@@ -303,12 +302,12 @@ PrefabInstance:
     - target: {fileID: 3091943298976284577, guid: 8167997b386f4ce49a2dd30529902658,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 434.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3091943298976284577, guid: 8167997b386f4ce49a2dd30529902658,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 244.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3091943298976284577, guid: 8167997b386f4ce49a2dd30529902658,
         type: 3}
@@ -332,7 +331,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 3091943298976284577, guid: 8167997b386f4ce49a2dd30529902658,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 91756701088721521}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8167997b386f4ce49a2dd30529902658, type: 3}
 --- !u!224 &1750535891288311157 stripped

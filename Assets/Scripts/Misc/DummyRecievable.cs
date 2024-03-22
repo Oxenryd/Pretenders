@@ -11,12 +11,23 @@ public class DummyRecievable : MonoBehaviour, IRecievable
     public int Transfer(object[] recievedObject)
     {
         var gObjects = recievedObject as GameObject[];
-        if (gObjects == null) throw new System.Exception("The incomming was not a gameobject!!!");
-        foreach (var gobject in gObjects)
+        if (gObjects == null)
         {
-            Destroy(gobject);
-            Debug.Log("JOINK!!!");
-        }
+            var food = recievedObject as Food[];
+            if (food == null)
+                throw new System.Exception("COULD CAST THIS ARRAY");
+            else
+                foreach (var foodThing in food)
+                {
+                    Destroy(foodThing);
+                    Debug.Log("JOINK!!!");
+                }
+        } else
+            foreach (var gobject in gObjects)
+            {
+                Destroy(gobject);
+                Debug.Log("JOINK!!!");
+            }
         return 0;
     }
 
