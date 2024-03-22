@@ -4,7 +4,7 @@ using System;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 
-namespace Assets.Scripts
+namespace Assets.Scripts.PlatformBrawler
 {
     public class BrawlPowerUpManager : MonoBehaviour
     {
@@ -103,10 +103,6 @@ namespace Assets.Scripts
                 UnityEngine.Random.Range(bottomSpawn.y, topSpawn.y), UnityEngine.Random.Range(backSpawn.z, frontSpawn.z));
             return _randomPosition;
         }
-
-        
-
-
 
         private void RandomisePowerUp()
         {
