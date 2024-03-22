@@ -17,7 +17,7 @@ public class BombSack : MonoBehaviour
 
     [SerializeField]
     private Hero heroGameObject;
-    private ICharacterMovement character;
+    private HeroMovement character;
 
     private Bomb[] bombs = new Bomb[GlobalValues.BOMBS_MAXBOMBS];
     // Start is called before the first frame update
@@ -27,7 +27,7 @@ public class BombSack : MonoBehaviour
         GameObject gridObject = GameObject.FindWithTag(GlobalStrings.NAME_BOMBERGRID);
         grid = gridObject.GetComponent<Grid>();
 
-        character = heroGameObject.gameObject.GetComponent<ICharacterMovement>();
+        character = heroGameObject.gameObject.GetComponent<HeroMovement>();
         //Click L
 
         for (int i = 0; i < bombs.Length; i++)

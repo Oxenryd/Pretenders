@@ -16,7 +16,7 @@ public class InputManager : MonoBehaviour
 
     [SerializeField] private InputActionAsset _actionsFile;
     [SerializeField] private PlayerInput[] _input = new PlayerInput[4];
-    [SerializeField] private ICharacterMovement[] _characters = new ICharacterMovement[4];
+    [SerializeField] private HeroMovement[] _characters = new HeroMovement[4];
     
     private InputActionMap[] _actionsMaps = new InputActionMap[4];
     private List<InputDevice> _inputDevices = new List<InputDevice>();
@@ -49,7 +49,7 @@ public class InputManager : MonoBehaviour
     /// <summary>
     /// Needs to be run before anything else on the manager to assign controllable characters and such.
     /// </summary>
-    public void Initialize(ICharacterMovement[] moveableCharacters)
+    public void Initialize(HeroMovement[] moveableCharacters)
     {
         _deviceCharCouple.Clear();
         _characters = moveableCharacters;

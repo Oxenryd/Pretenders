@@ -3,7 +3,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class HeroMovement : MonoBehaviour, ICharacterMovement, IJumpHit
+public class HeroMovement : MonoBehaviour, IJumpHit
 {
     [SerializeField] private ControlSchemeType _controlScheme = ControlSchemeType.TopDown;
     [SerializeField] private float _quickTurnFactor = 0.2f;
@@ -75,7 +75,7 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IJumpHit
     { get { return _body.velocity; } }
     public DragStruggle DragStruggle
     { get { return _struggle; } set { _struggle = value; } }
-    public ICharacterMovement Dragger { get; set; }
+    public HeroMovement Dragger { get; set; }
     public bool CanBeDragged { get; set; } = true;
     public bool CanTrigger { get; set; } = true;
     public Grabbable CurrentGrab { get; set; } = null;
@@ -144,6 +144,7 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IJumpHit
 
     public void ReleaseFromDrag()
     {
+        RigidBody.isKinematic = false;
         CanBeDragged = false;
         Dragger = null;
         IsDraggedByOther = false;
@@ -374,76 +375,57 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IJumpHit
         var fixedDeltaTime = Time.fixedDeltaTime;
 
 
-        // Check if the disabled collider timer has run out and reenable the body collider
-        if (_colShoveDisabled && _shoveOffenderColDisableTimer.Done)
-        {
-            _bodyCollider.enabled = true;
-            _colShoveDisabled = false;
-        }
+        processShove();
 
-        // Stun
-        if (IsStunned && _stunTimer.Done)
-        {
-            IsStunned = false;
-            CanMove = true;
-        }
+        processDrag();
 
-        //Being dragged?
-        if (IsDraggedByOther)
-            CanMove = false;
+        processTrigger();
 
-        // Shoved?
-        if (_startShoving)
-        {         
-            TryingToMove = false;
-            IsShoved = true;
-            IsStunned = true; // Shove might be considered a kind of stun
-            _shoveStunTimer.Reset(); 
-            _body.velocity = Vector3.zero;
-            _body.AddForce(_shoveVector, ForceMode.Impulse);
-            _startShoving = false;
-        }
-        if (_shoveStunTimer.Done && IsShoved)
+        processBumping();
+
+        processStun();
+
+        processJumping();
+
+
+        // Falling? Jumping?
+        if (!IsGrounded)
         {
-            TargetSpeed = _body.velocity.magnitude;
-            IsShoved = false;
-            IsStunned = false;   // Remember that more terms might be needed to check in the future if "IsStunned" can be set to false
-        }
-        // doing some manual drag if shoved
-        if (IsShoved)
-        {
-            switch (CurrentControlScheme)
+            _jumpDirection = TargetDirection;
+            if (Mathf.Round(_body.velocity.y) > 0f)
             {
-                case ControlSchemeType.TopDown:
-                    _body.velocity = new Vector3(_body.velocity.x * GlobalValues.SHOVE_DAMPING_MULTIPLIER, _body.velocity.y, _body.velocity.z * GlobalValues.SHOVE_DAMPING_MULTIPLIER);
-                    break;
-            }          
+                IsJumping = true;
+                IsFalling = false;
+            }
+            else if (Mathf.Round(_body.velocity.y) < 0f)
+            {
+                IsJumping = false;
+                IsFalling = true;
+            }
         }
 
-        // Drag
-        if (!_dragCooldown.Done)
-            CanBeDragged = false;
-        else
-            CanBeDragged = true;
+        processMoving();
 
-        // Grab/Drag Stuff
-        if (_grabTimout.Done)
+        if (!IsGrounded)
         {
-            grabDragStuffs();
+            _gndNormal = Vector3.SmoothDamp(_gndNormal, Vector3.up, ref _gndDampVelocity, 0.5f);
         }
-        TryingToGrab = false;
 
+        // Turn poco a poco to upright
+        transform.up = Vector3.SmoothDamp(transform.up, _gndNormal, ref _gndTargetNormalVel, 0.08f);
 
-        // Triggered?
-        CanTrigger = true; // TODO: set conditions for triggering
+        // Rotate
+        transform.rotation = fixNegativeZRotation(Vector3.forward, FaceDirection);
 
-        if (CanMove && CanTrigger && _triedToTrigger)
+        if (!_doneFirstLoop)
         {
-            _triedToTrigger = false;
-            OnTriggered();
+            Halt();
+            _doneFirstLoop = true;
         }
+    }
 
-
+    private void processBumping()
+    {
         // Bumped?
         if (_startBump)
         {
@@ -459,17 +441,10 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IJumpHit
             TargetSpeed = _body.velocity.magnitude;
             IsBumped = false;
         }
+    }
 
-
-        // Stunned? Then you can certainly not move.
-        if (IsStunned)
-        {
-            CanMove = false;
-        } else
-        {
-            CanMove = true;
-        }
-
+    private void processMoving()
+    {
         // Are we trying to move??
         // T's for t in lerps.
         float turnT = _turnTimer.Ratio;
@@ -480,70 +455,12 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IJumpHit
             // Trying a "glassy" feeling of movement, with some time for acceleration and turning.
             CurrentDirection = Vector3.Lerp(CurrentDirection, TargetDirection, turnT);
             CurrentSpeed = Mathf.Clamp(Mathf.Lerp(CurrentSpeed, MaxMoveSpeed, accelT), 0f, TargetSpeed);
-        } else 
+        }
+        else
         {
             // Take some time to slow down.
             CurrentSpeed = Mathf.Lerp(_stopSpeed, 0f, haltT);
         }
-
-        // Resolve jumping
-        // Do a buffer to check if player reaches ground a moment later and
-        // perform the jump then. Always check if jumpbutton is down though,
-        // so even the jumpbuffer can jumpDecel() if it's not.
-        void _doJump()
-        {
-            if (!IsGrounded)
-            {
-                IsDoubleJumping = true;
-                _dJumpsLeft--;
-            }
-            _body.velocity = (_gndNormal) * MaxJumpPower + new Vector3(_body.velocity.x, 0, _body.velocity.z);
-        }
-
-        if (TryingToJump)
-        {
-            if (CanMove && !InJumpBuffer && (IsGrounded || _dJumpsLeft > 0) )
-            {
-                _doJump();
-                TryingToJump = false;
-            } else if (CanMove && !InJumpBuffer)
-            {
-                _jumpBufferTimer.Reset();
-                InJumpBuffer = true;
-            } else if (_jumpBufferTimer.Done && InJumpBuffer)
-            {
-                if (CanMove && IsGrounded)
-                {
-                    _doJump();
-                }
-                InJumpBuffer = false;
-                TryingToJump = false;
-            }
-        }
-        if (CanMove && !_jumpButtonIsDown && IsJumping && !_didJumpDecel)
-        {
-            JumpDecel();
-            _didJumpDecel = true; // Because calling this in update it is needed to lock this until grounded to avoid mulitle attempts of decel.
-        }
-
-
-        // Falling? Jumping?
-        if (!IsGrounded)
-        {
-            _jumpDirection = TargetDirection;
-            if (Mathf.Round(_body.velocity.y) > 0f)
-            {
-                IsJumping = true;
-                IsFalling = false;
-            } else if (Mathf.Round(_body.velocity.y) < 0f)
-            {
-                IsJumping = false;
-                IsFalling = true;
-            }
-        }
-        
-
-        
 
         // Moving?
         Vector2 planeVelocity = new Vector2(_body.velocity.x, _body.velocity.z);
@@ -570,7 +487,7 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IJumpHit
                     CurrentSpeed = CurrentSpeed * GlobalValues.JUMPDIRECTION_SLOWDOWN_MULTIPLIER;
                 }
             }
-            
+
 
             Vector3 velocity = Vector3.zero;
             switch (CurrentControlScheme)
@@ -580,7 +497,8 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IJumpHit
                         velocity = new Vector3(CurrentDirection.x * CurrentSpeed, _body.velocity.y, CurrentDirection.z * CurrentSpeed);
                     else
                     {
-                        velocity = Dragger.Velocity;
+                        transform.position = Dragger.transform.position + Dragger.FaceDirection * 1.2f;
+                        FaceDirection = Dragger.FaceDirection;
                     }
                     break;
                 case ControlSchemeType.Platform:
@@ -591,33 +509,163 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IJumpHit
                     break;
             }
 
-            _body.velocity = velocity;
+            if (!IsDraggedByOther)
+                _body.velocity = velocity;
+
             var dirVelocity = new Vector3(velocity.x, 0, velocity.z).normalized;
-            if (dirVelocity.sqrMagnitude > 0.005f && !IsShoved  && !IsDraggedByOther)
+            if (dirVelocity.sqrMagnitude > 0.005f && !IsShoved && !IsDraggedByOther && !IsFalling && !IsJumping)
                 FaceDirection = new Vector3(_body.velocity.x, 0f, _body.velocity.z).normalized;
         }
-        if (!IsGrounded)
+    }
+
+    private void processJumping()
+    {
+        // Resolve jumping
+        // Do a buffer to check if player reaches ground a moment later and
+        // perform the jump then. Always check if jumpbutton is down though,
+        // so even the jumpbuffer can jumpDecel() if it's not.
+        void _doJump()
         {
-            _gndNormal = Vector3.SmoothDamp(_gndNormal, Vector3.up, ref _gndDampVelocity, 0.5f);
+            if (!IsGrounded)
+            {
+                IsDoubleJumping = true;
+                _dJumpsLeft--;
+            }
+            _body.velocity = (_gndNormal) * MaxJumpPower + new Vector3(_body.velocity.x, 0, _body.velocity.z);
         }
 
-        // Turn poco a poco to upright
-        transform.up = Vector3.SmoothDamp(transform.up, _gndNormal, ref _gndTargetNormalVel, 0.08f);
+        if (TryingToJump)
+        {
+            if (CanMove && !InJumpBuffer && (IsGrounded || _dJumpsLeft > 0))
+            {
+                _doJump();
+                TryingToJump = false;
+            }
+            else if (CanMove && !InJumpBuffer)
+            {
+                _jumpBufferTimer.Reset();
+                InJumpBuffer = true;
+            }
+            else if (_jumpBufferTimer.Done && InJumpBuffer)
+            {
+                if (CanMove && IsGrounded)
+                {
+                    _doJump();
+                }
+                InJumpBuffer = false;
+                TryingToJump = false;
+            }
+        }
+        if (CanMove && !_jumpButtonIsDown && IsJumping && !_didJumpDecel)
+        {
+            JumpDecel();
+            _didJumpDecel = true; // Because calling this in update it is needed to lock this until grounded to avoid mulitle attempts of decel.
+        }
+    }
 
-        // Rotate
+    private void processStun()
+    {
+        // Stun
+        if (IsStunned && _stunTimer.Done)
+        {
+            IsStunned = false;
+            CanMove = true;
+        }
+
+        // Stunned? Then you can certainly not move.
+        if (IsStunned)
+        {
+            CanMove = false;
+        }
+        else
+        {
+            CanMove = true;
+        }
+    }
+
+    private void processTrigger()
+    {
+        // Triggered?
+        CanTrigger = true; // TODO: set conditions for triggering
+
+        if (CanMove && CanTrigger && _triedToTrigger)
+        {
+            _triedToTrigger = false;
+            OnTriggered();
+        }
+    }
+
+    private void processDrag()
+    {
+        //Being dragged?
+        if (IsDraggedByOther)
+            CanMove = false;
+
+        // Drag
+        if (!_dragCooldown.Done)
+            CanBeDragged = false;
+        else
+            CanBeDragged = true;
+
+        // Grab/Drag Stuff
+        if (_grabTimout.Done)
+        {
+            grabDragStuffs();
+        }
+        TryingToGrab = false;
+    }
+
+    private void processShove()
+    {
+        // Check if the disabled collider timer has run out and reenable the body collider
+        if (_colShoveDisabled && _shoveOffenderColDisableTimer.Done)
+        {
+            _bodyCollider.enabled = true;
+            _colShoveDisabled = false;
+        }
+
+        // Shoved?
+        if (_startShoving)
+        {
+            TryingToMove = false;
+            IsShoved = true;
+            IsStunned = true; // Shove might be considered a kind of stun
+            _shoveStunTimer.Reset();
+            _body.velocity = Vector3.zero;
+            _body.AddForce(_shoveVector, ForceMode.Impulse);
+            _startShoving = false;
+        }
+        if (_shoveStunTimer.Done && IsShoved)
+        {
+            TargetSpeed = _body.velocity.magnitude;
+            IsShoved = false;
+            IsStunned = false;   // Remember that more terms might be needed to check in the future if "IsStunned" can be set to false
+        }
+        // doing some manual drag if shoved
+        if (IsShoved)
+        {
+            switch (CurrentControlScheme)
+            {
+                case ControlSchemeType.TopDown:
+                    _body.velocity = new Vector3(_body.velocity.x * GlobalValues.SHOVE_DAMPING_MULTIPLIER, _body.velocity.y, _body.velocity.z * GlobalValues.SHOVE_DAMPING_MULTIPLIER);
+                    break;
+
+                case ControlSchemeType.Platform:
+                    _body.velocity = new Vector3(_body.velocity.x * GlobalValues.SHOVE_DAMPING_MULTIPLIER, _body.velocity.y, 0);
+                    break;
+            }
+        }
+    }
+
+    private Quaternion fixNegativeZRotation(Vector3 from, Vector3 to)
+    {
         Quaternion rotation;
         var diff = Math.Abs(FaceDirection.z + 1f);
         if (diff >= 0.01f)
             rotation = Quaternion.FromToRotation(Vector3.forward, FaceDirection);
         else
             rotation = Quaternion.Euler(0, -180, 0);
-        transform.rotation = rotation;
-
-        if (!_doneFirstLoop)
-        {
-            Halt();
-            _doneFirstLoop = true;
-        }
+        return rotation;
     }
 
     private void grabDragStuffs()
@@ -704,23 +752,6 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IJumpHit
     {
         var xyz = new Vector3(transform.position.x, transform.position.y + GlobalValues.CHAR_GRAB_CYLINDER_COLLIDER_Y_OFFSET, transform.position.z);
 
-        //Gizmos.DrawWireSphere(XZY + FaceDirection * GlobalValues.CHAR_GRAB_CHECK_DISTANCE, GlobalValues.CHAR_GRAB_RADIUS);
-        //Gizmos.DrawWireSphere(XZY + Vector3.up + FaceDirection * GlobalValues.CHAR_GRAB_CHECK_DISTANCE, GlobalValues.CHAR_GRAB_RADIUS);
-
-        //var hits = Physics.OverlapCapsule(xyz + FaceDirection * GlobalValues.CHAR_GRAB_CHECK_DISTANCE, xyz + Vector3.up + FaceDirection * GlobalValues.CHAR_GRAB_CHECK_DISTANCE, GlobalValues.CHAR_GRAB_RADIUS); //(XZY, XZY + Vector3.up, GlobalValues.CHAR_GRAB_RADIUS, FaceDirection, GlobalValues.CHAR_GRAB_CHECK_DISTANCE, LayerUtil.Include(GlobalValues.OBJECTS_LAYER));
-
-
-        //var XZY = new Vector3(transform.position.x, transform.position.y + GlobalValues.CHAR_GRAB_CYLINDER_COLLIDER_Y_OFFSET, transform.position.z);
-        //Gizmos.DrawWireSphere(XZY + FaceDirection * GlobalValues.CHAR_GRAB_CHECK_DISTANCE, GlobalValues.CHAR_GRAB_RADIUS);
-        //Gizmos.DrawWireSphere(XZY + Vector3.up + FaceDirection * GlobalValues.CHAR_GRAB_CHECK_DISTANCE, GlobalValues.CHAR_GRAB_RADIUS);
-
-
-       // var hits = Physics.OverlapSphere(transform.position, 3f);
-       // Physics.CapsuleCast(xyz, xyz + Vector3.up, GlobalValues.CHAR_GRAB_RADIUS, FaceDirection, out hit, GlobalValues.CHAR_GRAB_CHECK_DISTANCE);
-
-
-        //var colliders = Physics.OverlapBox(xyz + FaceDirection * 2f, new Vector3(0.5f,1,0.5f), transform.rotation, LayerUtil.Exclude(GlobalValues.GROUND_LAYER));
-
         var colliders = Physics.OverlapCapsule(
             xyz + FaceDirection * GlobalValues.CHAR_GRAB_CHECK_DISTANCE,
             xyz + Vector3.up + FaceDirection * GlobalValues.CHAR_GRAB_CHECK_DISTANCE,
@@ -752,7 +783,7 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IJumpHit
                     return true;
                 } else
                 {
-                    var draggable = colliders[i].gameObject.transform.GetComponentInParent<ICharacterMovement>();
+                    var draggable = colliders[i].gameObject.transform.GetComponentInParent<HeroMovement>();
                     if (draggable != null)
                     {
                         foundObject = draggable;
@@ -763,37 +794,6 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IJumpHit
             }
         }
 
-
-        //if (Physics.CapsuleCast(xyz, xyz + Vector3.up, GlobalValues.CHAR_GRAB_RADIUS, FaceDirection, out hit, GlobalValues.CHAR_GRAB_CHECK_DISTANCE))
-        //{
-        //    if (IsGrabbing)
-        //    {
-        //        var recievable = hit.collider.gameObject.GetComponent<IRecievable>();
-        //        if (recievable != null)
-        //        {
-        //            foundObject = recievable;
-        //            return true;
-        //        }
-        //        foundObject = null;
-        //        return false;
-        //    }
-
-        //    var grabbable = hit.collider.gameObject.GetComponent<Grabbable>();
-        //    if (grabbable != null)
-        //    {
-        //        foundObject = grabbable;
-        //        return true;
-        //    } else
-        //    {
-        //        var draggable = hit.collider.gameObject.transform.GetComponentInParent<ICharacterMovement>();
-        //        if (draggable != null)
-        //        {
-        //            foundObject = draggable;
-        //            return true;
-        //        }
-
-        //    }
-        //}
         foundObject = null;
         return false;
     }
@@ -812,7 +812,7 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IJumpHit
             }
         } else
         {
-            var draggable = hitObject as ICharacterMovement;
+            var draggable = hitObject as HeroMovement;
             if (draggable == null)
                 return false;
 
@@ -845,29 +845,6 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IJumpHit
     {
         IsGrounded = false;
     }
-
-
-    // Collisions
-    //public void OnCollisionStay(Collision collision)
-    //{
-    //    if (collision.collider.gameObject.layer == GameManager.Instance.GroundLayer)
-    //    {
-    //        _gndNormal = collision.collider.transform.up;
-    //        _dJumpsLeft = _maxDJumps;
-    //        IsGrounded = true;
-    //        IsFalling = false;
-    //        IsJumping = false;
-    //        _didJumpDecel = false;
-    //    }
-            
-    //}
-    //public void OnCollisionExit(Collision collision)
-    //{
-    //    if (collision.collider.gameObject.layer == GameManager.Instance.GroundLayer)
-    //    {
-    //        IsGrounded = false;
-    //    }        
-    //}
 
 
     // Privates
@@ -912,7 +889,7 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IJumpHit
         TryingToMove = true;
     }
 
-    public void StartDragStruggle(ICharacterMovement dragger, ICharacterMovement dragged)
+    public void StartDragStruggle(HeroMovement dragger, HeroMovement dragged)
     {
         if (dragged.IsDraggingOther)
             dragged.DragStruggle.Abort();
@@ -933,20 +910,11 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IJumpHit
         dragged.Dragger = this;
         dragged.IsDraggedByOther = true;
         dragged.CanBeDragged = false;
-
+        dragged.RigidBody.isKinematic = true;
     }
 
     void OnDrawGizmos()
     {
-        //var xyz = new Vector3(transform.position.x, transform.position.y + GlobalValues.CHAR_GRAB_CYLINDER_COLLIDER_Y_OFFSET, transform.position.z);
-        //var colliders = Physics.OverlapCapsule(
-        //    xyz + FaceDirection * GlobalValues.CHAR_GRAB_CHECK_DISTANCE,
-        //    xyz + Vector3.up + FaceDirection * GlobalValues.CHAR_GRAB_CHECK_DISTANCE,
-        //    GlobalValues.CHAR_GRAB_RADIUS,
-        //    LayerUtil.Exclude(GlobalValues.GROUND_LAYER));
-
-
-
         Gizmos.color = Color.blue;
         var xyz = new Vector3(transform.position.x, transform.position.y + GlobalValues.CHAR_GRAB_CYLINDER_COLLIDER_Y_OFFSET, transform.position.z);
         Gizmos.DrawWireSphere(xyz + FaceDirection * GlobalValues.CHAR_GRAB_CHECK_DISTANCE, GlobalValues.CHAR_GRAB_RADIUS);

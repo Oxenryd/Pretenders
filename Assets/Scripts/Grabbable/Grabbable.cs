@@ -13,14 +13,14 @@ public class Grabbable : MonoBehaviour
     [SerializeField] protected Vector3 _grabbablePointOffset = new Vector3(0, 1f, 1f);
     [SerializeField] protected Vector3[] _handsOffsets = { new Vector3(), new Vector3() };
     private Collider _collider;
-    private ICharacterMovement _grabber;
+    private HeroMovement _grabber;
     private Vector3 _lastVelocity;
     private IRecievable _attachedTo;
     private Rigidbody _rBody;
     private EasyTimer _grabbedTimer;
     private EasyTimer _colliderTimer;
     private bool _pendingColliderEnable = false;
-    private Dictionary<ICharacterMovement, bool> _potentialGrabbersGrabbing = new Dictionary<ICharacterMovement, bool>();
+    private Dictionary<HeroMovement, bool> _potentialGrabbersGrabbing = new Dictionary<HeroMovement, bool>();
     [SerializeField] private Tug _tugOWar = null;
     [SerializeField] private GrabbablePosition _grabPosition = GrabbablePosition.InFrontTwoHands;
 
@@ -73,7 +73,7 @@ public class Grabbable : MonoBehaviour
         _rBody.AddForce(randomDir * 9f, ForceMode.Impulse);
     }
 
-    public ICharacterMovement Grabber
+    public HeroMovement Grabber
     { get { return _grabber; } }
 
     public void Show(Vector3 position)
@@ -115,14 +115,14 @@ public class Grabbable : MonoBehaviour
         _grabber = null;
     }
 
-    public void SignalCanNotGrab(ICharacterMovement potentialGrabber)
+    public void SignalCanNotGrab(HeroMovement potentialGrabber)
     {
         if (IsGrabbed) return;
         _alert.Deactivate();
         _potentialGrabbersGrabbing.Remove(potentialGrabber);
     }
 
-    public void SignalCanGrab(ICharacterMovement potentialGrabber)
+    public void SignalCanGrab(HeroMovement potentialGrabber)
     {
         if (IsGrabbed) return;
 
@@ -136,7 +136,7 @@ public class Grabbable : MonoBehaviour
         }
     }
 
-    public bool TryGrab(ICharacterMovement grabber)
+    public bool TryGrab(HeroMovement grabber)
     {
         if (!IsGrabbed)
         {
@@ -158,7 +158,7 @@ public class Grabbable : MonoBehaviour
         return false;
     }
 
-    public void Grab(ICharacterMovement grabber)
+    public void Grab(HeroMovement grabber)
     {
         _potentialGrabbersGrabbing.Clear();
         IsGrabbed = true;
