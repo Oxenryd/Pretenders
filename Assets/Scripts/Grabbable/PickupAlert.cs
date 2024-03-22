@@ -12,7 +12,7 @@ public class PickupAlert : MonoBehaviour
 {
     private Camera _camera;
     [SerializeField] private float _animTime = 0.3f;
-    [SerializeField] private float _wobbleTextTime = 0.2f;
+    [SerializeField] private float _wobbleTextTime = 0.1f;
     [SerializeField] private float _wobbleButtonTime = 0.4f;
     [SerializeField] private RectTransform _alert;
     [SerializeField] private UnityEngine.UI.Image _image;
@@ -95,10 +95,10 @@ public class PickupAlert : MonoBehaviour
            _text.fontSize = _textGrowing ? _textStartSize - _wobbleRange * 0.5f : _textStartSize + _wobbleRange * 0.5f;
            _wobbleTextTimer.Reset();
        }
-
-        _text.fontSize = _textStartSize - _wobbleRange * 0.5f + _wobbleTextTimer.Ratio * (_textGrowing ? _wobbleRange : -_wobbleRange);
-
-
+        if (_textGrowing)
+            _text.fontSize = _textStartSize - _wobbleRange * 0.5f + _wobbleTextTimer.Ratio * _wobbleRange;
+        else
+            _text.fontSize = _textStartSize + _wobbleRange * 0.5f - _wobbleTextTimer.Ratio * _wobbleRange;
     }
 
     private void doAnimating()

@@ -16,6 +16,8 @@ TagManager:
   - BombermanWall
   - BombermanGrid
   - SceneManager
+  - BodyCollider
+  - StompCollider
   layers:
   - Default
   - TransparentFX

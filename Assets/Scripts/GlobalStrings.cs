@@ -34,6 +34,8 @@ public static class GlobalStrings
     public const string PLATFORM_TAG = "Platform";
     public const string CHARACTER_TAG = "Character";
 
-    //Misc
+    //Colliders
+    public const string HERO_BODY_COLLIDER_TAG = "BodyCollider";
+    public const string HERO_STOMP_COLLIDER_TAG = "StompCollider";
 
 }
