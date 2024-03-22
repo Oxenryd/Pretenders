@@ -132,7 +132,7 @@ public class GameManager : MonoBehaviour
 
             // Naive sorting of the characters
             var sortedCharList = new List<ICharacter>();
-            var iMoveList = new List<ICharacterMovement>();
+            var iMoveList = new List<HeroMovement>();
             for (int i = 0; i < charList.Count; i++)
             {
                 for (int j = 0; j < charList.Count; j++)

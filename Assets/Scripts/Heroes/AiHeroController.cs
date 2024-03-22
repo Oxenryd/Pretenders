@@ -16,7 +16,7 @@ public class AiHeroController : MonoBehaviour
     private EasyTimer _directionTimer;
     private EasyTimer _jumpTimer;
     private Vector3 _targetDirection = Vector3.zero;
-    private ICharacterMovement _heroMove;
+    private HeroMovement _heroMove;
 
     /// <summary>
     /// Must be enabled to run.
@@ -32,7 +32,7 @@ public class AiHeroController : MonoBehaviour
         _jumpTimer = new EasyTimer(Random.Range(0.8f, 10f));
       //  GameManager.Instance.EarlyUpdate += _directionTimer.tickSubscription;
       //  GameManager.Instance.EarlyUpdate += _jumpTimer.tickSubscription;
-        _heroMove = GetComponent<ICharacterMovement>();
+        _heroMove = GetComponent<HeroMovement>();
     }
 
     // Update is called once per frame

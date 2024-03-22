@@ -15,13 +15,13 @@ public class HeroParticles : MonoBehaviour
         
     }
 
-    Vector3 GetStepDustPosition(ICharacterMovement characterMovement)
+    Vector3 GetStepDustPosition(HeroMovement characterMovement)
     {
         Vector3 stepPosition = gameObject.transform.position + characterMovement.CurrentDirection * -1;
         return stepPosition;
     }
 
-    void EmitDustParticle(ICharacterMovement characterMovement)
+    void EmitDustParticle(HeroMovement characterMovement)
     {
         ParticleSystem dustParticles = GameObject.Find("Dust_Particles").GetComponent<ParticleSystem>();
 
@@ -66,7 +66,7 @@ public class HeroParticles : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        ICharacterMovement characterMovement = gameObject.GetComponent<ICharacterMovement>();
+        HeroMovement characterMovement = gameObject.GetComponent<HeroMovement>();
 
         if (characterMovement.IsFalling) { wasFalling = true; }
 

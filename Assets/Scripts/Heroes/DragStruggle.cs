@@ -20,9 +20,13 @@ public class DragStruggle : MonoBehaviour
     private EasyTimer _fadeTimer;
     private EasyTimer _imageTimer;
     private EasyTimer _maxStruggleTime;
-    private ICharacterMovement _dragger;
-    private ICharacterMovement _dragged;
+    private HeroMovement _dragger;
+    private HeroMovement _dragged;
 
+    public float Duration
+    { get; set; } = 0;
+    public float Ratio
+    { get { return Duration / _maxStruggleTime.Time; } }
     public void Abort()
     {
         _dragger.DragStruggle = null;
@@ -45,8 +49,9 @@ public class DragStruggle : MonoBehaviour
         _camera = Camera.main;
     }
 
-    public void Activate(ICharacterMovement dragger, ICharacterMovement dragged)
+    public void Activate(HeroMovement dragger, HeroMovement dragged)
     {
+        Duration = 0;
         _maxStruggleTime.Reset();
         gameObject.SetActive(true);
         _active = true;
@@ -66,7 +71,7 @@ public class DragStruggle : MonoBehaviour
         _value = 0.5f;
         _meter.Value = _value;
         var delta = dragged.GameObject.transform.position - dragger.GameObject.transform.position;
-        transform.position = _camera.WorldToScreenPoint(_dragger.GameObject.transform.position + delta + new Vector3(0, 1.5f, 0));
+        transform.position = _camera.WorldToScreenPoint(_dragger.GameObject.transform.position + delta + new Vector3(0, -1f, 0));
     }
 
     public void Increase(float amount)
@@ -102,18 +107,22 @@ public class DragStruggle : MonoBehaviour
             _imageTimer.Reset();
         }
 
-
+        Duration += GameManager.Instance.DeltaTime;
         _value = Math.Max(_maxStruggleTime.Ratio, _value);
         _meter.Value = _value;
 
         if (_value >= 1f)
         {
+            var power = GlobalValues.CHAR_BUMPFORCE * Ratio;
+            _dragger.TryBump(-_dragger.FaceDirection, (GlobalValues.CHAR_BUMPFORCE) / power);
+            _dragged.TryShove(_dragged.FaceDirection, power * _dragger.ShovePower / 2);
             Abort();
         }
     }
 
     private void doFadeIn()
     {
+        Duration += GameManager.Instance.DeltaTime;
         _meter.transform.parent.transform.localScale = Vector3.one * _fadeTimer.Ratio;
         if (_fadeTimer.Done)
             _fading = false;

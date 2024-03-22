@@ -27,14 +27,14 @@ RectTransform:
   m_GameObject: {fileID: 1376837505919887450}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 0.33}
+  m_LocalScale: {x: 2.0346866, y: 2.0346866, z: 0.3357233}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1750535891288311157}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -142.1}
+  m_AnchoredPosition: {x: 0, y: -88}
   m_SizeDelta: {x: 76.29999, y: 66.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &675654350978943363
@@ -323,6 +323,36 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5281938541924830075, guid: 8167997b386f4ce49a2dd30529902658,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 10.17
+      objectReference: {fileID: 0}
+    - target: {fileID: 5281938541924830075, guid: 8167997b386f4ce49a2dd30529902658,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 10.17
+      objectReference: {fileID: 0}
+    - target: {fileID: 5281938541924830075, guid: 8167997b386f4ce49a2dd30529902658,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1.017
+      objectReference: {fileID: 0}
+    - target: {fileID: 8123175654694480082, guid: 8167997b386f4ce49a2dd30529902658,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 8123175654694480082, guid: 8167997b386f4ce49a2dd30529902658,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 8123175654694480082, guid: 8167997b386f4ce49a2dd30529902658,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8612856329618596287, guid: 8167997b386f4ce49a2dd30529902658,
         type: 3}
