@@ -11,7 +11,6 @@ public class Tray : Grabbable, IRecievable
     public TransferAlert TransferAlert
     { get { return _transferAlert; } }
 
-
     void Start()
     {
         base.Start();
