@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 
 public class HeroMovement : MonoBehaviour, ICharacterMovement, IJumpHit
 {
+    [SerializeField] private ControlSchemeType _controlScheme = ControlSchemeType.TopDown;
     [SerializeField] private float _quickTurnFactor = 0.2f;
     [SerializeField] private float _jumpBufferTime = 0.13f;
     [SerializeField] private Rigidbody _body;
@@ -109,7 +110,8 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IJumpHit
         { get { return _retardTime; } set { _retardTime = value; } }
     public float TurnTime
         { get { return _turnTime; } set { _turnTime = value; } }
-    public ControlSchemeType CurrentControlScheme { get; set; } = ControlSchemeType.TopDown;
+    public ControlSchemeType CurrentControlScheme
+    { get { return _controlScheme; } set { _controlScheme = value; } }
     public float JumpVelocity { get; set; } = 0f;
     public bool IsGrounded { get; set; } = false;
     public bool IsJumping { get; set; } = false;
@@ -124,6 +126,7 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IJumpHit
     public bool IsDraggingOther { get; set; } = false;
     public bool IsDraggedByOther { get; set; } = false;
     public bool CanBeStunned { get; set; } = true;
+    public Rigidbody RigidBody { get { return _body; } }
 
     public void OnHeadHit(HeroMovement offender)
     {
@@ -576,6 +579,14 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IJumpHit
                     if (!IsDraggedByOther)
                         velocity = new Vector3(CurrentDirection.x * CurrentSpeed, _body.velocity.y, CurrentDirection.z * CurrentSpeed);
                     else
+                    {
+                        velocity = Dragger.Velocity;
+                    }
+                    break;
+                case ControlSchemeType.Platform:
+                    if (!IsDraggedByOther)
+                        velocity = new Vector3(CurrentDirection.x * CurrentSpeed, _body.velocity.y, 0);
+                    else
                         velocity = Dragger.Velocity;
                     break;
             }
@@ -918,6 +929,7 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IJumpHit
 
         IsDraggingOther = true;
         CanBeDragged = true;
+        
         dragged.Dragger = this;
         dragged.IsDraggedByOther = true;
         dragged.CanBeDragged = false;

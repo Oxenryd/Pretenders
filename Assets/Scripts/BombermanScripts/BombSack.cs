@@ -23,6 +23,7 @@ public class BombSack : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        if (!_enabled) return;
         GameObject gridObject = GameObject.FindWithTag(GlobalStrings.NAME_BOMBERGRID);
         grid = gridObject.GetComponent<Grid>();
 
@@ -60,12 +61,5 @@ public class BombSack : MonoBehaviour
             if (_currentBombIndex >= bombs.Length)
                 _currentBombIndex = 0;
         }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-
     }
 }
