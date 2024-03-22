@@ -18,6 +18,7 @@ TagManager:
   - SceneManager
   - BodyCollider
   - StompCollider
+  - FeetCollider
   layers:
   - Default
   - TransparentFX
