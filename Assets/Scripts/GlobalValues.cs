@@ -5,12 +5,14 @@ public static class GlobalValues
     public const float SHOVE_DEFAULT_SHOVEPOWER = 22f;
     public const float SHOVE_DAMPING_MULTIPLIER = 0.95f;
 
+
+    public const int BOMBS_MAXBOMBS = 10;
+    public const int BOMBS_MAXEXPLOSIONSPERDIRECTION = 10;
+
     public const float JUMPDIRECTION_SLOWDOWN_DOT = 0.71f;
     public const float JUMPDIRECTION_SLOWDOWN_MULTIPLIER = 0.3f;
 
     public const float CHAR_BUMP_DOT_LIMIT = -0.7f;
-
-    public const int   BOMBS_MAXBOMBS = 10;
 
     public const float CHAR_BUMPFORCE = 2f;
     public const float CHAR_BUMPDURATION = 0.28f;
