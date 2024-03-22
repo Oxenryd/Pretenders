@@ -235,6 +235,7 @@ public class Grabbable : MonoBehaviour
         if (_potentialGrabbersGrabbing.Count == 0)
             _alert.Deactivate();
 
+        Vector3 tre = new Vector3(1, 0, 0);
 
         if (_pendingColliderEnable && !IsGrabbed && _colliderTimer.Done)
         {

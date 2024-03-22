@@ -31,7 +31,7 @@ public class Tray : Grabbable, IRecievable
 
             // Output the dimensions
             _itemOffset = new Vector3(Length, 0, 0);
-            Debug.LogError(Length);
+            //Debug.LogError(Length);
         }
         else
         {
