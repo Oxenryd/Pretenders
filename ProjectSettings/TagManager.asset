@@ -15,11 +15,16 @@ TagManager:
   - UiOverlay
   - BombermanWall
   - BombermanGrid
+  - SceneManager
+  - BodyCollider
+  - StompCollider
+  - FeetCollider
+  - BomberTree
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Blocks
   - Water
   - UI
   - BoundsCollider
@@ -38,7 +43,7 @@ TagManager:
   - 
   - 
   - 
-  - 
+  - Objects
   - 
   - 
   - 

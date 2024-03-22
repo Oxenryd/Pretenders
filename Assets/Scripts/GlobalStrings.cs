@@ -3,9 +3,11 @@ public static class GlobalStrings
     //NAMES
     public const string NAME_INPUTMANAGER = "InputManager";
     public const string NAME_GAMEMANAGER = "GameManager";
+    public const string NAME_SCENEMANAGER = "SceneManager";
     public static string NAME_BOMBERCRATE = "BombCrate";
     public static string NAME_BOMBERMANWALL = "BombermanWall";
     public static string NAME_BOMBERGRID = "BombermanGrid";
+    public static string NAME_BOMBERTREE = "BomberTree";
     public static string NAME_UIOVERLAY = "UiOverlay";
 
     //CONTAINERS
@@ -33,6 +35,8 @@ public static class GlobalStrings
     public const string PLATFORM_TAG = "Platform";
     public const string CHARACTER_TAG = "Character";
 
-    //Misc
+    //Colliders
+    public const string HERO_BODY_COLLIDER_TAG = "BodyCollider";
+    public const string HERO_STOMP_COLLIDER_TAG = "StompCollider";
 
 }

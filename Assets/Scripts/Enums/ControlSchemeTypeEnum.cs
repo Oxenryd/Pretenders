@@ -4,5 +4,5 @@ using UnityEngine;
 
 public enum ControlSchemeType
 {
-    Platform, TopDown, ThirdPerson
+    Platform, TopDown, BomberMan
 }

@@ -2,18 +2,21 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CircleMeter : MonoBehaviour
 {
     public bool Active = false;
     private Camera _camera;
+    [SerializeField] private Image _image;
     [SerializeField] private RectTransform _meter;
     [SerializeField] private float _defaultLengthScale = 10;
     [SerializeField][Range(0f, 1f)] private float _value;
     private float _counter = 0;
 
-
     public float Value { get { return _value; } set { _value = value; } }
+    public Color Color
+    { get { return _image.color; } set { _image.color = value; } }
 
     public void Deactivate()
     {

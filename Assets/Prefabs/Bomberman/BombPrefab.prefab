@@ -102,6 +102,9 @@ MonoBehaviour:
   explosion: {fileID: 52511004266254832, guid: 8a64124c26548e64eb99b4cec00fee68, type: 3}
   explosionForce: 10
   radius: 10
+  levelMask:
+    serializedVersion: 2
+    m_Bits: 8
   delayBeforeExplosion: 2
 --- !u!65 &8499154204931919746
 BoxCollider:

@@ -1,25 +1,35 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEditor;
 using UnityEngine;
 
 public class Grabbable : MonoBehaviour
 {
-    
+
     [SerializeField] protected PickupMeter _meter;
     [SerializeField] protected PickupAlert _alert;
+    [SerializeField] protected Vector3 _grabbablePointOffset = new Vector3(0, 1f, 1f);
+    [SerializeField] protected Vector3[] _handsOffsets = { new Vector3(), new Vector3()};
     private Collider _collider;
     private ICharacterMovement _grabber;
     private Vector3 _lastVelocity;
+    private IRecievable _attachedTo;
     private Rigidbody _rBody;
     private EasyTimer _grabbedTimer;
     private EasyTimer _colliderTimer;
     private bool _pendingColliderEnable = false;
     private Dictionary<ICharacterMovement, bool> _potentialGrabbersGrabbing = new Dictionary<ICharacterMovement, bool>();
     [SerializeField] private Tug _tugOWar = null;
-    private GrabbablePosition _grabPosition = GrabbablePosition.InFrontTwoHands;
+    [SerializeField] private GrabbablePosition _grabPosition = GrabbablePosition.InFrontTwoHands;
     public bool GrabInProgress { get; set; } = false;
+
+    public float AttachPointDistance
+    { get; set; } = 0f;
+
+    public bool IsAttached
+    { get; set; }
 
     public GrabbablePosition GrabbablePosition
     { get { return _grabPosition; } set { _grabPosition = value; } }
@@ -33,6 +43,26 @@ public class Grabbable : MonoBehaviour
         _rBody.isKinematic = true;
         _collider.enabled = false;
         gameObject.SetActive(false);
+    }
+
+    public virtual void Attach(IRecievable attachedTo)
+    {
+        IsGrabbed = true;
+        IsAttached = true;
+        _attachedTo = attachedTo;
+        _rBody.isKinematic = true;
+        _collider.enabled = false;
+    }
+    public virtual void Detach()
+    {
+        IsAttached = false;
+        IsGrabbed = false;
+        _attachedTo = null;
+        Vector3 randomDir = UnityEngine.Random.insideUnitSphere.normalized;
+        _rBody.isKinematic = false;
+        _pendingColliderEnable = true;
+        _colliderTimer.Reset();
+        _rBody.AddForce(randomDir * 9f, ForceMode.Impulse);
     }
 
     public ICharacterMovement Grabber
@@ -58,7 +88,7 @@ public class Grabbable : MonoBehaviour
     public bool Hidden { get; set; } = false;
 
     public Vector3 GrabPointOffset
-    { get { return new Vector3(0, 1f, 1f); } }
+    { get { return _grabbablePointOffset; } }
 
     public GameObject GameObject
     { get { return this.GameObject; } }
@@ -74,7 +104,7 @@ public class Grabbable : MonoBehaviour
         _rBody.velocity = _lastVelocity;
         GrabInProgress = false;
         _meter.Abort();
-        _grabber = null;       
+        _grabber = null;
     }
 
     public void SignalCanNotGrab(ICharacterMovement potentialGrabber)
@@ -124,20 +154,24 @@ public class Grabbable : MonoBehaviour
     {
         _potentialGrabbersGrabbing.Clear();
         IsGrabbed = true;
-        _grabber.Grab(this);      
+        _grabber.Grab(this);
         _collider.enabled = false;
-        _alert.Deactivate();      
+        _alert.Deactivate();
         StraightenUp();
     }
     public void Drop()
     {
         IsGrabbed = false;
         _grabber.Drop(this);
-        _pendingColliderEnable = true;
-        _colliderTimer.Reset();
-        _rBody.isKinematic = false;
-        _rBody.AddForce(GlobalValues.CHAR_GRAB_DROPFORCE * (_grabber.CurrentDirection + Vector3.up).normalized, ForceMode.Impulse);
-        _grabber = null;
+        if (!IsAttached)
+        {
+            _pendingColliderEnable = true;
+            _colliderTimer.Reset();
+            _rBody.isKinematic = false;
+            _rBody.AddForce(GlobalValues.CHAR_GRAB_DROPFORCE * (_grabber.CurrentDirection + Vector3.up).normalized, ForceMode.Impulse);
+            _grabber = null;
+        }
+
     }
 
     void Awake()
@@ -185,10 +219,18 @@ public class Grabbable : MonoBehaviour
             _pendingColliderEnable = false;
         }
 
-        if (IsGrabbed)
+        if (IsGrabbed && !IsAttached)
         {
-            transform.position = _grabber.GameObject.transform.position + (_grabber.FaceDirection + new Vector3(0, GrabPointOffset.y, 0) * GrabPointOffset.z);
-            transform.rotation = Quaternion.FromToRotation(Vector3.forward, _grabber.FaceDirection);
+            Quaternion rotation;
+            var diff = Math.Abs(_grabber.FaceDirection.z + 1f);
+            if (diff >= 0.01f)
+                rotation = Quaternion.FromToRotation(Vector3.forward, _grabber.FaceDirection);
+            else
+                rotation = Quaternion.Euler(0, -180, 0);
+            transform.rotation = rotation;
+            transform.position = _grabber.GameObject.transform.position + (_grabber.FaceDirection * GrabPointOffset.z + new Vector3(0, GrabPointOffset.y, 0));
+
+            
         }
     }
 
@@ -198,6 +240,8 @@ public class Grabbable : MonoBehaviour
     /// <param name="response"></param>
     public virtual void ProcessTransferResponse(int response) { if (response == 0) Drop(); }
     public virtual object[] GetTransferables() { return new GameObject[] { this.gameObject }; }
+
+    public virtual void Trigger() { }
 
     protected virtual void StraightenUp()
     {

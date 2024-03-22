@@ -358,6 +358,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -456,6 +461,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -547,6 +557,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: treePineSnow
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9115c116cf62f42488ecfb2ec148cb7c,
+        type: 3}
+      propertyPath: m_TagString
+      value: BomberTree
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -839,6 +854,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -1011,6 +1031,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -1109,9 +1134,9 @@ GameObject:
   m_Component:
   - component: {fileID: 63977364}
   - component: {fileID: 63977365}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: BlockCollider (3)
-  m_TagString: Untagged
+  m_TagString: BombermanWall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1330,6 +1355,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -1432,6 +1462,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: treePine
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 3e4d2669585439a4c8ae6e296a995d8f,
+        type: 3}
+      propertyPath: m_TagString
+      value: BomberTree
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1527,6 +1562,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -1618,6 +1658,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -1721,6 +1766,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -1812,6 +1862,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -2051,6 +2106,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -2142,6 +2202,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -2261,6 +2326,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: treePine
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 3e4d2669585439a4c8ae6e296a995d8f,
+        type: 3}
+      propertyPath: m_TagString
+      value: BomberTree
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2425,6 +2495,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -2527,6 +2602,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: treePine
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 3e4d2669585439a4c8ae6e296a995d8f,
+        type: 3}
+      propertyPath: m_TagString
+      value: BomberTree
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2619,6 +2699,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -2716,6 +2801,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -2807,6 +2897,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -2907,6 +3002,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -3238,6 +3338,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -3333,6 +3438,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -3440,6 +3550,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -3540,6 +3655,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -3634,6 +3754,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -3725,6 +3850,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -3828,6 +3958,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -3919,6 +4054,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: treePine
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 3e4d2669585439a4c8ae6e296a995d8f,
+        type: 3}
+      propertyPath: m_TagString
+      value: BomberTree
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4036,6 +4176,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -4130,6 +4275,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -4221,6 +4371,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -4322,6 +4477,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -4413,6 +4573,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -4528,6 +4693,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -4626,6 +4796,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -4717,6 +4892,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -4882,6 +5062,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -4973,6 +5158,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -5074,6 +5264,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -5165,6 +5360,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -5266,6 +5466,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -5364,6 +5569,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -5455,6 +5665,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -5624,6 +5839,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -5720,6 +5940,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: treePine
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 3e4d2669585439a4c8ae6e296a995d8f,
+        type: 3}
+      propertyPath: m_TagString
+      value: BomberTree
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -5812,6 +6037,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -5909,6 +6139,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -6000,6 +6235,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -6100,6 +6340,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -6222,6 +6467,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -6326,6 +6576,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: treePineSnow
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9115c116cf62f42488ecfb2ec148cb7c,
+        type: 3}
+      propertyPath: m_TagString
+      value: BomberTree
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -6420,6 +6675,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -6530,6 +6790,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -6714,6 +6979,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -6912,6 +7182,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -7016,6 +7291,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: treePineSnow
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9115c116cf62f42488ecfb2ec148cb7c,
+        type: 3}
+      propertyPath: m_TagString
+      value: BomberTree
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -7107,6 +7387,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -7135,9 +7420,9 @@ GameObject:
   m_Component:
   - component: {fileID: 523219726}
   - component: {fileID: 523219727}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: BlockCollider (2)
-  m_TagString: Untagged
+  m_TagString: BombermanWall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -7188,9 +7473,9 @@ GameObject:
   m_Component:
   - component: {fileID: 527457694}
   - component: {fileID: 527457695}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: BlockCollider (4)
-  m_TagString: Untagged
+  m_TagString: BombermanWall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -7363,6 +7648,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -7454,6 +7744,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -7555,6 +7850,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -7646,6 +7946,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: treePineSnow
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9115c116cf62f42488ecfb2ec148cb7c,
+        type: 3}
+      propertyPath: m_TagString
+      value: BomberTree
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -7742,6 +8047,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -7782,9 +8092,9 @@ GameObject:
   m_Component:
   - component: {fileID: 543288606}
   - component: {fileID: 543288608}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: BlockCollider
-  m_TagString: Untagged
+  m_TagString: BombermanWall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -7902,6 +8212,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -8077,6 +8392,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -8175,6 +8495,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -8269,6 +8594,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -8360,6 +8690,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: treePine
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 3e4d2669585439a4c8ae6e296a995d8f,
+        type: 3}
+      propertyPath: m_TagString
+      value: BomberTree
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -8511,6 +8846,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: treePineSnow
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9115c116cf62f42488ecfb2ec148cb7c,
+        type: 3}
+      propertyPath: m_TagString
+      value: BomberTree
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -8627,6 +8967,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -8718,6 +9063,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -8818,6 +9168,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -8946,6 +9301,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -9037,6 +9397,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: treePineSnow
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9115c116cf62f42488ecfb2ec148cb7c,
+        type: 3}
+      propertyPath: m_TagString
+      value: BomberTree
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -9240,6 +9605,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -9400,7 +9770,7 @@ PrefabInstance:
     - target: {fileID: 6489844388526602600, guid: 7b6732808af22394a9c20166b6694181,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 6489844388526602600, guid: 7b6732808af22394a9c20166b6694181,
         type: 3}
@@ -9410,7 +9780,7 @@ PrefabInstance:
     - target: {fileID: 6489844388526602600, guid: 7b6732808af22394a9c20166b6694181,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 5
+      value: 20.1
       objectReference: {fileID: 0}
     - target: {fileID: 6489844388526602600, guid: 7b6732808af22394a9c20166b6694181,
         type: 3}
@@ -9529,6 +9899,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: treePine
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 3e4d2669585439a4c8ae6e296a995d8f,
+        type: 3}
+      propertyPath: m_TagString
+      value: BomberTree
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -9765,6 +10140,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -9951,6 +10331,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -10190,6 +10575,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -10388,6 +10778,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -10512,6 +10907,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -10640,6 +11040,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -10731,6 +11136,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -10828,6 +11238,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -10919,6 +11334,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -11177,6 +11597,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -11339,6 +11764,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -11434,6 +11864,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -11605,6 +12040,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -11696,6 +12136,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -11865,6 +12310,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -11960,6 +12410,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -12084,6 +12539,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -12178,6 +12638,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -12269,6 +12734,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -12397,6 +12867,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -12516,6 +12991,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -12607,6 +13087,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -12821,6 +13306,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -12946,6 +13436,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -13037,6 +13532,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -13293,6 +13793,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -13453,6 +13958,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: treePine
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 3e4d2669585439a4c8ae6e296a995d8f,
+        type: 3}
+      propertyPath: m_TagString
+      value: BomberTree
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -13569,6 +14079,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -13663,6 +14178,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -13754,6 +14274,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -13919,6 +14444,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -14016,6 +14546,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -14127,6 +14662,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: treePineSnow
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9115c116cf62f42488ecfb2ec148cb7c,
+        type: 3}
+      propertyPath: m_TagString
+      value: BomberTree
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -14219,6 +14759,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -14341,6 +14886,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: treePine
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 3e4d2669585439a4c8ae6e296a995d8f,
+        type: 3}
+      propertyPath: m_TagString
+      value: BomberTree
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -14417,9 +14967,9 @@ GameObject:
   m_Component:
   - component: {fileID: 996071067}
   - component: {fileID: 996071068}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: BlockCollider (1)
-  m_TagString: Untagged
+  m_TagString: BombermanWall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -14540,6 +15090,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -14631,6 +15186,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: treePine
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 3e4d2669585439a4c8ae6e296a995d8f,
+        type: 3}
+      propertyPath: m_TagString
+      value: BomberTree
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -14772,6 +15332,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -14866,6 +15431,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -14957,6 +15527,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -15188,6 +15763,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: treePine
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 3e4d2669585439a4c8ae6e296a995d8f,
+        type: 3}
+      propertyPath: m_TagString
+      value: BomberTree
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -15280,6 +15860,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -15455,6 +16040,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -15546,6 +16136,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -15668,6 +16263,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -15759,6 +16359,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: treePine
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 3e4d2669585439a4c8ae6e296a995d8f,
+        type: 3}
+      propertyPath: m_TagString
+      value: BomberTree
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -15923,6 +16528,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -16020,6 +16630,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: treePine
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 3e4d2669585439a4c8ae6e296a995d8f,
+        type: 3}
+      propertyPath: m_TagString
+      value: BomberTree
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -16143,6 +16758,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -16234,6 +16854,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -16403,6 +17028,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -16520,6 +17150,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: treePine
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 3e4d2669585439a4c8ae6e296a995d8f,
+        type: 3}
+      propertyPath: m_TagString
+      value: BomberTree
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -16636,6 +17271,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -16734,6 +17374,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -16825,6 +17470,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -17027,6 +17677,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -17175,6 +17830,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -17266,6 +17926,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -17366,6 +18031,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -17496,6 +18166,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -17593,6 +18268,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -17774,6 +18454,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -17865,6 +18550,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -17990,6 +18680,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -18158,6 +18853,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -18348,6 +19048,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -18442,6 +19147,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -18533,6 +19243,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -18731,6 +19446,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -18852,6 +19572,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -18943,6 +19668,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: treePine
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 3e4d2669585439a4c8ae6e296a995d8f,
+        type: 3}
+      propertyPath: m_TagString
+      value: BomberTree
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -19060,6 +19790,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -19157,6 +19892,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -19613,6 +20353,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -19775,6 +20520,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -19900,6 +20650,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -19991,6 +20746,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -20089,6 +20849,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: treePine
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 3e4d2669585439a4c8ae6e296a995d8f,
+        type: 3}
+      propertyPath: m_TagString
+      value: BomberTree
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -20375,6 +21140,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -20546,6 +21316,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -20726,6 +21501,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: treePineSnow
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9115c116cf62f42488ecfb2ec148cb7c,
+        type: 3}
+      propertyPath: m_TagString
+      value: BomberTree
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -20842,6 +21622,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -20939,6 +21724,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -21172,6 +21962,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: treePine
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 3e4d2669585439a4c8ae6e296a995d8f,
+        type: 3}
+      propertyPath: m_TagString
+      value: BomberTree
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -21706,6 +22501,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: treePine
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 3e4d2669585439a4c8ae6e296a995d8f,
+        type: 3}
+      propertyPath: m_TagString
+      value: BomberTree
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -21849,6 +22649,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -21955,6 +22760,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -22046,6 +22856,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -22170,6 +22985,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -22261,6 +23081,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -22380,6 +23205,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -22512,6 +23342,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: treePine
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 3e4d2669585439a4c8ae6e296a995d8f,
+        type: 3}
+      propertyPath: m_TagString
+      value: BomberTree
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -22626,6 +23461,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: treePineSnow
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9115c116cf62f42488ecfb2ec148cb7c,
+        type: 3}
+      propertyPath: m_TagString
+      value: BomberTree
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -22739,6 +23579,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -22995,6 +23840,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -23090,6 +23940,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -23228,6 +24083,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -23346,6 +24206,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -23470,6 +24335,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -23586,6 +24456,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -23854,6 +24729,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -24034,6 +24914,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -24131,6 +25016,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -24250,6 +25140,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -24374,6 +25269,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -24471,6 +25371,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -24735,6 +25640,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: treePineSnow
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9115c116cf62f42488ecfb2ec148cb7c,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -24884,6 +25794,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -25011,6 +25926,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -25132,6 +26052,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -25238,6 +26163,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -25332,6 +26262,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -25423,6 +26358,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -25553,6 +26493,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -25648,6 +26593,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -25836,6 +26786,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: treePine
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 3e4d2669585439a4c8ae6e296a995d8f,
+        type: 3}
+      propertyPath: m_TagString
+      value: BomberTree
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -25949,6 +26904,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -26076,6 +27036,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -26241,6 +27206,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -26360,6 +27330,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -26451,6 +27426,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -26570,6 +27550,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -26698,6 +27683,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: treePine
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 3e4d2669585439a4c8ae6e296a995d8f,
+        type: 3}
+      propertyPath: m_TagString
+      value: BomberTree
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -26811,6 +27801,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -26930,6 +27925,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -27079,6 +28079,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -27170,6 +28175,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -27446,6 +28456,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -27537,6 +28552,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -28013,6 +29033,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -28324,6 +29349,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -28440,6 +29470,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -28577,6 +29612,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -28723,6 +29763,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -28885,6 +29930,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: treePine
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 3e4d2669585439a4c8ae6e296a995d8f,
+        type: 3}
+      propertyPath: m_TagString
+      value: BomberTree
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -29067,6 +30117,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -29587,6 +30642,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -29704,6 +30764,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: treePineSnow
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9115c116cf62f42488ecfb2ec148cb7c,
+        type: 3}
+      propertyPath: m_TagString
+      value: BomberTree
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -29817,6 +30882,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -29941,6 +31011,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -30057,6 +31132,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
@@ -30340,6 +31420,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
       propertyPath: m_TagString
       value: BombermanWall
       objectReference: {fileID: 0}
@@ -30500,6 +31585,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: treePine
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 3e4d2669585439a4c8ae6e296a995d8f,
+        type: 3}
+      propertyPath: m_TagString
+      value: BomberTree
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -30619,6 +31709,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: block
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9f20290db37d1c944bd8a93bee02dea6,
         type: 3}
