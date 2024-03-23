@@ -79,7 +79,7 @@ public class TransferAlert : MonoBehaviour
     {
 
         _alert.transform.position = _camera.WorldToScreenPoint(_target.position + _positionOffset);
-        var scaledY = _camera.scaledPixelHeight * (0.03f * Mathf.Cos(_counter * 15) + 0.03f);
+        var scaledY = _camera.scaledPixelHeight * (0.015f * Mathf.Cos(_counter * 15) + 0.015f);
         _image.rectTransform.localPosition = new Vector3(0, scaledY, 0);
         _alert.localScale = Vector3.one * (0.1f * Mathf.Cos(_counter * 8) + 1);
 

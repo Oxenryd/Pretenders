@@ -6,8 +6,8 @@ public static class GlobalValues
     public const float SHOVE_DAMPING_MULTIPLIER = 0.95f;
 
 
-    public const int BOMBS_MAXBOMBS = 10;
-    public const int BOMBS_MAXEXPLOSIONSPERDIRECTION = 10;
+    public const int   BOMBS_MAXBOMBS = 10;
+    public const int   BOMBS_MAXEXPLOSIONSPERDIRECTION = 10;
 
     public const float JUMPDIRECTION_SLOWDOWN_DOT = 0.71f;
     public const float JUMPDIRECTION_SLOWDOWN_MULTIPLIER = 0.3f;
@@ -39,5 +39,7 @@ public static class GlobalValues
 
     public const int   OBJECTS_LAYER = 22;
     public const int   GROUND_LAYER = 10;
+
+    public const int   STRINGS_MAX_PRECACHED_NUMBERSTRINGS = 10000;
 
 }

@@ -45,6 +45,7 @@ public class Grabbable : MonoBehaviour
     public float TimeToGrab
     { get; set; } = GlobalValues.CHAR_GRAB_RADIUS_DEFAULT_TIMETOGRAB;
 
+
     public void Hide()
     {
         Hidden = true;

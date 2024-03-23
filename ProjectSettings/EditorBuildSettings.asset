@@ -5,7 +5,7 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/FetcherTestScene.unity
     guid: 7b05caa024b249d478fe5ae4886c0372
   m_configObjects:

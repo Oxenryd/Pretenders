@@ -14,6 +14,7 @@ public class PickupAlert : MonoBehaviour
     [SerializeField] private float _animTime = 0.3f;
     [SerializeField] private float _wobbleTextTime = 0.1f;
     [SerializeField] private float _wobbleButtonTime = 0.4f;
+    [SerializeField] private float _pingCooldown = 0.15f;
     [SerializeField] private RectTransform _alert;
     [SerializeField] private UnityEngine.UI.Image _image;
     [SerializeField] private TextMeshProUGUI _text;
@@ -23,16 +24,33 @@ public class PickupAlert : MonoBehaviour
 
     private Transform _target;
 
+    private bool _signalled = false;
+
+
     private Vector3 _orgScale = Vector3.one;
     private EasyTimer _animateTimer;
     private EasyTimer _deAnimateTimer;
     private EasyTimer _wobbleTextTimer;
     private EasyTimer _wobbleButtonTimer;
+    private EasyTimer _keepAliveTimer;
     private bool _textGrowing = true;
     private AlertMode _mode = AlertMode.Inactive;
 
     public AlertMode Mode
     { get { return _mode; } }
+
+    public void Ping(HeroMovement icm, Transform grabbableTransform)
+    {
+        if (!_signalled && Mode != AlertMode.Active)
+        {
+            _signalled = true;
+            var hero = icm.GameObject.GetComponent<Hero>();
+            var color = hero.PrimaryColor;
+            Activate(grabbableTransform, color);
+        }
+
+        _keepAliveTimer.Reset();
+    }
 
 
     public void Deactivate()
@@ -64,6 +82,7 @@ public class PickupAlert : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
+        _keepAliveTimer = new EasyTimer(_pingCooldown);
         _animateTimer = new EasyTimer(_animTime);
         _deAnimateTimer = new EasyTimer(_animTime/2);
         _wobbleTextTimer = new EasyTimer(_wobbleTextTime);
@@ -77,6 +96,17 @@ public class PickupAlert : MonoBehaviour
     void Update()
     {
         _alert.parent.transform.position = _camera.WorldToScreenPoint(_target.position + _positionOffset);
+
+
+        if (_signalled && _keepAliveTimer.Done)
+        {
+            _signalled = false;
+            _mode = AlertMode.DeAnimating;
+        } else if (_signalled)
+        {
+            if (_mode != AlertMode.Active)
+                _mode = AlertMode.Animating;
+        }
 
         switch (_mode)
         {
@@ -99,6 +129,7 @@ public class PickupAlert : MonoBehaviour
             _text.fontSize = _textStartSize - _wobbleRange * 0.5f + _wobbleTextTimer.Ratio * _wobbleRange;
         else
             _text.fontSize = _textStartSize + _wobbleRange * 0.5f - _wobbleTextTimer.Ratio * _wobbleRange;
+
     }
 
     private void doAnimating()
