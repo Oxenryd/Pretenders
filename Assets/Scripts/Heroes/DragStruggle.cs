@@ -47,6 +47,12 @@ public class DragStruggle : MonoBehaviour
         _camera = Camera.main;
     }
 
+    public void SetMaxTime(float maxTime)
+    {
+        _maxStruggleTime = new EasyTimer(maxTime);
+        _maxStruggleTime.Reset();
+    }
+
     public void Activate(HeroMovement dragger, HeroMovement dragged)
     {
         Duration = 0;
@@ -109,6 +115,11 @@ public class DragStruggle : MonoBehaviour
         _value = Math.Max(_maxStruggleTime.Ratio, _value);
         _meter.Value = _value;
 
+        winningCondition();
+    }
+
+    protected virtual void winningCondition()
+    {
         if (_value >= 1f)
         {
             var power = GlobalValues.CHAR_BUMPFORCE * Ratio;

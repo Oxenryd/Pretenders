@@ -68,7 +68,12 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     private bool _signalingGrab = false;
     private float _shovePower = GlobalValues.SHOVE_DEFAULT_SHOVEPOWER;
 
-
+    public float TugPower
+    { get; set; } = GlobalValues.TUG_DEFAULT_TUGPOWER;
+    public sbyte TuggerIndex
+    { get; set; } = 0;
+    public bool IsTugging
+    { get; set; } = false;
     public float ShovePower
     { get { return _shovePower; } set { _shovePower = value; } }
     public Vector3 Velocity
@@ -151,11 +156,6 @@ public class HeroMovement : MonoBehaviour, IJumpHit
         _dragCooldown.Reset();
     }
 
-    public void StartTug(Tug tug)
-    {
-
-    }
-
     public void Grab(Grabbable grabbable)
     {
         CurrentGrab = grabbable;
@@ -168,6 +168,26 @@ public class HeroMovement : MonoBehaviour, IJumpHit
         _doDrop = true;
     }
 
+    public void SetTug(sbyte tugIndex)
+    {
+        CurrentSpeed = CurrentSpeed * 0.15f;
+        Halt();       
+        _tryingToDrop = false;
+        TryingToGrab = false;
+        IsGrabInProgress = false;
+        IsGrabbing = true;
+        CanBeDragged = true;
+        TuggerIndex = tugIndex;
+        IsTugging = true;
+    }
+    public void ReleaseFromTug(bool winner)
+    {
+        IsTugging = false;
+        if (winner)
+            IsGrabbing = true;
+        else
+            IsGrabbing = false;
+    }
 
     // Handle Input Events
     public void TryJump(InputAction.CallbackContext context)
@@ -185,26 +205,29 @@ public class HeroMovement : MonoBehaviour, IJumpHit
 
     public void TryGrab(InputAction.CallbackContext context)
     {
+        // This is horrible...
         if (context.started)
         {
-            if (!IsDraggingOther && !IsDraggedByOther)
+            _grabButtonIsDown = true;
+            if (!IsDraggingOther && !IsDraggedByOther && !IsTugging)
             {
-                if (!IsGrabbing && !IsGrabInProgress)
+                if (!IsGrabbing && !IsGrabInProgress && !IsTugging)
                 {
-                    TryingToGrab = true;
-                    _grabButtonIsDown = true;
+                    TryingToGrab = true;                   
                 }
-                else
+                else if (!IsTugging)
                 {
                     _tryingToDrop = true;
                 }
-            } else
+            } else if (!IsTugging)
             {
                 if (IsDraggingOther)
                     _struggle.Decrease(GlobalValues.CHAR_DRAG_DRAGGER_DECREASE);
                 else
                     _struggle.Increase(GlobalValues.CHAR_DRAG_DRAGGED_INCREASE);
-                    
+            } else // IsTugging
+            {
+                CurrentGrab.TugPull(this);
             }
         }
         else if (context.canceled)
@@ -309,6 +332,11 @@ public class HeroMovement : MonoBehaviour, IJumpHit
         {
             _startShoving = true;
 
+            if (IsGrabbing)
+            {
+                CurrentGrab.Drop();
+            }
+
             Vector3 forceDir = Vector3.zero;
             switch (CurrentControlScheme) // TODO: Add different models for force calc in differnt control modes.
             {              
@@ -342,7 +370,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     }
 
 
-    // --------------------------------------------------------------------------------------------------- Start()
+    // --------------------------------------------------------------------------------------------------------------- Start()
 
     // Start is called before the first frame update
     void Start()
@@ -364,7 +392,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
         TryMoveAi(Vector2.right);
     }
 
-    // --------------------------------------------------------------------------------------------------------------------------------------------------- FixedUpdate()
+    // -------------------------------------------------------------------------------------------------------------- FixedUpdate()
 
     // Fixed Update: because we decided on physics based movement
     // all manipulation of velocities should be done here, where
@@ -426,7 +454,13 @@ public class HeroMovement : MonoBehaviour, IJumpHit
         else
             CanBeDragged = true;
 
-        // Grab/Drag Stuff
+
+        // ---------------------------------------------------------    GRABBING / DRAGGING / TRANSFERRING
+        if (IsBumped || IsShoved)
+        {
+            TryingToGrab = false;
+            _tryingToDrop = false;
+        }    
         if (_grabTimout.Done)
         {
             grabDragStuffs();
@@ -491,7 +525,11 @@ public class HeroMovement : MonoBehaviour, IJumpHit
                 IsDoubleJumping = true;
                 _dJumpsLeft--;
             }
-            _body.velocity = (_gndNormal) * MaxJumpPower + new Vector3(_body.velocity.x, 0, _body.velocity.z);
+            if (!IsTugging)
+                _body.velocity = (_gndNormal) * MaxJumpPower + new Vector3(_body.velocity.x, 0, _body.velocity.z);
+            else
+                _body.velocity = (_gndNormal) * MaxJumpPower / 4 + new Vector3(_body.velocity.x, 0, _body.velocity.z);
+
         }
 
         if (TryingToJump)
@@ -520,7 +558,6 @@ public class HeroMovement : MonoBehaviour, IJumpHit
             _didJumpDecel = true; // Because calling this in update it is needed to lock this until grounded to avoid mulitle attempts of decel.
         }
 
-
         // Falling? Jumping?
         if (!IsGrounded)
         {
@@ -543,12 +580,12 @@ public class HeroMovement : MonoBehaviour, IJumpHit
         float turnT = _turnTimer.Ratio;
         float accelT = _accelTimer.Ratio;
         float haltT = _haltTimer.Ratio;
-        if (TryingToMove && !IsBumped)
+        if (TryingToMove && !IsBumped && !IsShoved)
         {
             // Trying a "glassy" feeling of movement, with some time for acceleration and turning.
             CurrentDirection = Vector3.Lerp(CurrentDirection, TargetDirection, turnT);
             CurrentSpeed = Mathf.Clamp(Mathf.Lerp(CurrentSpeed, MaxMoveSpeed, accelT), 0f, TargetSpeed);
-        } else
+        } else if (!TryingToMove)
         {
             // Take some time to slow down.
             CurrentSpeed = Mathf.Lerp(_stopSpeed, 0f, haltT);
@@ -614,12 +651,18 @@ public class HeroMovement : MonoBehaviour, IJumpHit
             _gndNormal = Vector3.SmoothDamp(_gndNormal, Vector3.up, ref _gndDampVelocity, 0.5f);
         }
 
+
+        // ---------------------------------------------------------    ROTATING
         // Turn poco a poco to upright
         transform.up = Vector3.SmoothDamp(transform.up, _gndNormal, ref _gndTargetNormalVel, 0.08f);
 
         // Rotate
         transform.rotation = fixNegativeZRotation(Vector3.forward, FaceDirection);
 
+
+
+
+        // ---------------------------------------------------------    END OF FIRST LOOP
         if (!_doneFirstLoop)
         {
             Halt();
@@ -632,7 +675,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
         Quaternion rotation;
         var diff = Math.Abs(FaceDirection.z + 1f);
         if (diff >= 0.01f)
-            rotation = Quaternion.FromToRotation(Vector3.forward, FaceDirection);
+            rotation = Quaternion.FromToRotation(from, to);
         else
             rotation = Quaternion.Euler(0, -180, 0);
         return rotation;
@@ -640,6 +683,8 @@ public class HeroMovement : MonoBehaviour, IJumpHit
 
     private void grabDragStuffs()
     {
+        if (IsBumped || IsShoved || IsStunned) return;
+
         // Can grab?
         object foundObject;
         var hitSomething = checkGrabDragAvailable(out foundObject);
@@ -651,7 +696,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
                 CurrentGrab = foundGrab;
                 if ( (CurrentGrab.IsGrabbed && CurrentGrab.CanBeTuggedWhileGrabbed) || CurrentGrab.GrabInProgress)
                 {
-                    if (Vector3.Dot(FaceDirection, CurrentGrab.Grabber.FaceDirection) < GlobalValues.CHAR_TUG_DIRECTION_DOT_LIMIT)
+                    if (Vector3.Dot(FaceDirection, CurrentGrab.Grabber.FaceDirection) < GlobalValues.TUG_DIRECTION_DOT_LIMIT)
                         foundGrab.PickupAlert.Ping(this, foundGrab.transform, true);
                 } else if (!CurrentGrab.IsGrabbed)
                     foundGrab.PickupAlert.Ping(this, foundGrab.transform, false);
@@ -675,7 +720,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
 
                 if (result == 0)
                 {
-                    actualDrop();
+                    ActualDrop();
                 }
             }
         }
@@ -694,16 +739,12 @@ public class HeroMovement : MonoBehaviour, IJumpHit
             if (IsGrabbing)
             {
                 CurrentGrab.Drop();
-                if (_doDrop)
-                {
-                    actualDrop();
-                } else
-                    Debug.Log("THIS LINE SHOULD BE REACHED: HeroMovement.cs: grabDragStuff()");
+                ActualDrop();
             }
         }
     }
 
-    private void actualDrop()
+    public void ActualDrop()
     {
         _doDrop = false;
         _grabTimout.Reset();
@@ -768,9 +809,10 @@ public class HeroMovement : MonoBehaviour, IJumpHit
         {
             if (grabbable.IsGrabbed && grabbable.CanBeTuggedWhileGrabbed)
             {
-                if (Vector3.Dot(FaceDirection, grabbable.Grabber.FaceDirection) < GlobalValues.CHAR_TUG_DIRECTION_DOT_LIMIT)
+                if (Vector3.Dot(FaceDirection, grabbable.Grabber.FaceDirection) < GlobalValues.TUG_DIRECTION_DOT_LIMIT)
                 {
-                    //Start TUG!
+                    grabbable.StartTug(this, grabbable.Grabber);
+                    return true;
                 }
             } else
             {
@@ -826,6 +868,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     }
     private void _resumeMoving(Vector3 direction)
     {
+        if (IsTugging) return;
         TargetDirection = direction;
 
         if (IsGrabInProgress && CurrentGrab != null)
@@ -853,6 +896,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     }
     private void _startMovingFromStandStill(Vector3 direction)
     {
+        if (IsTugging) return;
         TargetDirection = direction;
         TargetSpeed = direction.magnitude * MaxMoveSpeed;
         _accelTimer.Reset();

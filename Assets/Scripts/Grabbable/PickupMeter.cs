@@ -14,11 +14,10 @@ public class PickupMeter : MonoBehaviour
     [SerializeField][Range(0f, 1f)] private float _value;
     private EasyTimer _timer;
     private Vector3 _spawnPosition;
-    private bool _aborted = false;
-    private bool _paused = false;
+    //private bool _aborted = false;
     public event EventHandler PickupComplete;
     public event EventHandler PickupAborted;
-    private Material _shader;
+    
     protected void OnPickupComplete()
     { PickupComplete?.Invoke(this, EventArgs.Empty); }
     protected void OnPickupAborted()
@@ -28,8 +27,9 @@ public class PickupMeter : MonoBehaviour
 
     public void Abort()
     {
+        OnPickupAborted();
+        Active = false;
         gameObject.SetActive(false);
-        _aborted = true;
     }
     public void Activate(Vector3 position)
     {
@@ -62,16 +62,8 @@ public class PickupMeter : MonoBehaviour
 
         if (_timer.Done)
         {
-            _aborted = false;
             Active = false;
             OnPickupComplete();
-            gameObject.SetActive(false);
-        }
-        if (_aborted)
-        {
-            OnPickupAborted();
-            Active = false;
-            _aborted = false;
             gameObject.SetActive(false);
         }
     }

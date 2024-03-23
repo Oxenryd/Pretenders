@@ -10,6 +10,9 @@ public static class GlobalStrings
     public static string NAME_BOMBERTREE = "BomberTree";
     public static string NAME_UIOVERLAY = "UiOverlay";
 
+    // PreFabs
+    public static string PREFAB_TUG = "TugPrefab";
+
     //CONTAINERS
     public const string CONT_HEROCONTAINER = "HeroContainer";
     public static string CONT_MISCCONTAINER = "MiscContainer";

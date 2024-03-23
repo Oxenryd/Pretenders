@@ -34,7 +34,6 @@ public class PickupAlert : MonoBehaviour
     private EasyTimer _animateTimer;
     private EasyTimer _deAnimateTimer;
     private EasyTimer _wobbleTextTimer;
-    private EasyTimer _wobbleButtonTimer;
     private EasyTimer _keepAliveTimer;
     private bool _textGrowing = true;
     private AlertMode _mode = AlertMode.Inactive;
@@ -93,7 +92,6 @@ public class PickupAlert : MonoBehaviour
         _animateTimer = new EasyTimer(_animTime);
         _deAnimateTimer = new EasyTimer(_animTime/2);
         _wobbleTextTimer = new EasyTimer(_wobbleTextTime);
-        _wobbleButtonTimer = new EasyTimer(_wobbleButtonTime);
         _camera = Camera.main;
         var canvas = GetComponent<Canvas>();
         canvas.worldCamera = _camera;

@@ -20,9 +20,10 @@ public class Grabbable : MonoBehaviour
     private EasyTimer _grabbedTimer;
     private EasyTimer _colliderTimer;
     private bool _pendingColliderEnable = false;
-    private Dictionary<HeroMovement, bool> _potentialGrabbersGrabbing = new Dictionary<HeroMovement, bool>();
     [SerializeField] private Tug _tugOWar = null;
     [SerializeField] private GrabbablePosition _grabPosition = GrabbablePosition.InFrontTwoHands;
+
+    public Tug Tug { get { return _tugOWar; } }
 
     private int _grabberLayer = 0;
     public bool GrabInProgress { get; set; } = false;
@@ -109,6 +110,16 @@ public class Grabbable : MonoBehaviour
     public bool IsGrabbed
     { get; set; }
 
+    public void StartTug(HeroMovement hero1, HeroMovement hero2)
+    {
+        hero1.SetTug(-1);
+        hero2.SetTug(1);
+        Tug.Activate(hero1, hero2);
+    }
+    public void TugPull(HeroMovement hero)
+    {
+        Tug.Increase(hero.TuggerIndex * hero.TugPower);
+    }
 
     public void AbortGrab()
     {
@@ -120,71 +131,48 @@ public class Grabbable : MonoBehaviour
         _grabber = null;
     }
 
-    //public void SignalCanNotGrab(HeroMovement potentialGrabber)
-    //{
-    //    if (IsGrabbed) return;
-    //    _alert.Deactivate();
-    //    _potentialGrabbersGrabbing.Remove(potentialGrabber);
-    //}
-
-    //public void SignalCanGrab(HeroMovement potentialGrabber)
-    //{
-    //    if (IsGrabbed) return;
-
-    //    if (!_potentialGrabbersGrabbing.ContainsKey(potentialGrabber))
-    //        _potentialGrabbersGrabbing.Add(potentialGrabber, false);
-
-    //    if (_alert.Mode == AlertMode.Inactive || _alert.Mode == AlertMode.DeAnimating)
-    //    {
-    //        var hero = potentialGrabber.GameObject.GetComponent<Hero>();
-    //        _alert.Activate(transform, hero.PrimaryColor);
-    //    }
-    //}
-
     public bool TryGrab(HeroMovement grabber)
     {
-        if (!IsGrabbed)
+        if (!IsGrabbed && !GrabInProgress)
         {
-            if (!_potentialGrabbersGrabbing.ContainsKey(grabber))
-                _potentialGrabbersGrabbing.Add(grabber, true);
-            else
-                _potentialGrabbersGrabbing[grabber] = true;
-
-            // TODO!! If another grabber enter the grabbing -> Start a tug!!!
-
             _alert.Hide();
             GrabInProgress = true;
-            _lastVelocity = _rBody.velocity;
+            _lastVelocity = Vector3.ClampMagnitude(_rBody.velocity, GlobalValues.GRABBABLE_MAX_STORED_VELOCITY_MAGNITUDE);
+            _rBody.velocity = Vector3.zero;
             _rBody.isKinematic = true;
             _grabber = grabber;
             _meter.Activate(_grabber.GameObject.transform.position + new Vector3(0, 2.3f, 0));
             return true;
+        } else if (GrabInProgress)
+        {
+            _alert.Hide();
+            _meter.Abort();
+            StartTug(grabber, _grabber);
         }
         return false;
     }
 
     public void Grab(HeroMovement grabber)
     {
-        _potentialGrabbersGrabbing.Clear();
         IsGrabbed = true;
         GrabInProgress = false;
         if (ColliderEnabledWhileGrabbed)
         {
             _grabberLayer = grabber.GameObject.layer;
-            var thisCollider = GetComponent<Collider>();
-            thisCollider.excludeLayers = LayerUtil.Include(GlobalValues.GROUND_LAYER, grabber.GameObject.layer);          
+            _collider.enabled = true;
+            _collider.excludeLayers = LayerUtil.Include(GlobalValues.GROUND_LAYER, grabber.GameObject.layer);          
         } else
             _collider.enabled = false;
-
+        _grabber = grabber;
         _grabber.Grab(this);
-
         _alert.Deactivate();
         StraightenUp();
     }
     public void Drop()
     {
         IsGrabbed = false;
-        _grabber.Drop(this);
+        GrabInProgress = false;
+        _grabber.ActualDrop();
         if (!IsAttached)
         {
             if (ColliderEnabledWhileGrabbed)
@@ -198,6 +186,7 @@ public class Grabbable : MonoBehaviour
             _pendingColliderEnable = true;
             _colliderTimer.Reset();
             _rBody.isKinematic = false;
+            _rBody.velocity = Vector3.zero;
             _rBody.AddForce(GlobalValues.CHAR_GRAB_DROPFORCE * (_grabber.CurrentDirection + Vector3.up).normalized, ForceMode.Impulse);
             _grabber = null;
         }
@@ -214,7 +203,8 @@ public class Grabbable : MonoBehaviour
         _meter.gameObject.SetActive(false);
         _alert = Instantiate(_alert, container.transform);
         _alert.gameObject.SetActive(false);
-
+        _tugOWar = Instantiate(_tugOWar, container.transform);
+        _tugOWar.Grabbable = this;
     }
     protected void Start()
     {
@@ -224,7 +214,7 @@ public class Grabbable : MonoBehaviour
 
     private void OnPickupAborted(object sender, EventArgs e)
     {
-        AbortGrab();
+        //AbortGrab();
     }
 
     private void OnPickupComplete(object sender, EventArgs e)
@@ -236,9 +226,6 @@ public class Grabbable : MonoBehaviour
     {
         if (Hidden)
             return;
-
-       // if (_potentialGrabbersGrabbing.Count == 0)
-        //    _alert.Deactivate();
 
         Vector3 tre = new Vector3(1, 0, 0);
 
