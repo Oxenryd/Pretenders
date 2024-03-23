@@ -10,6 +10,9 @@ using UnityEngine.UIElements;
 
 public class PickupAlert : MonoBehaviour
 {
+    private const string TUG = "Tug!!";
+    private const string GRAB = "Grab!";
+
     private Camera _camera;
     [SerializeField] private float _animTime = 0.3f;
     [SerializeField] private float _wobbleTextTime = 0.1f;
@@ -39,10 +42,14 @@ public class PickupAlert : MonoBehaviour
     public AlertMode Mode
     { get { return _mode; } }
 
-    public void Ping(HeroMovement icm, Transform grabbableTransform)
+    public void Ping(HeroMovement icm, Transform grabbableTransform, bool tug)
     {
-        if (!_signalled && Mode != AlertMode.Active)
+        if (!_signalled && _mode != AlertMode.Active)
         {
+            if (tug)
+                _text.text = TUG;
+            else
+                _text.text = GRAB;
             _signalled = true;
             var hero = icm.GameObject.GetComponent<Hero>();
             var color = hero.PrimaryColor;
@@ -101,6 +108,7 @@ public class PickupAlert : MonoBehaviour
         if (_signalled && _keepAliveTimer.Done)
         {
             _signalled = false;
+            _deAnimateTimer.Reset();
             _mode = AlertMode.DeAnimating;
         } else if (_signalled)
         {

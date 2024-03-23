@@ -24,7 +24,6 @@ public class Grabbable : MonoBehaviour
     [SerializeField] private Tug _tugOWar = null;
     [SerializeField] private GrabbablePosition _grabPosition = GrabbablePosition.InFrontTwoHands;
 
-    private LayerMask _defaultLayerMask;
     private int _grabberLayer = 0;
     public bool GrabInProgress { get; set; } = false;
 
@@ -44,7 +43,12 @@ public class Grabbable : MonoBehaviour
 
     public float TimeToGrab
     { get; set; } = GlobalValues.CHAR_GRAB_RADIUS_DEFAULT_TIMETOGRAB;
-
+    public PickupAlert PickupAlert
+    { get { return _alert; } }
+    /// <summary>
+    /// Needs ColliderEnabledWhileGrabbed to be set to 'true' to work.
+    /// </summary>
+    public bool CanBeTuggedWhileGrabbed { get; set; } = false;
 
     public void Hide()
     {
@@ -116,26 +120,26 @@ public class Grabbable : MonoBehaviour
         _grabber = null;
     }
 
-    public void SignalCanNotGrab(HeroMovement potentialGrabber)
-    {
-        if (IsGrabbed) return;
-        _alert.Deactivate();
-        _potentialGrabbersGrabbing.Remove(potentialGrabber);
-    }
+    //public void SignalCanNotGrab(HeroMovement potentialGrabber)
+    //{
+    //    if (IsGrabbed) return;
+    //    _alert.Deactivate();
+    //    _potentialGrabbersGrabbing.Remove(potentialGrabber);
+    //}
 
-    public void SignalCanGrab(HeroMovement potentialGrabber)
-    {
-        if (IsGrabbed) return;
+    //public void SignalCanGrab(HeroMovement potentialGrabber)
+    //{
+    //    if (IsGrabbed) return;
 
-        if (!_potentialGrabbersGrabbing.ContainsKey(potentialGrabber))
-            _potentialGrabbersGrabbing.Add(potentialGrabber, false);
+    //    if (!_potentialGrabbersGrabbing.ContainsKey(potentialGrabber))
+    //        _potentialGrabbersGrabbing.Add(potentialGrabber, false);
 
-        if (_alert.Mode == AlertMode.Inactive || _alert.Mode == AlertMode.DeAnimating)
-        {
-            var hero = potentialGrabber.GameObject.GetComponent<Hero>();
-            _alert.Activate(transform, hero.PrimaryColor);
-        }
-    }
+    //    if (_alert.Mode == AlertMode.Inactive || _alert.Mode == AlertMode.DeAnimating)
+    //    {
+    //        var hero = potentialGrabber.GameObject.GetComponent<Hero>();
+    //        _alert.Activate(transform, hero.PrimaryColor);
+    //    }
+    //}
 
     public bool TryGrab(HeroMovement grabber)
     {
@@ -163,7 +167,7 @@ public class Grabbable : MonoBehaviour
     {
         _potentialGrabbersGrabbing.Clear();
         IsGrabbed = true;
-        
+        GrabInProgress = false;
         if (ColliderEnabledWhileGrabbed)
         {
             _grabberLayer = grabber.GameObject.layer;
@@ -233,8 +237,8 @@ public class Grabbable : MonoBehaviour
         if (Hidden)
             return;
 
-        if (_potentialGrabbersGrabbing.Count == 0)
-            _alert.Deactivate();
+       // if (_potentialGrabbersGrabbing.Count == 0)
+        //    _alert.Deactivate();
 
         Vector3 tre = new Vector3(1, 0, 0);
 

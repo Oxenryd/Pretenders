@@ -86,6 +86,7 @@ public class TransferAlert : MonoBehaviour
         if (_signalled && _keepAliveTimer.Done)
         {
             _signalled = false;
+            _deAnimateTimer.Reset();
             _mode = AlertMode.DeAnimating;
         } else if (_signalled)
         {
