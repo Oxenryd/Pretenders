@@ -155,6 +155,10 @@ public class InputManager : MonoBehaviour
                     action.started += _characters[playerIndex].TryTrigger;
                     action.canceled += _characters[playerIndex].TryTrigger;
                     break;
+                case GlobalStrings.INPUT_MOVE_PUSH:
+                    action.started += _characters[playerIndex].TryPush;
+                    action.canceled += _characters[playerIndex].TryPush;
+                    break;
             }
         }
     }
@@ -186,6 +190,10 @@ public class InputManager : MonoBehaviour
                 case GlobalStrings.INPUT_MOVE_TRIGGER:
                     action.started -= _characters[playerIndex].TryTrigger;
                     action.canceled -= _characters[playerIndex].TryTrigger;
+                    break;
+                case GlobalStrings.INPUT_MOVE_PUSH:
+                    action.started -= _characters[playerIndex].TryPush;
+                    action.canceled -= _characters[playerIndex].TryPush;
                     break;
             }
         }

@@ -91,7 +91,6 @@ public class Grabbable : MonoBehaviour
     {
         Hidden = false;
         gameObject.SetActive(true);
-        //_collider.enabled = true;
         _pendingColliderEnable = false;
         _collider.enabled = true;
         _colliderTimer.Reset();
@@ -187,7 +186,8 @@ public class Grabbable : MonoBehaviour
             _colliderTimer.Reset();
             _rBody.isKinematic = false;
             _rBody.velocity = Vector3.zero;
-            _rBody.AddForce(GlobalValues.CHAR_GRAB_DROPFORCE * (_grabber.CurrentDirection + Vector3.up).normalized, ForceMode.Impulse);
+            _rBody.angularVelocity = Vector3.zero;
+            _rBody.AddForce(GlobalValues.CHAR_GRAB_DROPFORCE * (_grabber.FaceDirection + Vector3.up).normalized, ForceMode.Impulse);
             _grabber = null;
         }
     }
@@ -209,12 +209,6 @@ public class Grabbable : MonoBehaviour
     protected void Start()
     {
         _meter.PickupComplete += OnPickupComplete;
-        _meter.PickupAborted += OnPickupAborted;
-    }
-
-    private void OnPickupAborted(object sender, EventArgs e)
-    {
-        //AbortGrab();
     }
 
     private void OnPickupComplete(object sender, EventArgs e)
@@ -252,7 +246,13 @@ public class Grabbable : MonoBehaviour
     /// Default behaviour is to just Drop() which also makes the Grabber to be set to drop.
     /// </summary>
     /// <param name="response"></param>
-    public virtual void ProcessTransferResponse(int response) { if (response == 0) Drop(); }
+    public virtual void ProcessTransferResponse(int response)
+    { 
+        if (response == 0)
+        { 
+            _grabber.ActualDrop(); Drop();
+        }
+    }
     public virtual object[] GetTransferables() { return new GameObject[] { this.gameObject }; }
 
     public virtual void Trigger() { }

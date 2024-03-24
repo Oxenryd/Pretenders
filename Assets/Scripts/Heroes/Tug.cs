@@ -1,6 +1,7 @@
 using System;
 using TMPro;
 using Unity.Mathematics;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -27,7 +28,8 @@ public class Tug : MonoBehaviour
     [SerializeField] private float _wobbleRange = 10f;
     [SerializeField] private float _wobbleTextTime = 0.1f;
 
-    private Vector3 _canvasScale;
+    private RectTransform _canvasTransform;
+    private Vector3 _delta;
 
     private Vector3 _meter1OrgScale;
     private Vector3 _meter2OrgScale;
@@ -43,9 +45,6 @@ public class Tug : MonoBehaviour
     private EasyTimer _maxStruggleTime;
     private HeroMovement _hero1;
     private HeroMovement _hero2;
-
-    private float _curDampVel1;
-    private float _curDampVel2;
 
     private bool _textGrowing = true;
 
@@ -79,11 +78,14 @@ public class Tug : MonoBehaviour
         _meter2OrgScale = _meter2RectTransform.localScale;
         _imageOrgScale = _image.rectTransform.localScale;
         _textOrgScale = _text.rectTransform.localScale;
-        _canvasScale = transform.parent.localScale;
-        gameObject.SetActive(false);
+        
     }
 
-    
+    void Start()
+    {
+        _canvasTransform = GameObject.FindGameObjectWithTag(GlobalStrings.NAME_UIOVERLAY).GetComponent<RectTransform>();
+        gameObject.SetActive(false);
+    }
 
     public void SetMaxTime(float maxTime)
     {
@@ -116,20 +118,20 @@ public class Tug : MonoBehaviour
         _meter2.Value = _value;
         _meter1.Value = _value;
 
-        var delta = _hero2.GameObject.transform.position - _hero1.GameObject.transform.position;
+        _delta = _hero2.GameObject.transform.position - _hero1.GameObject.transform.position;
         
 
         _meter1.Activate(_hero1.transform.position + _metersOffset);
         _meter2.Activate(_hero2.transform.position + _metersOffset);
 
-        _text.rectTransform.localPosition = _camera.WorldToScreenPoint(_hero1.transform.position + delta * 0.5f + _textOffset) / _canvasScale.x;
-        _image.rectTransform.localPosition = _camera.WorldToScreenPoint(_hero1.transform.position + delta * 0.5f + _buttonOffset) / _canvasScale.x;
-        _meter1RectTransform.localPosition = _camera.WorldToScreenPoint(_hero1.transform.position + _metersOffset) / _canvasScale.x;
-        _meter2RectTransform.localPosition = _camera.WorldToScreenPoint(_hero2.transform.position + _metersOffset) / _canvasScale.x;
+        _text.rectTransform.localPosition = _camera.WorldToScreenPoint(_hero1.transform.position + _delta * 0.5f + _textOffset) / _canvasTransform.localScale.x;
+        _image.rectTransform.localPosition = _camera.WorldToScreenPoint(_hero1.transform.position + _delta * 0.5f + _buttonOffset) / _canvasTransform.localScale.x;
+        _meter1RectTransform.localPosition = _camera.WorldToScreenPoint(_hero1.transform.position + _metersOffset) / _canvasTransform.localScale.x;
+        _meter2RectTransform.localPosition = _camera.WorldToScreenPoint(_hero2.transform.position + _metersOffset) / _canvasTransform.localScale.x;
     }
 
     public void Increase(float amount)
-    { _value += amount * (_maxStruggleTime.Ratio * GlobalValues.TUG_TIME_MULTIPLIER + 1); }
+    { _value += amount * (MathF.Pow(_maxStruggleTime.Ratio, 2) * GlobalValues.TUG_TIME_MULTIPLIER + 1); }
 
     void Update()
     {
@@ -145,6 +147,12 @@ public class Tug : MonoBehaviour
             doFadeIn();
             return;
         }
+
+        _text.rectTransform.localPosition = _camera.WorldToScreenPoint(_hero1.transform.position + _delta * 0.5f + _textOffset) / _canvasTransform.localScale.x;
+        _image.rectTransform.localPosition = _camera.WorldToScreenPoint(_hero1.transform.position + _delta * 0.5f + _buttonOffset) / _canvasTransform.localScale.x;
+        _meter1RectTransform.localPosition = _camera.WorldToScreenPoint(_hero1.transform.position + _metersOffset) / _canvasTransform.localScale.x;
+        _meter2RectTransform.localPosition = _camera.WorldToScreenPoint(_hero2.transform.position + _metersOffset) / _canvasTransform.localScale.x;
+
 
         if (_imageTimer.Done)
         {

@@ -10,7 +10,6 @@ public class TransferAlert : MonoBehaviour
     [SerializeField] private float _pingCooldown = 0.15f;
     [SerializeField] private RectTransform _alert;
     [SerializeField] private UnityEngine.UI.Image _image;
-    [SerializeField] private float _wobbleRange = 1f;
     [SerializeField] private Vector3 _positionOffset = new Vector3(0, 1f, 0f);
 
     private Transform _target;

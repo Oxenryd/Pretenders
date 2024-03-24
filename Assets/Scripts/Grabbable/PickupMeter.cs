@@ -14,7 +14,6 @@ public class PickupMeter : MonoBehaviour
     [SerializeField][Range(0f, 1f)] private float _value;
     private EasyTimer _timer;
     private Vector3 _spawnPosition;
-    //private bool _aborted = false;
     public event EventHandler PickupComplete;
     public event EventHandler PickupAborted;
     

@@ -85,7 +85,6 @@ public class PickupAlert : MonoBehaviour
         _animateTimer.Reset();
     }
 
-    // Start is called before the first frame update
     void Awake()
     {
         _keepAliveTimer = new EasyTimer(_pingCooldown);
@@ -97,7 +96,6 @@ public class PickupAlert : MonoBehaviour
         canvas.worldCamera = _camera;
     }
 
-    // Update is called once per frame
     void Update()
     {
         _alert.parent.transform.position = _camera.WorldToScreenPoint(_target.position + _positionOffset);

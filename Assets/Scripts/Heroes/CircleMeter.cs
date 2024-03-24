@@ -43,7 +43,7 @@ public class CircleMeter : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-       // if (!Active) return;
+        if (!Active) return;
 
         var scale = _meter.localScale;
         _counter += GameManager.Instance.DeltaTime;

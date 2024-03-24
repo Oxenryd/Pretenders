@@ -45,9 +45,12 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     private EasyTimer _dragCooldown;
     private EasyTimer _shoveOffenderColDisableTimer;
     private EasyTimer _stunTimer;
+    private EasyTimer _pushTimer;
     private float _stopSpeed = 0f;
     private bool _jumpButtonIsDown = false; // (instead of polling device with external calls)
     private bool _grabButtonIsDown = false;
+    private bool _pushButtonIsDown = false;
+    private bool _triggerButtonDown = false;
     private bool _didJumpDecel = false;
     private bool _startShoving = false;
     private bool _startBump = false;
@@ -64,7 +67,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     private bool _tryingToDrop = false;
     private bool _doneFirstLoop = false;
     private bool _triedToTrigger = false;
-    private bool _triggerButtonDown = false;
+    
     private bool _signalingGrab = false;
     private float _shovePower = GlobalValues.SHOVE_DEFAULT_SHOVEPOWER;
 
@@ -134,8 +137,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     public Rigidbody RigidBody { get { return _body; } }
 
     public void OnHeadHit(HeroMovement offender)
-    {
-    }
+    {}
 
     public void OnHitOthersHead(HeroMovement victim)
     {
@@ -203,9 +205,21 @@ public class HeroMovement : MonoBehaviour, IJumpHit
         }
     }
 
+    public void TryPush(InputAction.CallbackContext context)
+    {
+        if (context.started)
+        {
+            _pushButtonIsDown = true;
+        } else if (context.canceled)
+        {
+            _pushButtonIsDown = false;
+        }
+    }
     public void TryGrab(InputAction.CallbackContext context)
     {
         // This is horrible...
+        // A lot of functionality for one button.
+        // Totally worth it =)
         if (context.started)
         {
             _grabButtonIsDown = true;
@@ -461,7 +475,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
             TryingToGrab = false;
             _tryingToDrop = false;
         }    
-        if (_grabTimout.Done)
+        if (_grabTimout.Done && !IsTugging)
         {
             grabDragStuffs();
         }
