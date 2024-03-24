@@ -348,7 +348,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
 
             if (IsGrabbing)
             {
-                CurrentGrab.Drop();
+                CurrentGrab.KnockOff();
             }
 
             Vector3 forceDir = Vector3.zero;

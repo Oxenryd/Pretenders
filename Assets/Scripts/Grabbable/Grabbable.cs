@@ -28,6 +28,7 @@ public class Grabbable : MonoBehaviour
     private int _grabberLayer = 0;
     public bool GrabInProgress { get; set; } = false;
 
+    public bool DetachOnDrop { get; set; } = true;
     public int GrabberLayer
     { get { return _grabberLayer; } }
     public bool ColliderEnabledWhileGrabbed
@@ -59,7 +60,7 @@ public class Grabbable : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public virtual void Attach(IRecievable attachedTo)
+    public void Attach(IRecievable attachedTo)
     {
         IsGrabbed = true;
         IsAttached = true;
@@ -67,16 +68,16 @@ public class Grabbable : MonoBehaviour
         _rBody.isKinematic = true;
         _collider.enabled = false;
     }
-    public virtual void Detach()
+    public void Detach()
     {
         IsAttached = false;
         IsGrabbed = false;
         _attachedTo = null;
-        Vector3 randomDir = UnityEngine.Random.insideUnitSphere.normalized;
+        Vector3 randomDir = new Vector3(UnityEngine.Random.Range(-1f, 1f), 1f, UnityEngine.Random.Range(-1f, 1f)).normalized;
         _rBody.isKinematic = false;
         _pendingColliderEnable = true;
         _colliderTimer.Reset();
-        _rBody.AddForce(randomDir * 9f, ForceMode.Impulse);
+        _rBody.AddForce(randomDir * GlobalValues.GRABBABLE_DEFAULT_MAX_DETACH_POWER * UnityEngine.Random.Range(0.5f, 1f), ForceMode.Impulse);
     }
 
     public HeroMovement Grabber
@@ -151,7 +152,7 @@ public class Grabbable : MonoBehaviour
         return false;
     }
 
-    public void Grab(HeroMovement grabber)
+    public virtual void Grab(HeroMovement grabber)
     {
         IsGrabbed = true;
         GrabInProgress = false;
@@ -167,7 +168,7 @@ public class Grabbable : MonoBehaviour
         _alert.Deactivate();
         StraightenUp();
     }
-    public void Drop()
+    public virtual void Drop()
     {
         IsGrabbed = false;
         GrabInProgress = false;
@@ -192,7 +193,7 @@ public class Grabbable : MonoBehaviour
         }
     }
 
-    void Awake()
+    protected void Awake()
     {
         _collider = gameObject.GetComponent<Collider>();
         _rBody = _collider.attachedRigidbody;
@@ -255,10 +256,12 @@ public class Grabbable : MonoBehaviour
     }
     public virtual object[] GetTransferables() { return new GameObject[] { this.gameObject }; }
 
-    public virtual void Trigger() { }
+    public virtual void TriggerEnter() { }
+    public virtual void TriggerExit() { }
 
     protected virtual void StraightenUp()
     {
         transform.rotation = Quaternion.identity;
     }
+    public virtual void KnockOff() { Drop(); }
 }

@@ -42,7 +42,8 @@ public static class GlobalValues
     public const float TUG_DIRECTION_DOT_LIMIT = -0.8f;
 
     public const float GRABBABLE_COLLIDER_TIMEOUT_DEFAULTTIME = 0.3f;
-    public const float GRABBABLE_MAX_STORED_VELOCITY_MAGNITUDE = 10f;  
+    public const float GRABBABLE_MAX_STORED_VELOCITY_MAGNITUDE = 10f;
+    public const float GRABBABLE_DEFAULT_MAX_DETACH_POWER = 10f;
 
     public const int   OBJECTS_LAYER = 22;
     public const int   GROUND_LAYER = 10;

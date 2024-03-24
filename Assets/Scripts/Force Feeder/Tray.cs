@@ -37,7 +37,6 @@ public class Tray : Grabbable, IRecievable
         {
             Debug.LogError("Renderer component not found!");
         }
-
     }
 
 
@@ -77,6 +76,13 @@ public class Tray : Grabbable, IRecievable
         return 0;
     }
 
-
-
+    public override void KnockOff()
+    {
+        base.KnockOff();
+        foreach(var item in _heldObjects)
+        {
+            item.Detach();
+        }
+        _heldObjects.Clear();
+    }
 }

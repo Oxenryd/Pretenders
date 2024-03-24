@@ -65,7 +65,7 @@ public class CooldownClock : MonoBehaviour
         //(0.1f * Mathf.Cos(_counter * 8) + 1)
         var yScale = (0.05f * Mathf.Cos(_counter * 6) + 1);
         var xScale = (0.05f * Mathf.Sin(_counter * 6) + 1);
-        var scaledY = _camera.scaledPixelHeight * (0.005f * Mathf.Sin(_counter * 6) + 0.005f);
+        var scaledY = _camera.scaledPixelHeight * (0.001f * Mathf.Sin(_counter * 6) + 0.001f);
         _rectTransform.localPosition = new Vector3(0, scaledY, 0);
         _rectTransform.localScale = new Vector3(1 * xScale, 1 * yScale, 1); //new Vector3(1 * xScale, 1 * yScale, 1);
     }
