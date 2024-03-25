@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 
 public class HeroMovement : MonoBehaviour, ICharacterMovement, IJumpHit
 {
+    [SerializeField] private ControlSchemeType _controlScheme = ControlSchemeType.TopDown;
     [SerializeField] private float _quickTurnFactor = 0.2f;
     [SerializeField] private float _jumpBufferTime = 0.13f;
     [SerializeField] private Rigidbody _body;
@@ -85,15 +86,15 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IJumpHit
     public bool TryingToGrab
     { get; set; } = false;
     public bool IsDoubleJumping
-        { get; set; } = false;
+    { get; set; } = false;
     public int NumberOfDoubleJumps
-        { get { return _maxDJumps; } set { _maxDJumps = value; } }
+    { get { return _maxDJumps; } set { _maxDJumps = value; } }
     public bool CanMove { get; set; } = true;
     public float CurrentSpeed { get; set; } = 0f;
     public float MaxMoveSpeed
-        { get { return _moveSpeed; } set { _moveSpeed = value; } }
+    { get { return _moveSpeed; } set { _moveSpeed = value; } }
     public float MaxJumpPower
-        { get { return _jumpPower; } set { _jumpPower = value; } }
+    { get { return _jumpPower; } set { _jumpPower = value; } }
     public float TargetSpeed { get; set; } = 0f;
     public bool AiControlled { get; set; } = true;
     public bool TryingToMove { get; set; } = false;
@@ -102,14 +103,15 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IJumpHit
     public Vector3 TargetDirection { get; set; } = Vector2.zero;
     public Vector3 FaceDirection { get; set; } = Vector2.zero;
     public Vector3 GroundNormal
-        { get { return _gndNormal; } set { _gndNormal = value; } }
+    { get { return _gndNormal; } set { _gndNormal = value; } }
     public float AccelerationTime
-        { get { return _accelerationTime; } set { _accelerationTime = value; } }
+    { get { return _accelerationTime; } set { _accelerationTime = value; } }
     public float RetardTime
-        { get { return _retardTime; } set { _retardTime = value; } }
+    { get { return _retardTime; } set { _retardTime = value; } }
     public float TurnTime
-        { get { return _turnTime; } set { _turnTime = value; } }
-    public ControlSchemeType CurrentControlScheme { get; set; } = ControlSchemeType.TopDown;
+    { get { return _turnTime; } set { _turnTime = value; } }
+    public ControlSchemeType CurrentControlScheme
+    { get { return _controlScheme; } set { _controlScheme = value; } }
     public float JumpVelocity { get; set; } = 0f;
     public bool IsGrounded { get; set; } = false;
     public bool IsJumping { get; set; } = false;
@@ -169,10 +171,11 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IJumpHit
     public void TryJump(InputAction.CallbackContext context)
     {
         if (context.started)
-        { 
+        {
             TryingToJump = true;
             _jumpButtonIsDown = true;
-        } else if (context.canceled)
+        }
+        else if (context.canceled)
         {
             JumpDecel();
             _jumpButtonIsDown = false;
@@ -194,13 +197,14 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IJumpHit
                 {
                     _tryingToDrop = true;
                 }
-            } else
+            }
+            else
             {
                 if (IsDraggingOther)
                     _struggle.Decrease(GlobalValues.CHAR_DRAG_DRAGGER_DECREASE);
                 else
                     _struggle.Increase(GlobalValues.CHAR_DRAG_DRAGGED_INCREASE);
-                    
+
             }
         }
         else if (context.canceled)
@@ -260,11 +264,13 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IJumpHit
         {
             var inputDir = context.ReadValue<Vector2>();
             _startMovingFromStandStill(new Vector3(inputDir.x, 0, inputDir.y));
-        } else if (CanMove && context.performed)
+        }
+        else if (CanMove && context.performed)
         {
             var inputDir = context.ReadValue<Vector2>();
             _resumeMoving(new Vector3(inputDir.x, 0, inputDir.y));
-        } else if (context.canceled)
+        }
+        else if (context.canceled)
         {
             Halt();
         }
@@ -307,9 +313,9 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IJumpHit
 
             Vector3 forceDir = Vector3.zero;
             switch (CurrentControlScheme) // TODO: Add different models for force calc in differnt control modes.
-            {              
+            {
                 case ControlSchemeType.TopDown:
-                    forceDir = new Vector3(direction.x * power, GlobalValues.SHOVE_HEIGHT_BUMP_TOPDOWN, direction.z * power);                   
+                    forceDir = new Vector3(direction.x * power, GlobalValues.SHOVE_HEIGHT_BUMP_TOPDOWN, direction.z * power);
                     break;
             }
 
@@ -350,7 +356,7 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IJumpHit
         _turnTimer = new EasyTimer(_turnTime, true, true);
         _haltTimer = new EasyTimer(_retardTime, false, true);
         _jumpBufferTimer = new EasyTimer(_jumpBufferTime, false, true);
-        _shoveStunTimer = new EasyTimer(_shoveStunDuration, false, true) ;
+        _shoveStunTimer = new EasyTimer(_shoveStunDuration, false, true);
         _bumpTimer = new EasyTimer(GlobalValues.CHAR_BUMPDURATION, false, true);
         _grabTimout = new EasyTimer(GlobalValues.CHAR_GRAB_TIMEOUT, false, true);
         _dragCooldown = new EasyTimer(GlobalValues.CHAR_DRAG_DRAGGED_COOLDOWN, false, true);
@@ -391,11 +397,11 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IJumpHit
 
         // Shoved?
         if (_startShoving)
-        {         
+        {
             TryingToMove = false;
             IsShoved = true;
             IsStunned = true; // Shove might be considered a kind of stun
-            _shoveStunTimer.Reset(); 
+            _shoveStunTimer.Reset();
             _body.velocity = Vector3.zero;
             _body.AddForce(_shoveVector, ForceMode.Impulse);
             _startShoving = false;
@@ -414,7 +420,7 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IJumpHit
                 case ControlSchemeType.TopDown:
                     _body.velocity = new Vector3(_body.velocity.x * GlobalValues.SHOVE_DAMPING_MULTIPLIER, _body.velocity.y, _body.velocity.z * GlobalValues.SHOVE_DAMPING_MULTIPLIER);
                     break;
-            }          
+            }
         }
 
         // Drag
@@ -462,7 +468,8 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IJumpHit
         if (IsStunned)
         {
             CanMove = false;
-        } else
+        }
+        else
         {
             CanMove = true;
         }
@@ -477,7 +484,8 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IJumpHit
             // Trying a "glassy" feeling of movement, with some time for acceleration and turning.
             CurrentDirection = Vector3.Lerp(CurrentDirection, TargetDirection, turnT);
             CurrentSpeed = Mathf.Clamp(Mathf.Lerp(CurrentSpeed, MaxMoveSpeed, accelT), 0f, TargetSpeed);
-        } else 
+        }
+        else
         {
             // Take some time to slow down.
             CurrentSpeed = Mathf.Lerp(_stopSpeed, 0f, haltT);
@@ -499,15 +507,17 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IJumpHit
 
         if (TryingToJump)
         {
-            if (CanMove && !InJumpBuffer && (IsGrounded || _dJumpsLeft > 0) )
+            if (CanMove && !InJumpBuffer && (IsGrounded || _dJumpsLeft > 0))
             {
                 _doJump();
                 TryingToJump = false;
-            } else if (CanMove && !InJumpBuffer)
+            }
+            else if (CanMove && !InJumpBuffer)
             {
                 _jumpBufferTimer.Reset();
                 InJumpBuffer = true;
-            } else if (_jumpBufferTimer.Done && InJumpBuffer)
+            }
+            else if (_jumpBufferTimer.Done && InJumpBuffer)
             {
                 if (CanMove && IsGrounded)
                 {
@@ -532,15 +542,16 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IJumpHit
             {
                 IsJumping = true;
                 IsFalling = false;
-            } else if (Mathf.Round(_body.velocity.y) < 0f)
+            }
+            else if (Mathf.Round(_body.velocity.y) < 0f)
             {
                 IsJumping = false;
                 IsFalling = true;
             }
         }
-        
 
-        
+
+
 
         // Moving?
         Vector2 planeVelocity = new Vector2(_body.velocity.x, _body.velocity.z);
@@ -567,7 +578,7 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IJumpHit
                     CurrentSpeed = CurrentSpeed * GlobalValues.JUMPDIRECTION_SLOWDOWN_MULTIPLIER;
                 }
             }
-            
+
 
             Vector3 velocity = Vector3.zero;
             switch (CurrentControlScheme)
@@ -578,11 +589,17 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IJumpHit
                     else
                         velocity = Dragger.Velocity;
                     break;
+                case ControlSchemeType.Platform:
+                    if (!IsDraggedByOther)
+                        velocity = new Vector3(CurrentDirection.x * CurrentSpeed, _body.velocity.y, 0);
+                    else
+                        velocity = Dragger.Velocity;
+                    break;
             }
 
             _body.velocity = velocity;
             var dirVelocity = new Vector3(velocity.x, 0, velocity.z).normalized;
-            if (dirVelocity.sqrMagnitude > 0.005f && !IsShoved  && !IsDraggedByOther)
+            if (dirVelocity.sqrMagnitude > 0.005f && !IsShoved && !IsDraggedByOther)
                 FaceDirection = new Vector3(_body.velocity.x, 0f, _body.velocity.z).normalized;
         }
         if (!IsGrounded)
@@ -612,7 +629,7 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IJumpHit
     private void grabDragStuffs()
     {
         // Can grab?
-       // RaycastHit hit;
+        // RaycastHit hit;
         object foundObject;
         var hitSomething = checkGrabDragAvailable(out foundObject);
         _signalingGrab = false;
@@ -641,14 +658,15 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IJumpHit
             CurrentGrab = null;
             IsGrabInProgress = false;
             OnStoppedGrabInProgress();
-        } else if (IsGrabbing && (foundObject as IRecievable) != null)
+        }
+        else if (IsGrabbing && (foundObject as IRecievable) != null)
         {
             var recievable = (foundObject as IRecievable);
             recievable.TransferAlert.Ping(this, recievable.transform);
             if (_tryingToDrop)
             {
                 _tryingToDrop = false;
-                var result = recievable.Transfer( CurrentGrab.GetTransferables() );
+                var result = recievable.Transfer(CurrentGrab.GetTransferables());
                 CurrentGrab.ProcessTransferResponse(result);
 
                 if (result == 0)
@@ -661,7 +679,7 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IJumpHit
         // Trying to grab?
         if (CanMove && TryingToGrab && hitSomething)
         {
-            doGrabbingDragging(foundObject);   
+            doGrabbingDragging(foundObject);
             Halt();
         }
 
@@ -675,7 +693,8 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IJumpHit
                 if (_doDrop)
                 {
                     actualDrop();
-                } else
+                }
+                else
                     Debug.Log("THIS LINE SHOULD BE REACHED: HeroMovement.cs: grabDragStuff()");
             }
         }
@@ -704,8 +723,8 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IJumpHit
         //Gizmos.DrawWireSphere(XZY + Vector3.up + FaceDirection * GlobalValues.CHAR_GRAB_CHECK_DISTANCE, GlobalValues.CHAR_GRAB_RADIUS);
 
 
-       // var hits = Physics.OverlapSphere(transform.position, 3f);
-       // Physics.CapsuleCast(xyz, xyz + Vector3.up, GlobalValues.CHAR_GRAB_RADIUS, FaceDirection, out hit, GlobalValues.CHAR_GRAB_CHECK_DISTANCE);
+        // var hits = Physics.OverlapSphere(transform.position, 3f);
+        // Physics.CapsuleCast(xyz, xyz + Vector3.up, GlobalValues.CHAR_GRAB_RADIUS, FaceDirection, out hit, GlobalValues.CHAR_GRAB_CHECK_DISTANCE);
 
 
         //var colliders = Physics.OverlapBox(xyz + FaceDirection * 2f, new Vector3(0.5f,1,0.5f), transform.rotation, LayerUtil.Exclude(GlobalValues.GROUND_LAYER));
@@ -739,7 +758,8 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IJumpHit
                 {
                     foundObject = grabbable;
                     return true;
-                } else
+                }
+                else
                 {
                     var draggable = colliders[i].gameObject.transform.GetComponentInParent<ICharacterMovement>();
                     if (draggable != null)
@@ -799,7 +819,8 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IJumpHit
                 IsGrabInProgress = true;
                 return true;
             }
-        } else
+        }
+        else
         {
             var draggable = hitObject as ICharacterMovement;
             if (draggable == null)
@@ -848,7 +869,7 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IJumpHit
     //        IsJumping = false;
     //        _didJumpDecel = false;
     //    }
-            
+
     //}
     //public void OnCollisionExit(Collision collision)
     //{
