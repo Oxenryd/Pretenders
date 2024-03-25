@@ -94,15 +94,15 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     public bool TryingToGrab
     { get; set; } = false;
     public bool IsDoubleJumping
-        { get; set; } = false;
+    { get; set; } = false;
     public int NumberOfDoubleJumps
-        { get { return _maxDJumps; } set { _maxDJumps = value; } }
+    { get { return _maxDJumps; } set { _maxDJumps = value; } }
     public bool CanMove { get; set; } = true;
     public float CurrentSpeed { get; set; } = 0f;
     public float MaxMoveSpeed
-        { get { return _moveSpeed; } set { _moveSpeed = value; } }
+    { get { return _moveSpeed; } set { _moveSpeed = value; } }
     public float MaxJumpPower
-        { get { return _jumpPower; } set { _jumpPower = value; } }
+    { get { return _jumpPower; } set { _jumpPower = value; } }
     public float TargetSpeed { get; set; } = 0f;
     public bool AiControlled { get; set; } = true;
     public bool TryingToMove { get; set; } = false;
@@ -111,13 +111,13 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     public Vector3 TargetDirection { get; set; } = Vector2.zero;
     public Vector3 FaceDirection { get; set; } = Vector2.zero;
     public Vector3 GroundNormal
-        { get { return _gndNormal; } set { _gndNormal = value; } }
+    { get { return _gndNormal; } set { _gndNormal = value; } }
     public float AccelerationTime
-        { get { return _accelerationTime; } set { _accelerationTime = value; } }
+    { get { return _accelerationTime; } set { _accelerationTime = value; } }
     public float RetardTime
-        { get { return _retardTime; } set { _retardTime = value; } }
+    { get { return _retardTime; } set { _retardTime = value; } }
     public float TurnTime
-        { get { return _turnTime; } set { _turnTime = value; } }
+    { get { return _turnTime; } set { _turnTime = value; } }
     public ControlSchemeType CurrentControlScheme
     { get { return _controlScheme; } set { _controlScheme = value; } }
     public float JumpVelocity { get; set; } = 0f;
@@ -195,10 +195,11 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     public void TryJump(InputAction.CallbackContext context)
     {
         if (context.started)
-        { 
+        {
             TryingToJump = true;
             _jumpButtonIsDown = true;
-        } else if (context.canceled)
+        }
+        else if (context.canceled)
         {
             JumpDecel();
             _jumpButtonIsDown = false;
@@ -233,6 +234,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
                 {
                     _tryingToDrop = true;
                 }
+
             } else if (!IsTugging)
             {
                 if (IsDraggingOther)
@@ -301,11 +303,13 @@ public class HeroMovement : MonoBehaviour, IJumpHit
         {
             var inputDir = context.ReadValue<Vector2>();
             _startMovingFromStandStill(new Vector3(inputDir.x, 0, inputDir.y));
-        } else if (CanMove && context.performed)
+        }
+        else if (CanMove && context.performed)
         {
             var inputDir = context.ReadValue<Vector2>();
             _resumeMoving(new Vector3(inputDir.x, 0, inputDir.y));
-        } else if (context.canceled)
+        }
+        else if (context.canceled)
         {
             Halt();
         }
@@ -353,9 +357,9 @@ public class HeroMovement : MonoBehaviour, IJumpHit
 
             Vector3 forceDir = Vector3.zero;
             switch (CurrentControlScheme) // TODO: Add different models for force calc in differnt control modes.
-            {              
+            {
                 case ControlSchemeType.TopDown:
-                    forceDir = new Vector3(direction.x * power, GlobalValues.SHOVE_HEIGHT_BUMP_TOPDOWN, direction.z * power);                   
+                    forceDir = new Vector3(direction.x * power, GlobalValues.SHOVE_HEIGHT_BUMP_TOPDOWN, direction.z * power);
                     break;
             }
 
@@ -396,7 +400,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
         _turnTimer = new EasyTimer(_turnTime, true, true);
         _haltTimer = new EasyTimer(_retardTime, false, true);
         _jumpBufferTimer = new EasyTimer(_jumpBufferTime, false, true);
-        _shoveStunTimer = new EasyTimer(_shoveStunDuration, false, true) ;
+        _shoveStunTimer = new EasyTimer(_shoveStunDuration, false, true);
         _bumpTimer = new EasyTimer(GlobalValues.CHAR_BUMPDURATION, false, true);
         _grabTimout = new EasyTimer(GlobalValues.CHAR_GRAB_TIMEOUT, false, true);
         _dragCooldown = new EasyTimer(GlobalValues.CHAR_DRAG_DRAGGED_COOLDOWN, false, true);
@@ -454,6 +458,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
                 case ControlSchemeType.Platform:
                     _body.velocity = new Vector3(_body.velocity.x * GlobalValues.SHOVE_DAMPING_MULTIPLIER, _body.velocity.y, 0);
                     break;
+
             }
         }
 
@@ -670,15 +675,14 @@ public class HeroMovement : MonoBehaviour, IJumpHit
         }
 
 
+
         // ---------------------------------------------------------    ROTATING
         // Turn poco a poco to upright
         transform.up = Vector3.SmoothDamp(transform.up, _gndNormal, ref _gndTargetNormalVel, 0.08f);
 
+
         // Rotate
         transform.rotation = TransformHelpers.FixNegativeZRotation(Vector3.forward, FaceDirection);
-
-
-
 
         // ---------------------------------------------------------    END OF FIRST LOOP
         if (!_doneFirstLoop)
@@ -715,14 +719,15 @@ public class HeroMovement : MonoBehaviour, IJumpHit
             CurrentGrab = null;
             IsGrabInProgress = false;
             OnStoppedGrabInProgress();
-        } else if (IsGrabbing && (foundObject as IRecievable) != null)
+        }
+        else if (IsGrabbing && (foundObject as IRecievable) != null)
         {
             var recievable = (foundObject as IRecievable);
             recievable.TransferAlert.Ping(this, recievable.transform);
             if (_tryingToDrop)
             {
                 _tryingToDrop = false;
-                var result = recievable.Transfer( CurrentGrab.GetTransferables() );
+                var result = recievable.Transfer(CurrentGrab.GetTransferables());
                 CurrentGrab.ProcessTransferResponse(result);
 
                 if (result == 0)
@@ -735,7 +740,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
         // Trying to grab?
         if (CanMove && TryingToGrab && hitSomething)
         {
-            doGrabbingDragging(foundObject);   
+            doGrabbingDragging(foundObject);
             Halt();
         }
 
@@ -762,6 +767,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     private bool checkGrabDragAvailable(out object foundObject)
     {
         var xyz = new Vector3(transform.position.x, transform.position.y + GlobalValues.CHAR_GRAB_CYLINDER_COLLIDER_Y_OFFSET, transform.position.z);
+
 
         var colliders = Physics.OverlapCapsule(
             xyz + FaceDirection * GlobalValues.CHAR_GRAB_CHECK_DISTANCE,
@@ -792,7 +798,8 @@ public class HeroMovement : MonoBehaviour, IJumpHit
                 {
                     foundObject = grabbable;
                     return true;
-                } else
+                }
+                else
                 {
                     // Check again if the parent gameObject has a grabbable.
                     var grabbableInParent = colliders[i].gameObject.GetComponentInParent<Grabbable>();
@@ -839,7 +846,8 @@ public class HeroMovement : MonoBehaviour, IJumpHit
                     return true;
                 }
             }
-        } else
+        }
+        else
         {
             var draggable = hitObject as HeroMovement;
             if (draggable == null)
@@ -873,6 +881,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     {
         IsGrounded = false;
     }
+
 
 
     // Privates
@@ -930,7 +939,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
             dragged.IsGrabbing = false;
         }
 
-        _struggle = GameManager.Instance.SceneManager.NextDragStruggle();
+       _struggle = GameManager.Instance.SceneManager.NextDragStruggle();
         dragged.DragStruggle = _struggle;
         _struggle.Activate(dragger, dragged);
 

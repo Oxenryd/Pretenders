@@ -205,11 +205,12 @@ public class Grabbable : MonoBehaviour
                 }
                 //_collider.enabled = false;
                 _grabberLayer = -1;
-                var thisCollider = GetComponent<Collider>();
-                thisCollider.excludeLayers = 0;
-            }         
+                GetComponent<Collider>().excludeLayers = -1;
+            }
+            else
 
-            _pendingColliderEnable = true;
+                _pendingColliderEnable = true;
+
             _colliderTimer.Reset();
             _rBody.isKinematic = false;
             _rBody.velocity = Vector3.zero;

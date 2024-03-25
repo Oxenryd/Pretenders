@@ -64,7 +64,7 @@ public class FoodSpawner : MonoBehaviour
 
         float distance = Vector3.Distance(_origin, transform.position);
 
-        if (distance > _radius && MovingAwayFromOrigin(_direction))
+        if (distance > _radius)
         {
             _direction = CalculateNewDirection(_direction);
         }
@@ -74,19 +74,11 @@ public class FoodSpawner : MonoBehaviour
     {
 
         Vector3 oppositeDirection = -direction;
-        oppositeDirection += new Vector3(Random.Range(-1f, 1f), 0f, Random.Range(-1f, 1f));
+        oppositeDirection += new Vector3(Random.Range(-0.5f, 0.5f), 0f, Random.Range(-0.5f, 0.5f));
 
         return oppositeDirection.normalized;
     }
 
-    bool MovingAwayFromOrigin(Vector3 direction)
-    {
-        Vector3 currentPosition = transform.position;
-        Vector3 displacement = currentPosition - _origin;
-        float dotProduct = Vector3.Dot(displacement.normalized, direction.normalized);
-
-        return false ? dotProduct < 0 : true;
-    }
 
     void SpawnFood()
     {
