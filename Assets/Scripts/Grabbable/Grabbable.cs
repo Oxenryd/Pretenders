@@ -16,7 +16,6 @@ public class Grabbable : MonoBehaviour
     private HeroMovement _grabber;
     private Vector3 _lastVelocity;
     private IRecievable _attachedTo;
-    //private Rigidbody _rBody;
     private EasyTimer _grabbedTimer;
     private EasyTimer _colliderTimer;
     private bool _pendingColliderEnable = false;
@@ -61,7 +60,6 @@ public class Grabbable : MonoBehaviour
         {
             col.enabled = false;
         }
-        //_collider.enabled = false;
         gameObject.SetActive(false);
     }
 
@@ -75,7 +73,6 @@ public class Grabbable : MonoBehaviour
         {
             col.enabled = false;
         }
-        //_collider.enabled = false;
     }
     public void Detach()
     {
@@ -106,7 +103,6 @@ public class Grabbable : MonoBehaviour
         {
             col.enabled = true;
         }
-        //_collider.enabled = true;
         _colliderTimer.Reset();
         _rBody.isKinematic = false;
         gameObject.SetActive(true);
@@ -176,15 +172,12 @@ public class Grabbable : MonoBehaviour
             {
                 col.enabled = true;
                 col.excludeLayers = LayerUtil.Include(GlobalValues.GROUND_LAYER, grabber.GameObject.layer);
-            }
-            //_collider.enabled = true;
-            //_collider.excludeLayers = LayerUtil.Include(GlobalValues.GROUND_LAYER, grabber.GameObject.layer);          
+            }         
         } else
             foreach (var col in _colliders)
             {
                 col.enabled = false;
             }
-        //_collider.enabled = false;
         _grabber = grabber;
         _grabber.Grab(this);
         _alert.Deactivate();
@@ -202,28 +195,22 @@ public class Grabbable : MonoBehaviour
                 foreach (var col in _colliders)
                 {
                     col.enabled = false;
+                    col.excludeLayers = LayerUtil.Exclude(GlobalValues.GROUND_LAYER, _grabber.GameObject.layer);
                 }
-                //_collider.enabled = false;
-                _grabberLayer = -1;
-                GetComponent<Collider>().excludeLayers = -1;
+                _grabberLayer = -1;              
             }
-            else
-
-                _pendingColliderEnable = true;
-
+            _pendingColliderEnable = true; 
             _colliderTimer.Reset();
             _rBody.isKinematic = false;
             _rBody.velocity = Vector3.zero;
             _rBody.angularVelocity = Vector3.zero;
-            _rBody.AddForce(GlobalValues.CHAR_GRAB_DROPFORCE * (_grabber.FaceDirection + Vector3.up).normalized, ForceMode.Impulse);
+            OnDropThrow();
             _grabber = null;
         }
     }
 
     protected void Awake()
     {
-        //_collider = gameObject.GetComponent<Collider>();
-       // _rBody = _collider.attachedRigidbody;
         _grabbedTimer = new EasyTimer(TimeToGrab);
         _colliderTimer = new EasyTimer(GlobalValues.GRABBABLE_COLLIDER_TIMEOUT_DEFAULTTIME);
         var container = GameObject.FindWithTag(GlobalStrings.NAME_UIOVERLAY);
@@ -255,7 +242,6 @@ public class Grabbable : MonoBehaviour
             {
                 col.enabled = true;
             }
-            //_collider.enabled = true;
             _pendingColliderEnable = false;
         }
 
@@ -287,4 +273,9 @@ public class Grabbable : MonoBehaviour
         transform.rotation = Quaternion.identity;
     }
     public virtual void KnockOff() { Drop(); }
+
+    public virtual void OnDropThrow()
+    {
+        Rigidbody.AddForce(GlobalValues.CHAR_GRAB_DROPFORCE * (_grabber.FaceDirection + Vector3.up).normalized, ForceMode.Impulse);
+    }
 }
