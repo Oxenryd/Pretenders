@@ -24,7 +24,9 @@ public class Grabbable : MonoBehaviour
     [SerializeField] private Tug _tugOWar = null;
     [SerializeField] private GrabbablePosition _grabPosition = GrabbablePosition.InFrontTwoHands;
 
+
     private LayerMask _defaultLayerMask;
+
     private int _grabberLayer = 0;
     public bool GrabInProgress { get; set; } = false;
 
@@ -173,6 +175,17 @@ public class Grabbable : MonoBehaviour
 
         _grabber.Grab(this);
 
+
+
+        if (ColliderEnabledWhileGrabbed)
+        {
+            _grabberLayer = grabber.GameObject.layer;
+            GetComponent<Collider>().excludeLayers = LayerUtil.Exclude(GlobalValues.GROUND_LAYER, grabber.GameObject.layer);
+        }
+        else
+            _collider.enabled = false;
+
+
         _alert.Deactivate();
         StraightenUp();
     }
@@ -186,11 +199,12 @@ public class Grabbable : MonoBehaviour
             {
                 _collider.enabled = false;
                 _grabberLayer = -1;
-                var thisCollider = GetComponent<Collider>();
-                thisCollider.excludeLayers = 0;
-            }         
+                GetComponent<Collider>().excludeLayers = -1;
+            }
+            else
 
-            _pendingColliderEnable = true;
+                _pendingColliderEnable = true;
+
             _colliderTimer.Reset();
             _rBody.isKinematic = false;
             _rBody.AddForce(GlobalValues.CHAR_GRAB_DROPFORCE * (_grabber.CurrentDirection + Vector3.up).normalized, ForceMode.Impulse);
@@ -251,7 +265,7 @@ public class Grabbable : MonoBehaviour
             else
                 rotation = Quaternion.Euler(0, -180, 0);
             transform.rotation = rotation;
-            transform.position = _grabber.GameObject.transform.position + (_grabber.FaceDirection * GrabPointOffset.z + new Vector3(0, GrabPointOffset.y, 0));         
+            transform.position = _grabber.GameObject.transform.position + (_grabber.FaceDirection * GrabPointOffset.z + new Vector3(0, GrabPointOffset.y, 0));
         }
     }
 
