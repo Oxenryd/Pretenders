@@ -16,7 +16,6 @@ public class Grabbable : MonoBehaviour
     private HeroMovement _grabber;
     private Vector3 _lastVelocity;
     private IRecievable _attachedTo;
-    //private Rigidbody _rBody;
     private EasyTimer _grabbedTimer;
     private EasyTimer _colliderTimer;
     private bool _pendingColliderEnable = false;
@@ -61,7 +60,6 @@ public class Grabbable : MonoBehaviour
         {
             col.enabled = false;
         }
-        //_collider.enabled = false;
         gameObject.SetActive(false);
     }
 
@@ -75,7 +73,6 @@ public class Grabbable : MonoBehaviour
         {
             col.enabled = false;
         }
-        //_collider.enabled = false;
     }
     public void Detach()
     {
@@ -106,7 +103,6 @@ public class Grabbable : MonoBehaviour
         {
             col.enabled = true;
         }
-        //_collider.enabled = true;
         _colliderTimer.Reset();
         _rBody.isKinematic = false;
         gameObject.SetActive(true);
@@ -176,15 +172,12 @@ public class Grabbable : MonoBehaviour
             {
                 col.enabled = true;
                 col.excludeLayers = LayerUtil.Include(GlobalValues.GROUND_LAYER, grabber.GameObject.layer);
-            }
-            //_collider.enabled = true;
-            //_collider.excludeLayers = LayerUtil.Include(GlobalValues.GROUND_LAYER, grabber.GameObject.layer);          
+            }         
         } else
             foreach (var col in _colliders)
             {
                 col.enabled = false;
             }
-        //_collider.enabled = false;
         _grabber = grabber;
         _grabber.Grab(this);
         _alert.Deactivate();
@@ -202,15 +195,11 @@ public class Grabbable : MonoBehaviour
                 foreach (var col in _colliders)
                 {
                     col.enabled = false;
+                    col.excludeLayers = LayerUtil.Exclude(GlobalValues.GROUND_LAYER, _grabber.GameObject.layer);
                 }
-                //_collider.enabled = false;
-                _grabberLayer = -1;
-                GetComponent<Collider>().excludeLayers = -1;
+                _grabberLayer = -1;              
             }
-            else
-
-                _pendingColliderEnable = true;
-
+            _pendingColliderEnable = true; 
             _colliderTimer.Reset();
             _rBody.isKinematic = false;
             _rBody.velocity = Vector3.zero;
@@ -222,8 +211,6 @@ public class Grabbable : MonoBehaviour
 
     protected void Awake()
     {
-        //_collider = gameObject.GetComponent<Collider>();
-       // _rBody = _collider.attachedRigidbody;
         _grabbedTimer = new EasyTimer(TimeToGrab);
         _colliderTimer = new EasyTimer(GlobalValues.GRABBABLE_COLLIDER_TIMEOUT_DEFAULTTIME);
         var container = GameObject.FindWithTag(GlobalStrings.NAME_UIOVERLAY);
@@ -255,14 +242,24 @@ public class Grabbable : MonoBehaviour
             {
                 col.enabled = true;
             }
-            //_collider.enabled = true;
             _pendingColliderEnable = false;
         }
 
         if (IsGrabbed && !IsAttached)
         {
-            transform.rotation = TransformHelpers.FixNegativeZRotation(Vector3.forward, _grabber.FaceDirection);
-            transform.position = _grabber.GameObject.transform.position + (_grabber.FaceDirection * GrabPointOffset.z + new Vector3(0, GrabPointOffset.y, 0) + transform.rotation * new Vector3(GrabPointOffset.x, 0,0));         
+            switch (_grabPosition)
+            {
+                case GrabbablePosition.AsBackpack:
+                case GrabbablePosition.AboveHeadOneHand:
+                case GrabbablePosition.InFrontOneHand:
+                    transform.rotation = TransformHelpers.FixNegativeZRotation(Vector3.forward, _grabber.FaceDirection);
+                    transform.position = _grabber.LeftHand.position + _grabber.LeftHand.rotation * new Vector3(GrabPointOffset.x, GrabPointOffset.y, GrabPointOffset.z);
+                    break;
+                case GrabbablePosition.InFrontTwoHands:
+                    transform.rotation = TransformHelpers.FixNegativeZRotation(Vector3.forward, _grabber.FaceDirection);
+                    transform.position = _grabber.GameObject.transform.position + (_grabber.FaceDirection * GrabPointOffset.z + new Vector3(0, GrabPointOffset.y, 0) + transform.rotation * new Vector3(GrabPointOffset.x, 0, 0));
+                    break;
+            }
         }
     }
 
