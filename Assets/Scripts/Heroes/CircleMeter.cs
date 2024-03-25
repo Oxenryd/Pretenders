@@ -14,6 +14,8 @@ public class CircleMeter : MonoBehaviour
     [SerializeField][Range(0f, 1f)] private float _value;
     private float _counter = 0;
 
+    private Vector3 _refVel;
+
     public float Value { get { return _value; } set { _value = value; } }
     public Color Color
     { get { return _image.color; } set { _image.color = value; } }
@@ -41,12 +43,12 @@ public class CircleMeter : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-       // if (!Active) return;
+        if (!Active) return;
 
         var scale = _meter.localScale;
         _counter += GameManager.Instance.DeltaTime;
         var cos = 0.03f * MathF.Cos(_counter * 8) + 1;
 
-        _meter.localScale = new Vector3((_value * cos) * _defaultLengthScale, (_value * cos) * _defaultLengthScale, scale.z);
+        _meter.localScale = Vector3.SmoothDamp(_meter.localScale, new Vector3((_value * cos) * _defaultLengthScale, (_value * cos) * _defaultLengthScale, scale.z), ref _refVel, 0.12f);
     }
 }

@@ -10,7 +10,6 @@ public class TransferAlert : MonoBehaviour
     [SerializeField] private float _pingCooldown = 0.15f;
     [SerializeField] private RectTransform _alert;
     [SerializeField] private UnityEngine.UI.Image _image;
-    [SerializeField] private float _wobbleRange = 1f;
     [SerializeField] private Vector3 _positionOffset = new Vector3(0, 1f, 0f);
 
     private Transform _target;
@@ -79,13 +78,14 @@ public class TransferAlert : MonoBehaviour
     {
 
         _alert.transform.position = _camera.WorldToScreenPoint(_target.position + _positionOffset);
-        var scaledY = _camera.scaledPixelHeight * (0.03f * Mathf.Cos(_counter * 15) + 0.03f);
+        var scaledY = _camera.scaledPixelHeight * (0.015f * Mathf.Cos(_counter * 15) + 0.015f);
         _image.rectTransform.localPosition = new Vector3(0, scaledY, 0);
         _alert.localScale = Vector3.one * (0.1f * Mathf.Cos(_counter * 8) + 1);
 
         if (_signalled && _keepAliveTimer.Done)
         {
             _signalled = false;
+            _deAnimateTimer.Reset();
             _mode = AlertMode.DeAnimating;
         } else if (_signalled)
         {

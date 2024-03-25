@@ -1,5 +1,4 @@
 using System;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,7 +14,6 @@ public class DragStruggle : MonoBehaviour
     [SerializeField] private bool _active = false;
     [SerializeField][Range(0f, 1f)] private float _value;
 
-    private float _minValue = 0;
     private bool _fading = false;
     private EasyTimer _fadeTimer;
     private EasyTimer _imageTimer;
@@ -49,6 +47,12 @@ public class DragStruggle : MonoBehaviour
         _camera = Camera.main;
     }
 
+    public void SetMaxTime(float maxTime)
+    {
+        _maxStruggleTime = new EasyTimer(maxTime);
+        _maxStruggleTime.Reset();
+    }
+
     public void Activate(HeroMovement dragger, HeroMovement dragged)
     {
         Duration = 0;
@@ -70,8 +74,8 @@ public class DragStruggle : MonoBehaviour
         _fadeTimer.Reset();
         _value = 0.5f;
         _meter.Value = _value;
-        var delta = dragged.GameObject.transform.position - dragger.GameObject.transform.position;
-        transform.position = _camera.WorldToScreenPoint(_dragger.GameObject.transform.position + delta + new Vector3(0, -1f, 0));
+        var delta = _dragged.GameObject.transform.position - _dragger.GameObject.transform.position;
+        transform.position = _camera.WorldToScreenPoint(_dragger.GameObject.transform.position + delta * 0.5f + new Vector3(0, 3f, 0));
     }
 
     public void Increase(float amount)
@@ -89,7 +93,7 @@ public class DragStruggle : MonoBehaviour
         if (!_active) return;
 
         var delta = _dragged.GameObject.transform.position - _dragger.GameObject.transform.position;
-        transform.position = _camera.WorldToScreenPoint(_dragger.GameObject.transform.position + delta + new Vector3(0, 1.5f, 0));
+        transform.position = _camera.WorldToScreenPoint(_dragger.GameObject.transform.position + delta * 0.5f + new Vector3(0, 3f, 0));
 
 
         if (_active && _fading)
@@ -111,6 +115,11 @@ public class DragStruggle : MonoBehaviour
         _value = Math.Max(_maxStruggleTime.Ratio, _value);
         _meter.Value = _value;
 
+        winningCondition();
+    }
+
+    protected virtual void winningCondition()
+    {
         if (_value >= 1f)
         {
             var power = GlobalValues.CHAR_BUMPFORCE * Ratio;

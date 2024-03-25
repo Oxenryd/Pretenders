@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -11,17 +13,18 @@ using UnityEngine.TextCore.Text;
 /// </summary>
 public class GameManager : MonoBehaviour
 {
-    public const string CHARACTER_TAG = "Character";
-
     // Don't forget to alter these in Inspector.  
     [SerializeField] private int _maxControllables = 4;
     [SerializeField] private InputManager _inputMan;
     [SerializeField] private SceneManager _curSceneman;
 
+    private float[] _fpsBuffer;
+    private int _fpsCounter = 0;
+    private string[] _digitStrings;
+    private string[] _numberStrings;
+
     private ICharacter[] _playableCharacters;
-
     private int _numPlayers = 1;
-
     private static GameManager _instance;
     /// <summary>
     /// The Singleton instance of our GameManager.
@@ -29,8 +32,11 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public static GameManager Instance
         { get { return _instance; } }
-    
-    
+
+    public int FpsMaximumSamples { get; set; } = 120;
+    public long TotalFrames { get; private set; }
+    public float AverageFramesPerSecond { get; private set; }
+    public float CurrentFramesPerSecond { get; private set; }
 
     // Events
     public EventHandler<float> EarlyUpdate;
@@ -88,6 +94,18 @@ public class GameManager : MonoBehaviour
     {
         this.tag = GlobalStrings.NAME_GAMEMANAGER;
 
+        // Pre caching strings
+        _digitStrings = new string[10];
+        for (int i = 0; i < 10; i++)
+        {
+            _digitStrings[i] = i.ToString();
+        }
+        _numberStrings = CreateNumberStrings(GlobalValues.STRINGS_MAX_PRECACHED_NUMBERSTRINGS, 0);
+
+
+        // Setup FPS counter stuffs
+        _fpsBuffer = new float[FpsMaximumSamples];
+
         if (this != Instance && Instance != null)
         {
             Destroy(this);
@@ -116,7 +134,7 @@ public class GameManager : MonoBehaviour
         {
             // Find characters in the scene then assign them to and init the inputmanager.
             // Also populate this managers' info about characters
-            var sceneChars = GameObject.FindGameObjectsWithTag(CHARACTER_TAG);
+            var sceneChars = GameObject.FindGameObjectsWithTag(GlobalStrings.CHARACTER_TAG);
             var charList = new List<ICharacter>();
             
             for (int i = 0; i < sceneChars.Length; i++)
@@ -173,6 +191,21 @@ public class GameManager : MonoBehaviour
         OnEarlyFixedUpdate(FixedDeltaTime);
     }
 
+    void LateUpdate()
+    {
+        // Update FPS
+        CurrentFramesPerSecond = (1f / DeltaTime);
+        _fpsBuffer[_fpsCounter] = CurrentFramesPerSecond;
+        _fpsCounter++;
+        if (_fpsCounter >= FpsMaximumSamples)
+        {
+            float total = _fpsBuffer.Sum();
+            AverageFramesPerSecond = total / _fpsCounter;
+            _fpsCounter = 0;
+        }
+        TotalFrames++;
+    }
+
     /// <summary>
     /// Set the number of human players currently in the game.
     /// </summary>
@@ -181,5 +214,55 @@ public class GameManager : MonoBehaviour
     {
         NumOfPlayers = numOfHumanPlayers;
         OnNumberPlayersChanged();
+    }
+
+    public string DigitToString(int digit)
+    {
+        int d = digit;
+        if (digit < 0)
+            d = 0;
+        else if (digit > 9)
+            d = 9;
+        return _digitStrings![d];
+    }
+
+    public string IntegerToString(int value)
+    {
+        if (value < 0)
+            return _numberStrings[0];
+        if (value >= _numberStrings.Length)
+            return _numberStrings[_numberStrings.Length - 1];
+
+        return _numberStrings[value];
+    }
+
+    public string GetCurrentAvgFpsAsString()
+    {
+        return IntegerToString((int)AverageFramesPerSecond);
+    }
+
+    public static string[] CreateNumberStrings(int maxValue, int totalDigits)
+    {
+        string[] stringArray = new string[maxValue];
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < maxValue; i++)
+        {
+            int wholeTens = 0;
+            int current = i;
+            while (current > 9)
+            {
+                current = current / 10;
+                wholeTens++;
+            }
+            int numberOfZeroesToWrite = totalDigits - wholeTens - 1;
+            sb.Clear();
+            for (int j = 0; j < numberOfZeroesToWrite; j++)
+            {
+                sb.Append("0");
+            }
+            sb.Append(i);
+            stringArray[i] = sb.ToString();
+        }
+        return stringArray;
     }
 }

@@ -8,5 +8,6 @@ public class TestBlock_Canberemovedlater : Grabbable
     {
         base.Start();
         ColliderEnabledWhileGrabbed = true;
+        CanBeTuggedWhileGrabbed = true;
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public static class LayerUtil
@@ -32,5 +33,18 @@ public static class LayerMaskExtensions
             original.value &= ~(1 << layer);
         }
         return original;
+    }
+}
+
+public static class TransformHelpers{
+    public static Quaternion FixNegativeZRotation(Vector3 from, Vector3 to)
+    {
+        Quaternion rotation;
+        var diff = Math.Abs(to.z + 1f);
+        if (diff >= 0.01f)
+            rotation = Quaternion.FromToRotation(from, to);
+        else
+            rotation = Quaternion.Euler(0, -180, 0);
+        return rotation;
     }
 }

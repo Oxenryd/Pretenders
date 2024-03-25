@@ -26,7 +26,6 @@ public class Tray : Grabbable, IRecievable
         {
             _rotationPoints[i] = new Vector3(0f, Random.Range(30, 60), 0f);
         }
-
     }
 
 
@@ -69,4 +68,13 @@ public class Tray : Grabbable, IRecievable
         return 0;
     }
 
+    public override void KnockOff()
+    {
+        base.KnockOff();
+        foreach(var item in _heldObjects)
+        {
+            item.Detach();
+        }
+        _heldObjects.Clear();
+    }
 }
