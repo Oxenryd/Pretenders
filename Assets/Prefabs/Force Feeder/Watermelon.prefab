@@ -31,8 +31,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 4.004, y: 4.659, z: -2.858}
-  m_LocalScale: {x: 2, y: 2, z: 2}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 2.5, y: 2.5, z: 2.5}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -153,5 +153,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _meter: {fileID: 2574891146964797387, guid: eda705f58eed7bc4fbf14b74cdb6c247, type: 3}
   _alert: {fileID: 5685868278306586147, guid: b9e2e76fafb519b4a9b923db20cbb25b, type: 3}
+  _grabbablePointOffset: {x: 0, y: 1, z: 1}
+  _handsOffsets:
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
   _tugOWar: {fileID: 3262859204791985545, guid: 867c8cbe6c2c9254290218c68f3dcf0d,
     type: 3}
+  _grabPosition: 1
