@@ -912,7 +912,7 @@ public class HeroMovement : MonoBehaviour, ICharacterMovement, IJumpHit
             dragged.IsGrabbing = false;
         }
 
-        _struggle = GameManager.Instance.SceneManager.NextDragStruggle();
+       _struggle = GameManager.Instance.SceneManager.NextDragStruggle();
         dragged.DragStruggle = _struggle;
         _struggle.Activate(dragger, dragged);
 

@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,7 +9,9 @@ public class Tray : Grabbable, IRecievable
     [SerializeField] private TransferAlert _transferAlert;
     public TransferAlert TransferAlert
     { get { return _transferAlert; } }
-    private Vector3 _itemOffset; 
+
+    private Vector3[] _anchorPoints = new Vector3[]{ new Vector3(0.45f, 0f, 0.45f), new Vector3(-0.45f, 0f, -0.45f), new Vector3(-0.45f, 0f, 0.45f), new Vector3(0.45f, 0f, -0.45f) };
+    [SerializeField] private Vector3[] _rotationPoints = new Vector3[5];
 
     void Start()
     {
@@ -20,22 +21,10 @@ public class Tray : Grabbable, IRecievable
         var container = GameObject.FindWithTag(GlobalStrings.NAME_UIOVERLAY);
         _transferAlert = GameObject.Instantiate(_transferAlert, container.transform);
         _transferAlert.gameObject.SetActive(false);
-        BoxCollider _boxCollider = GetComponent<BoxCollider>();
-        if (_boxCollider != null)
-        {
-            // Get the bounds of the object
-            Bounds bounds = _boxCollider.bounds;
 
-            // Extract length, width, and height from the bounds
-            float Length = bounds.size.x/transform.localScale.x/2f;
-
-            // Output the dimensions
-            _itemOffset = new Vector3(Length, 0, 0);
-            Debug.LogError(Length);
-        }
-        else
+        for(int i = 0; i< GlobalValues.BASKET_MAX_SIZE; i++)
         {
-            Debug.LogError("Renderer component not found!");
+            _rotationPoints[i] = new Vector3(0f, Random.Range(30, 60), 0f);
         }
 
     }
@@ -46,8 +35,10 @@ public class Tray : Grabbable, IRecievable
         base.Update();
         for(int i =0; i< _heldObjects.Count; i++)
         {
-            _heldObjects[i].transform.position = transform.TransformPoint(_itemOffset);
-            _heldObjects[i].transform.rotation = this.transform.rotation;
+            _heldObjects[i].transform.position = transform.position + this.transform.rotation * _anchorPoints[i];
+
+            _heldObjects[i].transform.rotation =  this.transform.rotation * Quaternion.Euler(_rotationPoints[i]);
+            
         }
 
     }
@@ -55,6 +46,7 @@ public class Tray : Grabbable, IRecievable
     public int Transfer(object[] recievedObject)
     {
         var foodArray = (recievedObject as Food[]);
+
 
         if (foodArray == null)
         {
@@ -76,7 +68,5 @@ public class Tray : Grabbable, IRecievable
         }
         return 0;
     }
-
-
 
 }
