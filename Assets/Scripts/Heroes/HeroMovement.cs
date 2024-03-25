@@ -489,7 +489,11 @@ public class HeroMovement : MonoBehaviour, IJumpHit
         if (CanMove && CanTrigger && _triedToTrigger)
         {
             _triedToTrigger = false;
-            OnTriggered();
+            if (IsGrabbing && CurrentGrab.TriggerEnter())
+            {
+                OnTriggered();
+            }
+            
         }
 
 
@@ -671,7 +675,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
         transform.up = Vector3.SmoothDamp(transform.up, _gndNormal, ref _gndTargetNormalVel, 0.08f);
 
         // Rotate
-        transform.rotation = fixNegativeZRotation(Vector3.forward, FaceDirection);
+        transform.rotation = TransformHelpers.FixNegativeZRotation(Vector3.forward, FaceDirection);
 
 
 
@@ -682,17 +686,6 @@ public class HeroMovement : MonoBehaviour, IJumpHit
             Halt();
             _doneFirstLoop = true;
         }
-    }
-
-    private Quaternion fixNegativeZRotation(Vector3 from, Vector3 to)
-    {
-        Quaternion rotation;
-        var diff = Math.Abs(FaceDirection.z + 1f);
-        if (diff >= 0.01f)
-            rotation = Quaternion.FromToRotation(from, to);
-        else
-            rotation = Quaternion.Euler(0, -180, 0);
-        return rotation;
     }
 
     private void grabDragStuffs()
@@ -801,6 +794,14 @@ public class HeroMovement : MonoBehaviour, IJumpHit
                     return true;
                 } else
                 {
+                    // Check again if the parent gameObject has a grabbable.
+                    var grabbableInParent = colliders[i].gameObject.GetComponentInParent<Grabbable>();
+                    if (grabbableInParent != null)
+                    {
+                        foundObject = grabbableInParent;
+                        return true;
+                    }
+
                     var draggable = colliders[i].gameObject.transform.GetComponentInParent<HeroMovement>();
                     if (draggable != null)
                     {
