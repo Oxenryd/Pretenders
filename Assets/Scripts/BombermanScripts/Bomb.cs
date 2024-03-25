@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.UIElements;
@@ -14,103 +16,106 @@ public class Bomb : MonoBehaviour
     private GameObject explosion;
 
     [SerializeField]
-    private float explosionForce;
-
-    [SerializeField]
-    private float radius;
-
-    [SerializeField]
     private LayerMask levelMask;
 
     [SerializeField]
     private float delayBeforeExplosion = 1;
 
+    [SerializeField]
+    private float delayAfterEachExplosion = 0.05f;
+
+    private int currentXplosion = 0;
+
+    private int amountOfExplosions = 5;
+
+
+    private EasyTimer timer;
+    private EasyTimer detonationTickTimer;
+    private bool hasDetonated = false;
+    private Dictionary<Vector3, bool> directions = new Dictionary<Vector3, bool>() { {Vector3.back, false }, { Vector3.forward, false }, { Vector3.left, false }, {Vector3.right, false } };
     public bool IsActive
     { get; set; } = false;
 
-    private Collider[] colliders;
-
-
-    //Cacha instantiate och destroy här
-    void Start()
+    void Awake()
     {
-
-
+        timer = new EasyTimer(delayBeforeExplosion);
+        detonationTickTimer = new EasyTimer(delayAfterEachExplosion);
     }
-    void Update()
-    {
-
-    }
-
     public void SetInactive()
     {
         gameObject.SetActive(false);
         IsActive = false;
     }
+    public void PierresSpawn(Vector3 position)
+    {
+        
+        IsActive = true;
+        gameObject.SetActive(true);
+        gameObject.transform.position = position;
+        timer.Reset();
+    }
 
+    void Update()
+    {
+        if (!IsActive) return;
+
+        if (timer.Done && hasDetonated != true)
+        {
+             hasDetonated = true;
+            detonationTickTimer.Reset();
+        }
+        if (hasDetonated && detonationTickTimer.Done)
+        {
+            currentXplosion++;
+            for(int i  = 0; i < directions.Count; i++)
+            {
+                var directionKey = directions.Keys.ElementAt(i);
+                if (!directions[directionKey])
+                {
+                    ExplosionCheckNearby(directionKey, currentXplosion);
+                }
+            }
+            if ( currentXplosion >= amountOfExplosions)
+            {
+                SetInactive();
+            }
+            detonationTickTimer.Reset();
+        }
+        
+    }
     public void SpawnBomb(Vector3 charPosition)
     {
-        Instantiate(explosion, transform.position, explosion.transform.rotation);
+        hasDetonated = false;
+        timer.Reset();
+        currentXplosion = 0;
         IsActive = true;
         gameObject.SetActive(true);
         gameObject.transform.position = charPosition;
-        StartCoroutine(CreateExplosions());
-    }
-    //kolla easytimer
-    private IEnumerator CreateExplosions()
-    {
-        yield return new WaitForSeconds(delayBeforeExplosion);
-
-
-        Vector3[] directions = { Vector3.back, Vector3.forward, Vector3.left, Vector3.right };
-
-        for (int i = 0; i < directions.Length; i++)
-        {
-            StartCoroutine(ExplosionCheckNearby(directions[i]));
-        }
     }
 
-    private IEnumerator ExplosionCheckNearby(Vector3 direction)
+    private void ExplosionCheckNearby(Vector3 direction, int tick)
     {
-        for (int i = 1; i < 10; i++)
-        {
             RaycastHit hit;
-            if (Physics.Raycast(gameObject.transform.position, direction, out hit, levelMask,i))
+            Physics.Raycast(transform.position + new Vector3(0, .5f, 0), direction, out hit, tick, levelMask);
+
+            if (!hit.collider)
             {
-
-                if (hit.collider.CompareTag(GlobalStrings.NAME_BOMBERTREE))
-                {
-                    break;
-                }
-                else if(hit.collider.CompareTag(GlobalStrings.NAME_BOMBERMANWALL))
-                {
-                    break;
-                }
-
-                else if (hit.collider != null)
-                {
-                    if (hit.collider.gameObject.TryGetComponent<CrateExplosion>(out var crate))
-                    {
-                        crate.Explode();
-                        break;
-                    }
-
-
-                }
-
+               Instantiate(explosion, transform.position + (tick * direction), transform.rotation);
             }
             else
             {
+                if (hit.collider.TryGetComponent<CrateExplosion>(out var crate))
+                {
+                    crate.Explode();
+                    directions[direction] = true;
+                }
+                else
+                {
+                    directions[direction] = true;
 
-                Instantiate(explosion, transform.position + (i * direction), explosion.transform.rotation);
-
+                }
             }
-            yield return new WaitForSeconds(0.15f);
-
-
-        }
-
-
     }
+
 
 }

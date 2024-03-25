@@ -13,16 +13,19 @@ public class Grabbable : MonoBehaviour
     [SerializeField] protected Vector3 _grabbablePointOffset = new Vector3(0, 1f, 1f);
     [SerializeField] protected Vector3[] _handsOffsets = { new Vector3(), new Vector3() };
     private Collider _collider;
-    private ICharacterMovement _grabber;
+    private HeroMovement _grabber;
     private Vector3 _lastVelocity;
     private IRecievable _attachedTo;
     private Rigidbody _rBody;
     private EasyTimer _grabbedTimer;
     private EasyTimer _colliderTimer;
     private bool _pendingColliderEnable = false;
-    private Dictionary<ICharacterMovement, bool> _potentialGrabbersGrabbing = new Dictionary<ICharacterMovement, bool>();
+    private Dictionary<HeroMovement, bool> _potentialGrabbersGrabbing = new Dictionary<HeroMovement, bool>();
     [SerializeField] private Tug _tugOWar = null;
     [SerializeField] private GrabbablePosition _grabPosition = GrabbablePosition.InFrontTwoHands;
+
+
+    private LayerMask _defaultLayerMask;
 
     private int _grabberLayer = 0;
     public bool GrabInProgress { get; set; } = false;
@@ -72,7 +75,7 @@ public class Grabbable : MonoBehaviour
         _rBody.AddForce(randomDir * 9f, ForceMode.Impulse);
     }
 
-    public ICharacterMovement Grabber
+    public HeroMovement Grabber
     { get { return _grabber; } }
 
     public void Show(Vector3 position)
@@ -114,14 +117,14 @@ public class Grabbable : MonoBehaviour
         _grabber = null;
     }
 
-    public void SignalCanNotGrab(ICharacterMovement potentialGrabber)
+    public void SignalCanNotGrab(HeroMovement potentialGrabber)
     {
         if (IsGrabbed) return;
         _alert.Deactivate();
         _potentialGrabbersGrabbing.Remove(potentialGrabber);
     }
 
-    public void SignalCanGrab(ICharacterMovement potentialGrabber)
+    public void SignalCanGrab(HeroMovement potentialGrabber)
     {
         if (IsGrabbed) return;
 
@@ -135,7 +138,7 @@ public class Grabbable : MonoBehaviour
         }
     }
 
-    public bool TryGrab(ICharacterMovement grabber)
+    public bool TryGrab(HeroMovement grabber)
     {
         if (!IsGrabbed)
         {
@@ -157,11 +160,21 @@ public class Grabbable : MonoBehaviour
         return false;
     }
 
-    public void Grab(ICharacterMovement grabber)
+    public void Grab(HeroMovement grabber)
     {
         _potentialGrabbersGrabbing.Clear();
         IsGrabbed = true;
+        
+        if (ColliderEnabledWhileGrabbed)
+        {
+            _grabberLayer = grabber.GameObject.layer;
+            var thisCollider = GetComponent<Collider>();
+            thisCollider.excludeLayers = LayerUtil.Include(GlobalValues.GROUND_LAYER, grabber.GameObject.layer);          
+        } else
+            _collider.enabled = false;
+
         _grabber.Grab(this);
+
 
 
         if (ColliderEnabledWhileGrabbed)
@@ -171,6 +184,7 @@ public class Grabbable : MonoBehaviour
         }
         else
             _collider.enabled = false;
+
 
         _alert.Deactivate();
         StraightenUp();
@@ -190,6 +204,7 @@ public class Grabbable : MonoBehaviour
             else
 
                 _pendingColliderEnable = true;
+
             _colliderTimer.Reset();
             _rBody.isKinematic = false;
             _rBody.AddForce(GlobalValues.CHAR_GRAB_DROPFORCE * (_grabber.CurrentDirection + Vector3.up).normalized, ForceMode.Impulse);
@@ -235,7 +250,6 @@ public class Grabbable : MonoBehaviour
             _alert.Deactivate();
 
 
-
         if (_pendingColliderEnable && !IsGrabbed && _colliderTimer.Done)
         {
             _collider.enabled = true;
@@ -252,8 +266,6 @@ public class Grabbable : MonoBehaviour
                 rotation = Quaternion.Euler(0, -180, 0);
             transform.rotation = rotation;
             transform.position = _grabber.GameObject.transform.position + (_grabber.FaceDirection * GrabPointOffset.z + new Vector3(0, GrabPointOffset.y, 0));
-
-
         }
     }
 

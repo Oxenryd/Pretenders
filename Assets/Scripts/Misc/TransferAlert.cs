@@ -33,7 +33,7 @@ public class TransferAlert : MonoBehaviour
 
     }
 
-    public void Ping(ICharacterMovement icm, Transform recievableTransform)
+    public void Ping(HeroMovement icm, Transform recievableTransform)
     {
         if (!_signalled && Mode != AlertMode.Active)
         {

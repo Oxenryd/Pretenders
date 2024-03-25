@@ -20,7 +20,7 @@ public class Hero : MonoBehaviour, ICharacter
     [SerializeField] private Material _primMat;
     [SerializeField] private Material _secMat;
 
-    private ICharacterMovement _movement;
+    private HeroMovement _movement;
     
     public Grabbable CurrentGrab
     { get { return _movement.CurrentGrab; } }
@@ -30,7 +30,7 @@ public class Hero : MonoBehaviour, ICharacter
         { get { return _index; } set { _index = value; } }
     public HeroType HeroType
         { get { return _heroType; } set { _heroType = value; } }
-    public ICharacterMovement Movement
+    public HeroMovement Movement
         { get { return _movement; } }
     public AiHeroController AiHeroController
         { get { return _aiControl; }  }
@@ -47,7 +47,7 @@ public class Hero : MonoBehaviour, ICharacter
 
     private void Awake()
     {
-        _movement = GetComponent<ICharacterMovement>();
+        _movement = GetComponent<HeroMovement>();
     }
 
     void Start()
