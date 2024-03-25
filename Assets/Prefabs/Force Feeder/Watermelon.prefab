@@ -151,6 +151,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 794108e6bc0f5ae4fadd5309b9851a68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _colliders:
+  - {fileID: 6123673612185236392}
+  _rBody: {fileID: 6303593459902208679}
   _meter: {fileID: 2574891146964797387, guid: eda705f58eed7bc4fbf14b74cdb6c247, type: 3}
   _alert: {fileID: 5685868278306586147, guid: b9e2e76fafb519b4a9b923db20cbb25b, type: 3}
   _grabbablePointOffset: {x: 0, y: 1, z: 1}
