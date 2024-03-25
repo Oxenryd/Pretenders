@@ -47,4 +47,9 @@ public static class TransformHelpers{
             rotation = Quaternion.Euler(0, -180, 0);
         return rotation;
     }
+
+    public static Vector3 SnapToGrid(Vector3 characterPosition, Grid grid)
+    {
+        return new Vector3(Mathf.RoundToInt(characterPosition.x / grid.cellSize.x) * grid.cellSize.x, 0, Mathf.RoundToInt(characterPosition.z / grid.cellSize.z) * grid.cellSize.z);
+    }
 }

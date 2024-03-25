@@ -5,6 +5,9 @@ using UnityEngine.InputSystem;
 
 public class HeroMovement : MonoBehaviour, IJumpHit
 {
+    [SerializeField] private Transform _leftHand;
+    [SerializeField] private Transform _rightHand;
+
     [SerializeField] private ControlSchemeType _controlScheme = ControlSchemeType.TopDown;
     [SerializeField] private float _quickTurnFactor = 0.2f;
     [SerializeField] private float _jumpBufferTime = 0.13f;
@@ -17,7 +20,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     [SerializeField] private float _jumpPower = 5f;
     [SerializeField] private float _shoveStunDuration = 1f;
     [SerializeField] private DragStruggle _struggle;
-
+    [SerializeField] private Grid _grid;
     [SerializeField] private Collider _bodyCollider;
     [SerializeField] private Collider _headCollider;
 
@@ -56,6 +59,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     private bool _startBump = false;
     private bool _doDrop = false;
     private bool _colShoveDisabled = false;
+    private Vector3 _targetGridCenter;
     private Vector3 _shoveVector = Vector3.zero;
     private Vector3 _bumpVector = Vector3.zero;
     private Vector3 _gndNormal = new Vector3(0, 1, 0);
@@ -71,6 +75,11 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     private bool _signalingGrab = false;
     private float _shovePower = GlobalValues.SHOVE_DEFAULT_SHOVEPOWER;
 
+
+    public Transform LeftHand
+    { get { return _leftHand; } }
+    public Transform RightHand
+    { get { return _rightHand; } }
     public float TugPower
     { get; set; } = GlobalValues.TUG_DEFAULT_TUGPOWER;
     public sbyte TuggerIndex
@@ -493,6 +502,9 @@ public class HeroMovement : MonoBehaviour, IJumpHit
 
         if (CanMove && CanTrigger && _triedToTrigger)
         {
+            if (_controlScheme == ControlSchemeType.BomberMan)
+                OnTriggered();
+
             _triedToTrigger = false;
             if (IsGrabbing && CurrentGrab.TriggerEnter())
             {
@@ -644,6 +656,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
             Vector3 velocity = Vector3.zero;
             switch (CurrentControlScheme)
             {
+                case ControlSchemeType.BomberMan:
                 case ControlSchemeType.TopDown:
                     if (!IsDraggedByOther)
                         velocity = new Vector3(CurrentDirection.x * CurrentSpeed, _body.velocity.y, CurrentDirection.z * CurrentSpeed);

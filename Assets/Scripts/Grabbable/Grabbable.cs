@@ -215,7 +215,7 @@ public class Grabbable : MonoBehaviour
             _rBody.isKinematic = false;
             _rBody.velocity = Vector3.zero;
             _rBody.angularVelocity = Vector3.zero;
-            _rBody.AddForce(GlobalValues.CHAR_GRAB_DROPFORCE * (_grabber.FaceDirection + Vector3.up).normalized, ForceMode.Impulse);
+            OnDropThrow();
             _grabber = null;
         }
     }
@@ -287,4 +287,9 @@ public class Grabbable : MonoBehaviour
         transform.rotation = Quaternion.identity;
     }
     public virtual void KnockOff() { Drop(); }
+
+    public virtual void OnDropThrow()
+    {
+        Rigidbody.AddForce(GlobalValues.CHAR_GRAB_DROPFORCE * (_grabber.FaceDirection + Vector3.up).normalized, ForceMode.Impulse);
+    }
 }
