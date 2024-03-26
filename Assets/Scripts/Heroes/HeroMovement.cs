@@ -769,10 +769,6 @@ public class HeroMovement : MonoBehaviour, IJumpHit
             Halt();
             _doneFirstLoop = true;
         }
-        
-
-        //DEBUDEBUGDEBUG
-        Debug.Log($"Pos: {GroundPosition} - Target: {_targetGridCenter} - Distance To It: {_distanceToGridTarget}");
     }
 
     private void grabDragStuffs()
