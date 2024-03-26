@@ -73,8 +73,24 @@ public static class TransformHelpers
             outX = -1;
             outZ = 0;
         }
-            
 
         return new Vector3(outX, 0, outZ);
+    }
+
+    public static bool PassedGridTarget(HeroMovement hero, Vector3 gridCenterTarget)
+    {
+        if (hero.FaceDirection.x > 0)
+        {
+            if (hero.GroundPosition.x >= gridCenterTarget.x) return true;
+        } else if (hero.FaceDirection.x < 0)
+            if (hero.GroundPosition.x <= gridCenterTarget.x) return true;
+
+        if (hero.FaceDirection.z > 0)
+        {
+            if (hero.GroundPosition.z >= gridCenterTarget.z) return true;
+        } else if (hero.FaceDirection.z < 0)
+            if (hero.GroundPosition.z <= gridCenterTarget.z) return true;
+
+        return false;
     }
 }
