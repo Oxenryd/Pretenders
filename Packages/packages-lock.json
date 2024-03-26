@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "com.siccity.gltfutility": {
-      "version": "file:C:/Users/oxenr/Desktop/GLTFUtility",
+      "version": "file:../Tools/GLTFUtility-master",
       "depth": 0,
       "source": "local",
       "dependencies": {

@@ -36,7 +36,8 @@ public static class LayerMaskExtensions
     }
 }
 
-public static class TransformHelpers{
+public static class TransformHelpers
+{
     public static Quaternion FixNegativeZRotation(Vector3 from, Vector3 to)
     {
         Quaternion rotation;
@@ -51,5 +52,29 @@ public static class TransformHelpers{
     public static Vector3 SnapToGrid(Vector3 characterPosition, Grid grid)
     {
         return new Vector3(Mathf.RoundToInt(characterPosition.x / grid.cellSize.x) * grid.cellSize.x, 0, Mathf.RoundToInt(characterPosition.z / grid.cellSize.z) * grid.cellSize.z);
+    }
+
+    public static Vector3 QuadDirQuantize(Vector3 inputDirection)
+    {
+        var outX = 0;
+        var outZ = 0;
+        if (inputDirection.z > 0.7071f)
+            outZ = 1;   
+        else if (inputDirection.z < -0.7071f)
+            outZ = -1;
+
+        if (inputDirection.x > 0.7071f)
+        {
+            outX = 1;
+            outZ = 0;
+        }          
+        else if (inputDirection.x < -0.7071f)
+        {
+            outX = -1;
+            outZ = 0;
+        }
+            
+
+        return new Vector3(outX, 0, outZ);
     }
 }

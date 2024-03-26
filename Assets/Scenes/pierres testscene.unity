@@ -669,6 +669,50 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!1 &158990458
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 158990460}
+  - component: {fileID: 158990459}
+  m_Layer: 0
+  m_Name: TestGrid
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!156049354 &158990459
+Grid:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 158990458}
+  m_Enabled: 1
+  m_CellSize: {x: 2, y: 2, z: 2}
+  m_CellGap: {x: 0, y: 0, z: 0}
+  m_CellLayout: 0
+  m_CellSwizzle: 0
+--- !u!4 &158990460
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 158990458}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -4.595831, y: 4.564456, z: 0.56088626}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &414943700 stripped
 BoxCollider:
   m_CorrespondingSourceObject: {fileID: 915503303957407413, guid: bb195652605210b4fb4011f41ab1234f,
@@ -2388,6 +2432,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4803840465984694500, guid: 09b274cdbe693f043b1279ebd6e13910,
+        type: 3}
+      propertyPath: _grid
+      value: 
+      objectReference: {fileID: 158990459}
+    - target: {fileID: 4803840465984694500, guid: 09b274cdbe693f043b1279ebd6e13910,
+        type: 3}
+      propertyPath: _controlScheme
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 5714205671814208121, guid: 09b274cdbe693f043b1279ebd6e13910,
         type: 3}
       propertyPath: m_Name
@@ -2850,3 +2904,4 @@ SceneRoots:
   - {fileID: 878852851}
   - {fileID: 129701679}
   - {fileID: 4298266669533932507}
+  - {fileID: 158990460}

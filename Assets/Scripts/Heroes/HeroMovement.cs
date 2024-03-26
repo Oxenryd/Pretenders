@@ -60,6 +60,8 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     private bool _doDrop = false;
     private bool _colShoveDisabled = false;
     private Vector3 _targetGridCenter;
+    private float _distanceToGridTarget = 0f;
+    private bool _hasGridTarget = false;
     private Vector3 _shoveVector = Vector3.zero;
     private Vector3 _bumpVector = Vector3.zero;
     private Vector3 _gndNormal = new Vector3(0, 1, 0);
@@ -71,7 +73,6 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     private bool _tryingToDrop = false;
     private bool _doneFirstLoop = false;
     private bool _triedToTrigger = false;
-    
     private bool _signalingGrab = false;
     private float _shovePower = GlobalValues.SHOVE_DEFAULT_SHOVEPOWER;
 
@@ -144,7 +145,11 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     public bool IsDraggedByOther { get; set; } = false;
     public bool CanBeStunned { get; set; } = true;
     public Rigidbody RigidBody { get { return _body; } }
+    public Vector3 GroundPosition
+    { get { return new Vector3(transform.position.x, 0, transform.position.z); } }
 
+
+    // ------------------------------------------------------------------------------------- METHODS
     public void OnHeadHit(HeroMovement offender)
     {}
 
@@ -166,7 +171,45 @@ public class HeroMovement : MonoBehaviour, IJumpHit
         IsDraggedByOther = false;
         _dragCooldown.Reset();
     }
+    public void TryBump(Vector3 direction, float power)
+    {
+        CurrentSpeed = 0;
+        Halt();
+        _bumpVector = direction * power;
+        _startBump = true;
+    }
 
+    public void TryShove(Vector3 direction, float power)
+    {
+        if (!IsShoved)
+        {
+            _startShoving = true;
+
+            if (IsGrabbing)
+            {
+                CurrentGrab.KnockOff();
+            }
+
+            Vector3 forceDir = Vector3.zero;
+            switch (CurrentControlScheme) // TODO: Add different models for force calc in differnt control modes.
+            {
+                case ControlSchemeType.TopDown:
+                    forceDir = new Vector3(direction.x * power, GlobalValues.SHOVE_HEIGHT_BUMP_TOPDOWN, direction.z * power);
+                    break;
+            }
+
+            _shoveVector = forceDir;
+        }
+    }
+
+    public void Halt()
+    {
+        TryingToMove = false;
+        _stopSpeed = CurrentSpeed;
+        _accelTimer.Reset();
+        _turnTimer.Reset();
+        _haltTimer.Reset();
+    }
     public void Grab(Grabbable grabbable)
     {
         CurrentGrab = grabbable;
@@ -200,7 +243,20 @@ public class HeroMovement : MonoBehaviour, IJumpHit
             IsGrabbing = false;
     }
 
+    public void Stun(float time)
+    {
+        if (CanBeStunned)
+        {
+            CanMove = false;
+            _stunTimer.Time = time;
+            _stunTimer.Reset();
+            IsStunned = true;
+            _stopSpeed = CurrentSpeed;
+        }
+    }
+
     // Handle Input Events
+    // ------------------------------------------------------------------------------------- INPUTS START HERE
     public void TryJump(InputAction.CallbackContext context)
     {
         if (context.started)
@@ -261,18 +317,6 @@ public class HeroMovement : MonoBehaviour, IJumpHit
         }
     }
 
-    public void Stun(float time)
-    {
-        if (CanBeStunned)
-        {
-            CanMove = false;
-            _stunTimer.Time = time;
-            _stunTimer.Reset();
-            IsStunned = true;
-            _stopSpeed = CurrentSpeed;
-        }
-    }
-
     public void TryTrigger(InputAction.CallbackContext context)
     {
         if (context.started)
@@ -311,12 +355,22 @@ public class HeroMovement : MonoBehaviour, IJumpHit
         if (CanMove && context.started)
         {
             var inputDir = context.ReadValue<Vector2>();
-            _startMovingFromStandStill(new Vector3(inputDir.x, 0, inputDir.y));
+
+            Vector3 actualDir = _controlScheme == ControlSchemeType.BomberMan
+                ? TransformHelpers.QuadDirQuantize(new Vector3(inputDir.x, 0, inputDir.y))
+                : new Vector3(inputDir.x, 0, inputDir.y);
+
+            _startMovingFromStandStill(actualDir);
         }
         else if (CanMove && context.performed)
         {
             var inputDir = context.ReadValue<Vector2>();
-            _resumeMoving(new Vector3(inputDir.x, 0, inputDir.y));
+
+            Vector3 actualDir = _controlScheme == ControlSchemeType.BomberMan
+                ? TransformHelpers.QuadDirQuantize(new Vector3(inputDir.x, 0, inputDir.y))
+                : new Vector3(inputDir.x, 0, inputDir.y);
+
+            _resumeMoving(actualDir);
         }
         else if (context.canceled)
         {
@@ -333,57 +387,24 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     {
         if (CanMove && !TryingToMove)
         {
-            var inputDir = new Vector3(direction.x, 0, direction.y);
+            Vector3 inputDir = _controlScheme == ControlSchemeType.BomberMan
+                ? TransformHelpers.QuadDirQuantize( new Vector3(direction.x, 0, direction.y) )
+                : new Vector3(direction.x, 0, direction.y);
+
             _startMovingFromStandStill(inputDir);
         }
         else if (CanMove && TryingToMove)
         {
-            var inputDir = new Vector3(direction.x, 0, direction.y);
+            Vector3 inputDir = _controlScheme == ControlSchemeType.BomberMan
+                ? TransformHelpers.QuadDirQuantize(new Vector3(direction.x, 0, direction.y))
+                : new Vector3(direction.x, 0, direction.y);
+
             _resumeMoving(inputDir);
         }
         else
             Halt();
     }
 
-    public void TryBump(Vector3 direction, float power)
-    {
-        CurrentSpeed = 0;
-        Halt();
-        _bumpVector = direction * power;
-        _startBump = true;
-    }
-
-    public void TryShove(Vector3 direction, float power)
-    {
-        if (!IsShoved)
-        {
-            _startShoving = true;
-
-            if (IsGrabbing)
-            {
-                CurrentGrab.KnockOff();
-            }
-
-            Vector3 forceDir = Vector3.zero;
-            switch (CurrentControlScheme) // TODO: Add different models for force calc in differnt control modes.
-            {
-                case ControlSchemeType.TopDown:
-                    forceDir = new Vector3(direction.x * power, GlobalValues.SHOVE_HEIGHT_BUMP_TOPDOWN, direction.z * power);
-                    break;
-            }
-
-            _shoveVector = forceDir;
-        }
-    }
-
-    public void Halt()
-    {
-        TryingToMove = false;
-        _stopSpeed = CurrentSpeed;
-        _accelTimer.Reset();
-        _turnTimer.Reset();
-        _haltTimer.Reset();
-    }
 
     /// <summary>
     /// Remove some factor of airvelocity when releasing jump button mid air.
@@ -609,7 +630,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
             }
         }
 
-        // ---------------------------------------------------------    MOVING
+        // ---------------------------------------------------------------------------------    MOVING
         // Are we trying to move??
         // T's for t in lerps.
         float turnT = _turnTimer.Ratio;
@@ -617,13 +638,31 @@ public class HeroMovement : MonoBehaviour, IJumpHit
         float haltT = _haltTimer.Ratio;
         if (TryingToMove && !IsBumped && !IsShoved)
         {
+            
             // Trying a "glassy" feeling of movement, with some time for acceleration and turning.
-            CurrentDirection = Vector3.Lerp(CurrentDirection, TargetDirection, turnT);
-            CurrentSpeed = Mathf.Clamp(Mathf.Lerp(CurrentSpeed, MaxMoveSpeed, accelT), 0f, TargetSpeed);
+            if (_controlScheme != ControlSchemeType.BomberMan)
+            {
+                CurrentDirection = Vector3.Lerp(CurrentDirection, TargetDirection, turnT);
+                CurrentSpeed = Mathf.Clamp(Mathf.Lerp(CurrentSpeed, MaxMoveSpeed, accelT), 0f, TargetSpeed);
+            } else
+            {
+                FaceDirection = TargetDirection;
+                CurrentDirection = FaceDirection;
+                //_hasGridTarget = true;
+                CurrentSpeed = MaxMoveSpeed;
+
+            }
+
         } else if (!TryingToMove)
         {
-            // Take some time to slow down.
-            CurrentSpeed = Mathf.Lerp(_stopSpeed, 0f, haltT);
+            if (_controlScheme != ControlSchemeType.BomberMan)
+            {
+                // Take some time to slow down.
+                CurrentSpeed = Mathf.Lerp(_stopSpeed, 0f, haltT);
+            } else
+            {              
+ 
+            }
         }
 
         // Moving?
@@ -657,6 +696,23 @@ public class HeroMovement : MonoBehaviour, IJumpHit
             switch (CurrentControlScheme)
             {
                 case ControlSchemeType.BomberMan:
+                    if (TryingToMove)
+                    {
+                        _targetGridCenter = TransformHelpers.SnapToGrid(GroundPosition + _grid.cellSize.x * FaceDirection / 2, _grid);
+                        _distanceToGridTarget = (_targetGridCenter - GroundPosition).magnitude;
+                        velocity = FaceDirection.normalized * CurrentSpeed;
+                    } else
+                    {
+                        if (_distanceToGridTarget < GlobalValues.CHAR_MOVEMENT_GRIDTARGET_EPSILON)
+                        {
+                            CurrentSpeed = 0;
+                            velocity = Vector3.zero;
+                            _hasGridTarget = false;
+                        }
+                    }
+                   
+
+                    break;
                 case ControlSchemeType.TopDown:
                     if (!IsDraggedByOther)
                         velocity = new Vector3(CurrentDirection.x * CurrentSpeed, _body.velocity.y, CurrentDirection.z * CurrentSpeed);
@@ -678,8 +734,12 @@ public class HeroMovement : MonoBehaviour, IJumpHit
                 _body.velocity = velocity;
 
             var dirVelocity = new Vector3(velocity.x, 0, velocity.z).normalized;
-            if (dirVelocity.sqrMagnitude > 0.005f && !IsShoved && !IsDraggedByOther && !IsFalling && !IsJumping)
-                FaceDirection = new Vector3(_body.velocity.x, 0f, _body.velocity.z).normalized;
+            if (_controlScheme != ControlSchemeType.BomberMan)
+            {
+                if (dirVelocity.sqrMagnitude > 0.005f && !IsShoved && !IsDraggedByOther && !IsFalling && !IsJumping)
+                    FaceDirection = new Vector3(_body.velocity.x, 0f, _body.velocity.z).normalized;
+            }
+
         }
 
         if (!IsGrounded)
@@ -964,6 +1024,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
         dragged.CanBeDragged = false;
         dragged.RigidBody.isKinematic = true;
     }
+
 
     void OnDrawGizmos()
     {
