@@ -14,10 +14,10 @@ namespace Assets.Scripts.PlatformBrawler
         private BrawlerPowerUp _currentPowerUp;
         [SerializeField] Collider[] PlatformColliders;
         public BrawlerPowerType CurrentPowerUpInRotation { get; set; }
-        private float _respawnTime { get; set; } = 20f;
+        private float _respawnTime { get; set; } = 2f;
         private float _minRespawnBuffer { get; set; } = 0f;
-        private float _maxRespawnBuffer { get; set; } = 15f;
-        private float _timeBeforeFirstSpawn = 10f;
+        private float _maxRespawnBuffer { get; set; } = 2f;
+        private float _timeBeforeFirstSpawn = 5f;
         private EasyTimer _timeToRespawn;
         private EasyTimer _timeActive; 
 
@@ -41,7 +41,7 @@ namespace Assets.Scripts.PlatformBrawler
             {
                 DespawnPowerUp();
             }
-            if(_currentPowerUp.Collected)
+            if(_currentPowerUp != null && _currentPowerUp.Collected)
             {
                 DespawnPowerUp();
             }
@@ -67,26 +67,26 @@ namespace Assets.Scripts.PlatformBrawler
             _currentPowerUp = powerUps[(int)type];
             
             _currentPowerUp.transform.position = RandomiseSpawnPoint();
-            
-            while (!validSpawnPosition)
+            Collider powerUpCollider = _currentPowerUp.GetComponent<Collider>();
+
+            while (true)
             {
                 bool overlapping = false;
                 foreach (Collider collider in PlatformColliders)
                 {
-                    if (collider.transform.position == _currentPowerUp.transform.position)
+                    if (powerUpCollider.bounds.Intersects(collider.bounds))                       
                     {
                         overlapping = true;
-                        break;
-                    }
-                    if (!overlapping)
-                    {
-                        validSpawnPosition = true;
-                    }
-                    else
-                    {
-                        _currentPowerUp.transform.position = RandomiseSpawnPoint();
-                    }
-                }               
+                    }                
+                }
+                if (!overlapping)
+                {
+                    break;
+                }
+                else
+                {
+                    _currentPowerUp.transform.position = RandomiseSpawnPoint();
+                }
             }               
                 _timeActive.Reset();
                 _currentPowerUp.Spawn();

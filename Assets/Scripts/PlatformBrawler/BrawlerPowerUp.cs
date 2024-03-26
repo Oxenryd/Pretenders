@@ -17,7 +17,7 @@ namespace Assets.Scripts.Collectibles
         void Start()
         {
             _timeToActivate = new EasyTimer(ActivateTime);
-            gameObject.SetActive(false);
+            gameObject.SetActive(false);            
         }
 
         void Update()
@@ -55,7 +55,7 @@ namespace Assets.Scripts.Collectibles
                     break;
                 case BrawlerPowerType.SpeedUp:
                     {
-
+                        //Player[1].MaxMoveSpeed = Player[1].MaxMoveSpeed * 1.5f;
                     }
                     break;
                 case BrawlerPowerType.UltraShove:
@@ -65,13 +65,14 @@ namespace Assets.Scripts.Collectibles
                     break;
                 case BrawlerPowerType.MegaJump:
                     {
-
+                        //Player[1].MaxJumpPower = Player[1].MaxJumpPower * 1.5f;
                     }
                     break;
             }
         }
         public void OnExpire()
         {
+            Collected = false;
             gameObject.SetActive(false);
         }
         private void OnCollisionEnter(Collision collision)
