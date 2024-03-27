@@ -156,7 +156,8 @@ public class Grabbable : MonoBehaviour
             _grabber = grabber;
             _meter.Activate(_grabber.GameObject.transform.position + new Vector3(0, 2.3f, 0));
             return true;
-        } else if (GrabInProgress)
+        }
+        else if (GrabInProgress)
         {
             _alert.Hide();
             _meter.Abort();
@@ -179,7 +180,8 @@ public class Grabbable : MonoBehaviour
             }
             //_collider.enabled = true;
             //_collider.excludeLayers = LayerUtil.Include(GlobalValues.GROUND_LAYER, grabber.GameObject.layer);          
-        } else
+        }
+        else
             foreach (var col in _colliders)
             {
                 col.enabled = false;
@@ -215,7 +217,7 @@ public class Grabbable : MonoBehaviour
             _rBody.isKinematic = false;
             _rBody.velocity = Vector3.zero;
             _rBody.angularVelocity = Vector3.zero;
-            _rBody.AddForce(GlobalValues.CHAR_GRAB_DROPFORCE * (_grabber.FaceDirection + Vector3.up).normalized, ForceMode.Impulse);
+            OnDropThrow();
             _grabber = null;
         }
     }
@@ -223,7 +225,7 @@ public class Grabbable : MonoBehaviour
     protected void Awake()
     {
         //_collider = gameObject.GetComponent<Collider>();
-       // _rBody = _collider.attachedRigidbody;
+        // _rBody = _collider.attachedRigidbody;
         _grabbedTimer = new EasyTimer(TimeToGrab);
         _colliderTimer = new EasyTimer(GlobalValues.GRABBABLE_COLLIDER_TIMEOUT_DEFAULTTIME);
         var container = GameObject.FindWithTag(GlobalStrings.NAME_UIOVERLAY);
@@ -262,7 +264,7 @@ public class Grabbable : MonoBehaviour
         if (IsGrabbed && !IsAttached)
         {
             transform.rotation = TransformHelpers.FixNegativeZRotation(Vector3.forward, _grabber.FaceDirection);
-            transform.position = _grabber.GameObject.transform.position + (_grabber.FaceDirection * GrabPointOffset.z + new Vector3(0, GrabPointOffset.y, 0) + transform.rotation * new Vector3(GrabPointOffset.x, 0,0));         
+            transform.position = _grabber.GameObject.transform.position + (_grabber.FaceDirection * GrabPointOffset.z + new Vector3(0, GrabPointOffset.y, 0) + transform.rotation * new Vector3(GrabPointOffset.x, 0, 0));
         }
     }
 
@@ -271,9 +273,9 @@ public class Grabbable : MonoBehaviour
     /// </summary>
     /// <param name="response"></param>
     public virtual void ProcessTransferResponse(int response)
-    { 
+    {
         if (response == 0)
-        { 
+        {
             _grabber.ActualDrop(); Drop();
         }
     }
@@ -287,4 +289,9 @@ public class Grabbable : MonoBehaviour
         transform.rotation = Quaternion.identity;
     }
     public virtual void KnockOff() { Drop(); }
+
+    public virtual void OnDropThrow()
+    {
+        Rigidbody.AddForce(GlobalValues.CHAR_GRAB_DROPFORCE * (_grabber.FaceDirection + Vector3.up).normalized, ForceMode.Impulse);
+    }
 }

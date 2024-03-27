@@ -7,10 +7,11 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.UIElements;
 
-public class Bomb : MonoBehaviour
+public class Bomb : Grabbable
 {
 
     //Flames
+    //override drop funktion och använda base.drop
 
     [SerializeField]
     private GameObject explosion;
@@ -19,7 +20,7 @@ public class Bomb : MonoBehaviour
     private LayerMask levelMask;
 
     [SerializeField]
-    private float delayBeforeExplosion = 1;
+    private float delayBeforeExplosion = 10;
 
     [SerializeField]
     private float delayAfterEachExplosion = 0.05f;
@@ -38,6 +39,7 @@ public class Bomb : MonoBehaviour
 
     void Awake()
     {
+        base.Awake();
         timer = new EasyTimer(delayBeforeExplosion);
         detonationTickTimer = new EasyTimer(delayAfterEachExplosion);
     }
@@ -57,6 +59,7 @@ public class Bomb : MonoBehaviour
 
     void Update()
     {
+        base.Update();
         if (!IsActive) return;
 
         if (timer.Done && hasDetonated != true)
@@ -83,6 +86,7 @@ public class Bomb : MonoBehaviour
         }
         
     }
+
     public void SpawnBomb(Vector3 charPosition)
     {
         hasDetonated = false;
@@ -93,6 +97,27 @@ public class Bomb : MonoBehaviour
         gameObject.transform.position = charPosition;
     }
 
+    public override void OnDropThrow()
+    {
+        Vector3 launchDirection = (Grabber.FaceDirection + Vector3.up).normalized;
+        Rigidbody.AddForce(12 * launchDirection, ForceMode.Impulse);
+
+        Vector3 landingPosition = transform.position + CalculateLandingOffset(launchDirection);
+        Debug.Log("Estimated landing position: " + landingPosition);
+    }
+
+    private Vector3 CalculateLandingOffset(Vector3 launchDirection)
+    {
+        Vector3 initialVelocity = 12 * launchDirection;
+
+        float timeOfFlight = (2 * initialVelocity.y) / Mathf.Abs(Physics.gravity.y);
+
+        float horizontalDistance = initialVelocity.x * timeOfFlight;
+
+        Vector3 landingOffset = new Vector3(horizontalDistance, 0f, 0f);
+
+        return landingOffset;
+    }
     private void ExplosionCheckNearby(Vector3 direction, int tick)
     {
             RaycastHit hit;
