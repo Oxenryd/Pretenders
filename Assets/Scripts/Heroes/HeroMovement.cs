@@ -8,7 +8,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
 {
     [SerializeField] private Transform _leftHand;
     [SerializeField] private Transform _rightHand;
-
+    [SerializeField] private Vector3 _gridOffset = Vector3.zero;
     [SerializeField] private ControlSchemeType _controlScheme = ControlSchemeType.TopDown;
     [SerializeField] private float _quickTurnFactor = 0.2f;
     [SerializeField] private float _jumpBufferTime = 0.13f;
@@ -78,7 +78,8 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     private bool _signalingGrab = false;
     private float _shovePower = GlobalValues.SHOVE_DEFAULT_SHOVEPOWER;
 
-
+    public Vector3 GridCenterOffset
+    { get { return _gridOffset; } set { _gridOffset = value; } }
     public Transform LeftHand
     { get { return _leftHand; } }
     public Transform RightHand
