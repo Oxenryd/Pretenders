@@ -9,7 +9,7 @@ namespace Assets.Scripts.Interfaces
         public GameObject gameObject { get; }
         
         public void OnPickup();
-        public void OnSpawn();
+        public void Spawn();
         public void OnExpire();
         public void OnActivation();
 
