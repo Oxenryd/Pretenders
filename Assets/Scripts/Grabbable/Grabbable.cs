@@ -247,8 +247,19 @@ public class Grabbable : MonoBehaviour
 
         if (IsGrabbed && !IsAttached)
         {
-            transform.rotation = TransformHelpers.FixNegativeZRotation(Vector3.forward, _grabber.FaceDirection);
-            transform.position = _grabber.GameObject.transform.position + (_grabber.FaceDirection * GrabPointOffset.z + new Vector3(0, GrabPointOffset.y, 0) + transform.rotation * new Vector3(GrabPointOffset.x, 0,0));         
+            switch (_grabPosition)
+            {
+                case GrabbablePosition.AsBackpack:
+                case GrabbablePosition.AboveHeadOneHand:
+                case GrabbablePosition.InFrontOneHand:
+                    transform.rotation = TransformHelpers.FixNegativeZRotation(Vector3.forward, _grabber.FaceDirection);
+                    transform.position = _grabber.LeftHand.position + _grabber.LeftHand.rotation * new Vector3(GrabPointOffset.x, GrabPointOffset.y, GrabPointOffset.z);
+                    break;
+                case GrabbablePosition.InFrontTwoHands:
+                    transform.rotation = TransformHelpers.FixNegativeZRotation(Vector3.forward, _grabber.FaceDirection);
+                    transform.position = _grabber.GameObject.transform.position + (_grabber.FaceDirection * GrabPointOffset.z + new Vector3(0, GrabPointOffset.y, 0) + transform.rotation * new Vector3(GrabPointOffset.x, 0, 0));
+                    break;
+            }
         }
     }
 

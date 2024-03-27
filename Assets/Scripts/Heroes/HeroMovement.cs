@@ -493,6 +493,8 @@ public class HeroMovement : MonoBehaviour, IJumpHit
 
         if (CanMove && CanTrigger && _triedToTrigger)
         {
+            if (_controlScheme == ControlSchemeType.BomberMan)
+                OnTriggered();
             _triedToTrigger = false;
             if (IsGrabbing && CurrentGrab.TriggerEnter())
             {
@@ -644,6 +646,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
             Vector3 velocity = Vector3.zero;
             switch (CurrentControlScheme)
             {
+                case ControlSchemeType.BomberMan:
                 case ControlSchemeType.TopDown:
                     if (!IsDraggedByOther)
                         velocity = new Vector3(CurrentDirection.x * CurrentSpeed, _body.velocity.y, CurrentDirection.z * CurrentSpeed);
@@ -659,6 +662,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
                     else
                         velocity = Dragger.Velocity;
                     break;
+
             }
 
             if (!IsDraggedByOther)

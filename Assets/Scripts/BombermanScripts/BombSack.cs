@@ -43,6 +43,8 @@ public class BombSack : MonoBehaviour
 
     private void TrySpawnBomb(object sender, EventArgs e)
     {
+        character.TryBump(-character.FaceDirection, 
+            2.5f);
         // How many active bombs???
         int activeBombs = 0;
         for (int i = 0; i < bombs.Length; i++)
