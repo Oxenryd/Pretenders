@@ -54,6 +54,7 @@ public static class GlobalValues
 
     public const int   OBJECTS_LAYER = 22;
     public const int   GROUND_LAYER = 10;
+    public const int   GROUNDABLE_LAYER = 23;
 
     public const int   STRINGS_MAX_PRECACHED_NUMBERSTRINGS = 10000;
 
