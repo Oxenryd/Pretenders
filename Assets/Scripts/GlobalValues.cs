@@ -25,6 +25,8 @@ public static class GlobalValues
     public const float CHAR_GRAB_RADIUS_DEFAULT_TIMETOGRAB = 0.3f;
     public const float CHAR_GRAB_TIMEOUT = 0.5f;
 
+    public const float CHAR_MOVEMENT_GRIDTARGET_EPSILON = 0.15f;
+
     public const float CHAR_PUSH_COOLDOWN = 0.58f;
 
     public const float CHAR_DRAG_SPEED_MULTIPLIER = 0.6f;
@@ -49,5 +51,7 @@ public static class GlobalValues
     public const int   GROUND_LAYER = 10;
 
     public const int   STRINGS_MAX_PRECACHED_NUMBERSTRINGS = 10000;
+
+
 
 }

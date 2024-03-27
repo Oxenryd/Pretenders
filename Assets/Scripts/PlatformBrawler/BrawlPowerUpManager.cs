@@ -19,10 +19,10 @@ namespace Assets.Scripts.PlatformBrawler
         private float _maxRespawnBuffer { get; set; } = 2f;
         private float _timeBeforeFirstSpawn = 5f;
         private EasyTimer _timeToRespawn;
-        private EasyTimer _timeActive; 
+        private EasyTimer _timeActive;
 
         // -15, 15   50,51   1, 14
-                     
+
         public void Start()
         {
             _timeToRespawn = new EasyTimer(_respawnTime);
@@ -41,6 +41,7 @@ namespace Assets.Scripts.PlatformBrawler
             {
                 DespawnPowerUp();
             }
+
             if(_currentPowerUp != null && _currentPowerUp.Collected)
             {
                 DespawnPowerUp();
@@ -65,15 +66,18 @@ namespace Assets.Scripts.PlatformBrawler
             BrawlerPowerType type = CurrentPowerUpInRotation;
             bool validSpawnPosition = false;
             _currentPowerUp = powerUps[(int)type];
+
             
             _currentPowerUp.transform.position = RandomiseSpawnPoint();
             Collider powerUpCollider = _currentPowerUp.GetComponent<Collider>();
 
             while (true)
+
             {
                 bool overlapping = false;
                 foreach (Collider collider in PlatformColliders)
                 {
+
                     if (powerUpCollider.bounds.Intersects(collider.bounds))                       
                     {
                         overlapping = true;
@@ -112,8 +116,9 @@ namespace Assets.Scripts.PlatformBrawler
         }
         private void RandomisePowerUp()
         {
-            CurrentPowerUpInRotation = (BrawlerPowerType)Enum.ToObject(typeof(BrawlerPowerType), UnityEngine.Random.Range(0, 400)/100);
+            CurrentPowerUpInRotation = (BrawlerPowerType)Enum.ToObject(typeof(BrawlerPowerType), UnityEngine.Random.Range(0, 400) / 100);
         }
+
     
     }
 }
