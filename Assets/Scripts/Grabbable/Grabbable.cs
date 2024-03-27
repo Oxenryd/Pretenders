@@ -127,7 +127,7 @@ public class Grabbable : MonoBehaviour
     }
     public void TugPull(HeroMovement hero)
     {
-        Tug.Increase(hero.TuggerIndex * hero.TugPower);
+        Tug.Increase(hero.TuggerIndex * hero.TugPower * hero.Effect.CurrentEffects().TugPowerMultiplier);
     }
 
     public void AbortGrab()

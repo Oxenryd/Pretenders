@@ -5,9 +5,13 @@ using UnityEngine;
 
 public class Effect
 {
+    private static Effect _noEffect = null;
+
     private EasyTimer _activeTimer;
 
     public bool Active { get; private set; } = false;
+    public float BumbMultiplier
+    { get; set; } = 1f;
     public float ShoveMultiplier
     { get; set; } = 1f;
     public float MoveSpeedMultiplier
@@ -16,12 +20,12 @@ public class Effect
     { get;set; } = 1f;
     public float JumpPowerMultiplier
     { get;set; } = 1f;
-    public float ShoveResistanceMultiplier
-    { get;set; } = 1f;
     public int ExtraDoubleJumps
     { get; set; } = 0;
     public float StrugglePowerMultiplier
     { get; set; } = 1f;
+    public bool StunImmune
+    { get; set; } = false;
     public float EffectDuration
     {
         get
@@ -73,7 +77,9 @@ public class Effect
 
     public static Effect DefaultEffect()
     {
-        var noEffect = new Effect();
-        return noEffect;
+        if (_noEffect == null)
+            _noEffect = new Effect();
+        
+        return _noEffect;
     }
 }
