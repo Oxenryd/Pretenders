@@ -78,6 +78,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     private bool _signalingGrab = false;
     private float _shovePower = GlobalValues.SHOVE_DEFAULT_SHOVEPOWER;
 
+    public Effect Effect { get; set; }
     public Vector3 GridCenterOffset
     { get { return _gridOffset; } set { _gridOffset = value; } }
     public Transform LeftHand
@@ -153,6 +154,14 @@ public class HeroMovement : MonoBehaviour, IJumpHit
 
 
     // ------------------------------------------------------------------------------------- METHODS
+    public void ActivateEffect()
+    {
+        Effect.Activate();
+    }
+    public void AssignEffect(Effect newEffect)
+    {
+        Effect = newEffect;
+    }
     public void OnHeadHit(HeroMovement offender)
     {}
 
@@ -441,6 +450,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
         _shoveOffenderColDisableTimer = new EasyTimer(GlobalValues.SHOVE_OFFENDCOL_DIS_DUR, false, true);
         _stunTimer = new EasyTimer(0, false, true);
         TryMoveAi(Vector2.right);
+        Effect = Effect.DefaultEffect();
     }
 
     // -------------------------------------------------------------------------------------------------------------- FixedUpdate()

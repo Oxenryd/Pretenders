@@ -2440,17 +2440,17 @@ PrefabInstance:
     - target: {fileID: 4803840465984694500, guid: 09b274cdbe693f043b1279ebd6e13910,
         type: 3}
       propertyPath: _gridOffset.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4803840465984694500, guid: 09b274cdbe693f043b1279ebd6e13910,
         type: 3}
       propertyPath: _gridOffset.z
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4803840465984694500, guid: 09b274cdbe693f043b1279ebd6e13910,
         type: 3}
       propertyPath: _controlScheme
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5714205671814208121, guid: 09b274cdbe693f043b1279ebd6e13910,
         type: 3}
