@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 9066948715422632108}
   - component: {fileID: 5181315799902989806}
   - component: {fileID: 8499154204931919746}
+  - component: {fileID: 8475167315639777812}
   m_Layer: 0
   m_Name: BombPrefab
   m_TagString: Untagged
@@ -99,13 +100,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7f6e875f3cf02a448e7960f598d56fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _colliders:
+  - {fileID: 8499154204931919746}
+  _rBody: {fileID: 8475167315639777812}
+  _meter: {fileID: 2574891146964797387, guid: eda705f58eed7bc4fbf14b74cdb6c247, type: 3}
+  _alert: {fileID: 5685868278306586147, guid: b9e2e76fafb519b4a9b923db20cbb25b, type: 3}
+  _grabbablePointOffset: {x: 0, y: 1, z: 1}
+  _handsOffsets:
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  _tugOWar: {fileID: 1420075866903311425, guid: 94d9b15f380a5cd4c8c335f14d768ef0,
+    type: 3}
+  _grabPosition: 1
   explosion: {fileID: 52511004266254832, guid: 8a64124c26548e64eb99b4cec00fee68, type: 3}
-  explosionForce: 10
-  radius: 10
   levelMask:
     serializedVersion: 2
     m_Bits: 8
-  delayBeforeExplosion: 2
+  delayBeforeExplosion: 5
+  delayAfterEachExplosion: 0.05
 --- !u!65 &8499154204931919746
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -127,3 +139,30 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.34238037, y: 0.43362296, z: 0.34238037}
   m_Center: {x: 0, y: 0.21681148, z: 0}
+--- !u!54 &8475167315639777812
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 170936541569395615}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0

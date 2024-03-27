@@ -41,7 +41,8 @@ namespace Assets.Scripts.PlatformBrawler
             {
                 DespawnPowerUp();
             }
-            if (_currentPowerUp != null && _currentPowerUp.Collected)
+
+            if(_currentPowerUp != null && _currentPowerUp.Collected)
             {
                 DespawnPowerUp();
             }
@@ -66,32 +67,33 @@ namespace Assets.Scripts.PlatformBrawler
             bool validSpawnPosition = false;
             _currentPowerUp = powerUps[(int)type];
 
+            
             _currentPowerUp.transform.position = RandomiseSpawnPoint();
+            Collider powerUpCollider = _currentPowerUp.GetComponent<Collider>();
 
-            while (!validSpawnPosition)
+            while (true)
+
             {
                 bool overlapping = false;
                 foreach (Collider collider in PlatformColliders)
                 {
 
-
-                    if (collider.transform.position == _currentPowerUp.transform.position)
+                    if (powerUpCollider.bounds.Intersects(collider.bounds))                       
                     {
                         overlapping = true;
-                        break;
-                    }
-                    if (!overlapping)
-                    {
-                        validSpawnPosition = true;
-                    }
-                    else
-                    {
-                        _currentPowerUp.transform.position = RandomiseSpawnPoint();
-                    }
+                    }                
                 }
-            }
-            _timeActive.Reset();
-           // _currentPowerUp.Spawn();
+                if (!overlapping)
+                {
+                    break;
+                }
+                else
+                {
+                    _currentPowerUp.transform.position = RandomiseSpawnPoint();
+                }
+            }               
+                _timeActive.Reset();
+                _currentPowerUp.Spawn();
         }
         private void DespawnPowerUp()
         {
@@ -117,5 +119,6 @@ namespace Assets.Scripts.PlatformBrawler
             CurrentPowerUpInRotation = (BrawlerPowerType)Enum.ToObject(typeof(BrawlerPowerType), UnityEngine.Random.Range(0, 400) / 100);
         }
 
+    
     }
 }
