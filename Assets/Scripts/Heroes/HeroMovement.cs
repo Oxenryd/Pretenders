@@ -24,6 +24,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     [SerializeField] private Grid _grid;
     [SerializeField] private Collider _bodyCollider;
     [SerializeField] private Collider _headCollider;
+    [SerializeField] private LayerMask _bombLayer;
 
     // EVENTS
     public event EventHandler<Grabbable> GrabbedGrabbable;
@@ -154,7 +155,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
 
     // ------------------------------------------------------------------------------------- METHODS
     public void OnHeadHit(HeroMovement offender)
-    {}
+    { }
 
     public void OnHitOthersHead(HeroMovement victim)
     {
@@ -228,7 +229,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     public void SetTug(sbyte tugIndex)
     {
         CurrentSpeed = CurrentSpeed * 0.15f;
-        Halt();       
+        Halt();
         _tryingToDrop = false;
         TryingToGrab = false;
         IsGrabInProgress = false;
@@ -296,7 +297,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
             {
                 if (!IsGrabbing && !IsGrabInProgress && !IsTugging)
                 {
-                    TryingToGrab = true;                   
+                    TryingToGrab = true;
                 }
                 else if (!IsTugging)
                 {
@@ -363,7 +364,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
                 ? TransformHelpers.QuadDirQuantize(new Vector3(inputDir.x, 0, inputDir.y))
                 : new Vector3(inputDir.x, 0, inputDir.y);
 
-                _startMovingFromStandStill(actualDir);
+            _startMovingFromStandStill(actualDir);
         }
         else if (CanMove && context.performed)
         {
@@ -373,7 +374,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
                 ? TransformHelpers.QuadDirQuantize(new Vector3(inputDir.x, 0, inputDir.y))
                 : new Vector3(inputDir.x, 0, inputDir.y);
 
-                _resumeMoving(actualDir);
+            _resumeMoving(actualDir);
         }
         else if (context.canceled)
         {
@@ -391,7 +392,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
         if (CanMove && !TryingToMove)
         {
             Vector3 inputDir = _controlScheme == ControlSchemeType.BomberMan
-                ? TransformHelpers.QuadDirQuantize( new Vector3(direction.x, 0, direction.y) )
+                ? TransformHelpers.QuadDirQuantize(new Vector3(direction.x, 0, direction.y))
                 : new Vector3(direction.x, 0, direction.y);
 
             _startMovingFromStandStill(inputDir);
@@ -512,7 +513,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
         {
             TryingToGrab = false;
             _tryingToDrop = false;
-        }    
+        }
         if (_grabTimout.Done && !IsTugging)
         {
             grabDragStuffs();
@@ -534,7 +535,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
             {
                 OnTriggered();
             }
-            
+
         }
 
 
@@ -641,7 +642,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
         float haltT = _haltTimer.Ratio;
         if (TryingToMove && !IsBumped && !IsShoved)
         {
-            
+
             // Trying a "glassy" feeling of movement, with some time for acceleration and turning.
             if (_controlScheme != ControlSchemeType.BomberMan)
             {
@@ -649,10 +650,12 @@ public class HeroMovement : MonoBehaviour, IJumpHit
                 CurrentSpeed = Mathf.Clamp(Mathf.Lerp(CurrentSpeed, MaxMoveSpeed, accelT), 0f, TargetSpeed);
             } else
             {
+                validMovement();
+
                 if (_canChangeQuadDirection)
                 {
                     FaceDirection = TargetDirection;
-                    CurrentDirection = FaceDirection;                   
+                    CurrentDirection = FaceDirection;
                 }
                 CurrentSpeed = MaxMoveSpeed;
             }
@@ -696,7 +699,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
             Vector3 velocity = Vector3.zero;
             switch (CurrentControlScheme)
 
-            {           
+            {
                 case ControlSchemeType.BomberMan:
                     velocity = FaceDirection.normalized * CurrentSpeed;
                     _distanceToGridTarget = Vector3.Distance(_targetGridCenter, GroundPosition);
@@ -720,7 +723,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
                         _canChangeQuadDirection = false;
                     }
 
-            break;
+                    break;
 
                 case ControlSchemeType.TopDown:
                     if (!IsDraggedByOther)
@@ -788,7 +791,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
             if (foundGrab != null && !IsDraggedByOther)
             {
                 CurrentGrab = foundGrab;
-                if ( (CurrentGrab.IsGrabbed && CurrentGrab.CanBeTuggedWhileGrabbed) || CurrentGrab.GrabInProgress)
+                if ((CurrentGrab.IsGrabbed && CurrentGrab.CanBeTuggedWhileGrabbed) || CurrentGrab.GrabInProgress)
                 {
                     if (Vector3.Dot(FaceDirection, CurrentGrab.Grabber.FaceDirection) < GlobalValues.TUG_DIRECTION_DOT_LIMIT)
                         foundGrab.PickupAlert.Ping(this, foundGrab.transform, true);
@@ -1022,13 +1025,13 @@ public class HeroMovement : MonoBehaviour, IJumpHit
             dragged.IsGrabbing = false;
         }
 
-       _struggle = GameManager.Instance.SceneManager.NextDragStruggle();
+        _struggle = GameManager.Instance.SceneManager.NextDragStruggle();
         dragged.DragStruggle = _struggle;
         _struggle.Activate(dragger, dragged);
 
         IsDraggingOther = true;
         CanBeDragged = true;
-        
+
         dragged.Dragger = this;
         dragged.IsDraggedByOther = true;
         dragged.CanBeDragged = false;
@@ -1043,4 +1046,17 @@ public class HeroMovement : MonoBehaviour, IJumpHit
         Gizmos.DrawWireSphere(xyz + FaceDirection * GlobalValues.CHAR_GRAB_CHECK_DISTANCE, GlobalValues.CHAR_GRAB_RADIUS);
         Gizmos.DrawWireSphere(xyz + Vector3.up + FaceDirection * GlobalValues.CHAR_GRAB_CHECK_DISTANCE, GlobalValues.CHAR_GRAB_RADIUS);
     }
+
+    private void validMovement()
+    {
+        RaycastHit hit;
+        Physics.Raycast(transform.position + new Vector3(0, .5f, 0), TargetDirection, out hit, _grid.cellSize.x, _bombLayer);
+
+        if (hit.collider)
+        {
+            Halt();
+        }
+     
+    }
+
 }
