@@ -5,6 +5,8 @@ namespace Assets.Scripts.Collectibles
 {
     public class BrawlerPowerUp : MonoBehaviour, IPowerUp
     {
+        [SerializeField] HeroMovement[] Player;
+        public BrawlerPowerType Type { get; set; }
         public float LifeTime { get; set; } = 10f;
         public float ActivateTime { get; set; } = 5f;
         public bool Collected { get; set; } = false;
@@ -15,7 +17,7 @@ namespace Assets.Scripts.Collectibles
         void Start()
         {
             _timeToActivate = new EasyTimer(ActivateTime);
-            OnSpawn();
+            gameObject.SetActive(false);            
         }
 
         void Update()
@@ -23,34 +25,65 @@ namespace Assets.Scripts.Collectibles
             if (_timeToActivate.Done)
             {
                 OnActivation();
-            }          
+            }
+            
         }
 
-        public void OnSpawn()
+        public void Spawn()
         {
+            gameObject.SetActive(true);
             _timeToActivate.Reset();
         }
         public void OnActivation()
         {
-            IsCollectable = true;         
+            IsCollectable = true;
         }
         public void OnPickup()
         {
-            Collected = true;          
+            Collected = true;
             IsCollectable = false;
             ApplyEffect();
         }
         public void ApplyEffect()
         {
-            //apply effects to the player
+            switch (Type) 
+            {
+                case BrawlerPowerType.WeightGain:
+                    {
+
+                    }
+                    break;
+                case BrawlerPowerType.SpeedUp:
+                    {
+                        //Player[1].MaxMoveSpeed = Player[1].MaxMoveSpeed * 1.5f;
+                    }
+                    break;
+                case BrawlerPowerType.UltraShove:
+                    {
+
+                    }
+                    break;
+                case BrawlerPowerType.MegaJump:
+                    {
+                        //Player[1].MaxJumpPower = Player[1].MaxJumpPower * 1.5f;
+                    }
+                    break;
+            }
         }
         public void OnExpire()
         {
-            
+            Collected = false;
+            gameObject.SetActive(false);
         }
-        
-        
-        /*---------------------------------------The Loop ---------------------------------------*/ //this probably aint true no more tbh
+        private void OnCollisionEnter(Collision collision)
+        {
+            OnPickup();
+            OnExpire();
+        }
+
+
+        /*---------------------------------------The Loop ---------------------------------------*/
+        //this probably aint true no more tbh
         //CanSpawn is true --> Manager can spawn item
         //Manager spawns item --> OnSpawn called
         //Once activation timer done--> OnActivation called
@@ -61,3 +94,4 @@ namespace Assets.Scripts.Collectibles
 
     }
 }
+

@@ -34,7 +34,7 @@ namespace Assets.Scripts.PlatformBrawler
                 return;
             }
                        
-            _rigidbody.AddForce(Vector3.up * _bouncePower);           
+            _rigidbody.AddForce(Vector3.up * _bouncePower, ForceMode.Impulse);           
             _animator.Play("Bounce");
         }
 
