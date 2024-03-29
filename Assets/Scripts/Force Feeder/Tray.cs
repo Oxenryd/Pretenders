@@ -68,6 +68,8 @@ public class Tray : Grabbable, IRecievable
         return 0;
     }
 
+    public override object[] GetTransferables() { return _heldObjects.ToArray(); }
+
     public override void KnockOff()
     {
         base.KnockOff();
