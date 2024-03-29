@@ -4,5 +4,8 @@ using UnityEngine;
 
 public class Watermelon : Food
 {
-
+    public Watermelon()
+    {
+        _points = 10;
+    }
 }

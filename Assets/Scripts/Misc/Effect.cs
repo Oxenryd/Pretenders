@@ -10,7 +10,7 @@ public class Effect
     private EasyTimer _activeTimer;
 
     public bool Active { get; private set; } = false;
-    public float BumpPowerMultiplier
+    public float BumbMultiplier
     { get; set; } = 1f;
     public float ShoveMultiplier
     { get; set; } = 1f;
@@ -24,6 +24,8 @@ public class Effect
     { get; set; } = 0;
     public float StrugglePowerMultiplier
     { get; set; } = 1f;
+    public bool StunImmune
+    { get; set; } = false;
     public float EffectDuration
     {
         get
