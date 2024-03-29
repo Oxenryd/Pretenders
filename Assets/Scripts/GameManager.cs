@@ -23,6 +23,8 @@ public class GameManager : MonoBehaviour
     private string[] _digitStrings;
     private string[] _numberStrings;
 
+    private List<MatchResult> _currentResults;
+
     private ICharacter[] _playableCharacters;
     private int _numPlayers = 1;
     private static GameManager _instance;
@@ -58,6 +60,19 @@ public class GameManager : MonoBehaviour
         NumOfPlayersChanged.Invoke(this, NumOfPlayers);
     }
 
+    public void StartNewTournament()
+    {
+        _currentResults = new List<MatchResult>();
+    }
+
+    public void AddNewMatchResult(MatchResult result)
+    {
+        _currentResults.Add(result);
+    }
+
+    public MatchResult[] GetMatchResults()
+    { return _currentResults.ToArray(); }
+
     public SceneManager SceneManager
     { get { return _curSceneman; } }
     public InputManager InputManager
@@ -89,10 +104,17 @@ public class GameManager : MonoBehaviour
     public ICharacter[] PlayableCharacters
     { get { return _playableCharacters; } }
 
+
+
+
+
+
     // Start is called before the first frame update
     void Awake()
     {
         this.tag = GlobalStrings.NAME_GAMEMANAGER;
+
+        UnityEngine.SceneManagement.SceneManager.activeSceneChanged += onSceneChanged;
 
         // Pre caching strings
         _digitStrings = new string[10];
@@ -122,6 +144,15 @@ public class GameManager : MonoBehaviour
         // Be aware that this moves this object in the objects list during runtime in editor.
         // To "Don't Destroy On Load" - object.
         DontDestroyOnLoad(this);
+    }
+
+    private void onSceneChanged(UnityEngine.SceneManagement.Scene arg0, UnityEngine.SceneManagement.Scene arg1)
+    {
+        //_curSceneman = GameObject.FindGameObjectWithTag(GlobalStrings.NAME_SCENEMANAGER).GetComponent<SceneManager>();
+        //foreach (var character in _playableCharacters)
+        //{
+        //    character.Movement.AcceptInput = _curSceneman.CharactersTakeInput;
+        //}
     }
 
     void Start()
@@ -174,8 +205,13 @@ public class GameManager : MonoBehaviour
     }
 
     public void ApplyControlScheme()
+    { ApplyControlScheme(_curSceneman.ControlScheme); }
+    public void ApplyControlScheme(ControlSchemeType controlScheme)
     {
-
+        foreach (var character in _playableCharacters)
+        {
+            character.Movement.CurrentControlScheme = controlScheme;
+        }
     }
 
 

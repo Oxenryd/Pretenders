@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 
 public class HeroMovement : MonoBehaviour, IJumpHit
 {
+    [SerializeField] private bool _acceptInput = true;
     [SerializeField] private Transform _leftHand;
     [SerializeField] private Transform _rightHand;
     [SerializeField] private Vector3 _gridOffset = Vector3.zero;
@@ -82,6 +83,18 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     private bool _signalingGrab = false;
     private float _shovePower = GlobalValues.SHOVE_DEFAULT_SHOVEPOWER;
 
+    public bool CanThrowBombs
+    { get; set; } = false;
+    public bool JumpButtonDown
+    { get { return _jumpButtonIsDown; } }
+    public bool TriggerButtonDown
+    { get { return _triggerButtonDown; } }
+    public bool PushButtonDown
+    { get { return _pushButtonIsDown; } }
+    public bool GrabButtonDown
+    { get { return _grabButtonIsDown; } }
+    public bool AcceptInput
+    { get { return _acceptInput; } set { _acceptInput = value; } }
     public bool IsPushFailed
     { get; set; } = false;
     public bool IsPushing
@@ -291,6 +304,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     // ------------------------------------------------------------------------------------- INPUTS START HERE
     public void TryJump(InputAction.CallbackContext context)
     {
+        if (!AcceptInput) return;
         if (context.started)
         {
             TryingToJump = true;
@@ -305,6 +319,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
 
     public void TryPush(InputAction.CallbackContext context)
     {
+        if (!AcceptInput) return;
         if (!CanMove || IsStunned || IsGrabbing || IsDraggingOther || IsTugging || IsDraggedByOther || IsJumping || IsFalling)
             return;
 
@@ -319,6 +334,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     }
     public void TryGrab(InputAction.CallbackContext context)
     {
+        if (!AcceptInput) return;
         // This is horrible...
         // A lot of functionality for one button.
         // Totally worth it =)
@@ -355,6 +371,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
 
     public void TryTrigger(InputAction.CallbackContext context)
     {
+        if (!AcceptInput) return;
         if (context.started)
         {
             _triedToTrigger = true;
@@ -368,17 +385,20 @@ public class HeroMovement : MonoBehaviour, IJumpHit
 
     public void TryTriggerAi()
     {
+        if (!AcceptInput) return;
         throw new NotImplementedException();
     }
 
     public void TryGrabAi()
     {
+        if (!AcceptInput) return;
         throw new System.NotImplementedException();
     }
 
 
     public void TryJumpAi()
     {
+        if (!AcceptInput) return;
         TryingToJump = true;
     }
 
@@ -388,6 +408,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     /// <param name="context"></param>
     public void TryMove(InputAction.CallbackContext context)
     {
+        if (!AcceptInput) return;
         if (CanMove && context.started)
         {
             var inputDir = context.ReadValue<Vector2>();
@@ -421,6 +442,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     /// <param name="direction"></param>
     public void TryMoveAi(Vector2 direction)
     {
+        if (!AcceptInput) return;
         if (CanMove && !TryingToMove)
         {
             Vector3 inputDir = _controlScheme == ControlSchemeType.BomberMan
@@ -719,7 +741,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
                 CurrentSpeed = Mathf.Clamp(Mathf.Lerp(CurrentSpeed, MaxMoveSpeed * Effect.CurrentEffects().MoveSpeedMultiplier, accelT), 0f, TargetSpeed);
             } else
             {
-                validMovement();
+                _validMovement();
 
                 if (_canChangeQuadDirection)
                 {
@@ -1053,6 +1075,16 @@ public class HeroMovement : MonoBehaviour, IJumpHit
 
 
     // Privates
+    private void _validMovement()
+    {
+        RaycastHit hit;
+        Physics.Raycast(transform.position + new Vector3(0, .5f, 0), TargetDirection, out hit, _grid.cellSize.x, _bombLayer);
+
+        if (hit.collider)
+        {
+            Halt();
+        }
+    }
     private bool _movingInSameDirection()
     {
         return Mathf.Round(Mathf.Atan2(TargetDirection.z, TargetDirection.x)) ==
@@ -1128,16 +1160,4 @@ public class HeroMovement : MonoBehaviour, IJumpHit
         Gizmos.DrawWireSphere(xyz + FaceDirection * GlobalValues.CHAR_GRAB_CHECK_DISTANCE, GlobalValues.CHAR_GRAB_RADIUS);
         Gizmos.DrawWireSphere(xyz + Vector3.up + FaceDirection * GlobalValues.CHAR_GRAB_CHECK_DISTANCE, GlobalValues.CHAR_GRAB_RADIUS);
     }
-
-    private void validMovement()
-    {
-        RaycastHit hit;
-        Physics.Raycast(transform.position + new Vector3(0, .5f, 0), TargetDirection, out hit, _grid.cellSize.x, _bombLayer);
-
-        if (hit.collider)
-        {
-            Halt();
-        }   
-    }
-
 }
