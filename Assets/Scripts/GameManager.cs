@@ -114,7 +114,7 @@ public class GameManager : MonoBehaviour
     {
         this.tag = GlobalStrings.NAME_GAMEMANAGER;
 
-        UnityEngine.SceneManagement.SceneManager.activeSceneChanged += onSceneChanged;
+        UnityEngine.SceneManagement.SceneManager.sceneLoaded += onSceneLoaded;
 
         // Pre caching strings
         _digitStrings = new string[10];
@@ -146,9 +146,10 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(this);
     }
 
-    private void onSceneChanged(UnityEngine.SceneManagement.Scene arg0, UnityEngine.SceneManagement.Scene arg1)
+    private void onSceneLoaded(UnityEngine.SceneManagement.Scene arg0, UnityEngine.SceneManagement.LoadSceneMode arg1)
     {
-        //_curSceneman = GameObject.FindGameObjectWithTag(GlobalStrings.NAME_SCENEMANAGER).GetComponent<SceneManager>();
+        //var sceneMan = GameObject.FindGameObjectWithTag(GlobalStrings.NAME_SCENEMANAGER).GetComponent<SceneManager>();
+        //_curSceneman = sceneMan;
         //foreach (var character in _playableCharacters)
         //{
         //    character.Movement.AcceptInput = _curSceneman.CharactersTakeInput;

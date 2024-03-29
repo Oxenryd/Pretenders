@@ -267,14 +267,17 @@ public class Grabbable : MonoBehaviour
 
     /// <summary>
     /// Default behaviour is to just Drop() which also makes the Grabber to be set to drop.
+    /// Return whether or not to drop current grab after processing.
     /// </summary>
     /// <param name="response"></param>
-    public virtual void ProcessTransferResponse(int response)
+    public virtual bool ProcessTransferResponse(int response)
     { 
         if (response == 0)
         { 
             _grabber.ActualDrop(); Drop();
+            return true;
         }
+        return false;
     }
     public virtual object[] GetTransferables() { return new GameObject[] { this.gameObject }; }
 
