@@ -27,7 +27,12 @@ public static class GlobalValues
 
     public const float CHAR_MOVEMENT_GRIDTARGET_EPSILON = 0.15f;
 
-    public const float CHAR_PUSH_COOLDOWN = 0.58f;
+    public const float CHAR_PUSH_CHALLENGE_TIME = 1f;
+    public const float CHAR_PUSH_FAILED_STUN_TIME = 1.5f;
+    public const float CHAR_PUSH_SPEED = 1.75f;
+    public const float CHAR_PUSH_POWER = 6.5f;
+    public const float CHAR_PUSH_MIN_DISTANCE = 1.25f;
+    public const float CHAR_PUSH_PUSHED_TIME = 1.25f;
 
     public const float CHAR_DRAG_SPEED_MULTIPLIER = 0.6f;
     public const float CHAR_DRAG_DRAGGER_DECREASE = 0.03f;
@@ -49,6 +54,7 @@ public static class GlobalValues
 
     public const int   OBJECTS_LAYER = 22;
     public const int   GROUND_LAYER = 10;
+    public const int   GROUNDABLE_LAYER = 23;
 
     public const int   STRINGS_MAX_PRECACHED_NUMBERSTRINGS = 10000;
 

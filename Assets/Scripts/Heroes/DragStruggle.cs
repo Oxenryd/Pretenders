@@ -124,7 +124,7 @@ public class DragStruggle : MonoBehaviour
         {
             var power = GlobalValues.CHAR_BUMPFORCE * Ratio;
             _dragger.TryBump(-_dragger.FaceDirection, (GlobalValues.CHAR_BUMPFORCE) / power);
-            _dragged.TryShove(_dragged.FaceDirection, power * _dragger.ShovePower / 2);
+            _dragged.TryShove(_dragged.FaceDirection, _dragger, 2);
             Abort();
         }
     }
