@@ -1589,6 +1589,11 @@ PrefabInstance:
       propertyPath: bombLayer.m_Bits
       value: 8
       objectReference: {fileID: 0}
+    - target: {fileID: 3283883167967537600, guid: 96d160df10115da46ae5c220ad682011,
+        type: 3}
+      propertyPath: _bombLayer.m_Bits
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 5729848038938094816, guid: 96d160df10115da46ae5c220ad682011,
         type: 3}
       propertyPath: m_Name
@@ -7478,6 +7483,11 @@ PrefabInstance:
     - target: {fileID: 3283883167967537600, guid: 96d160df10115da46ae5c220ad682011,
         type: 3}
       propertyPath: bombLayer.m_Bits
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 3283883167967537600, guid: 96d160df10115da46ae5c220ad682011,
+        type: 3}
+      propertyPath: _bombLayer.m_Bits
       value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 5729848038938094816, guid: 96d160df10115da46ae5c220ad682011,
@@ -14130,6 +14140,11 @@ PrefabInstance:
     - target: {fileID: 3283883167967537600, guid: 96d160df10115da46ae5c220ad682011,
         type: 3}
       propertyPath: bombLayer.m_Bits
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 3283883167967537600, guid: 96d160df10115da46ae5c220ad682011,
+        type: 3}
+      propertyPath: _bombLayer.m_Bits
       value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 5729848038938094816, guid: 96d160df10115da46ae5c220ad682011,
@@ -25125,6 +25140,11 @@ PrefabInstance:
     - target: {fileID: 3283883167967537600, guid: 96d160df10115da46ae5c220ad682011,
         type: 3}
       propertyPath: bombLayer.m_Bits
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 3283883167967537600, guid: 96d160df10115da46ae5c220ad682011,
+        type: 3}
+      propertyPath: _bombLayer.m_Bits
       value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 5729848038938094816, guid: 96d160df10115da46ae5c220ad682011,
