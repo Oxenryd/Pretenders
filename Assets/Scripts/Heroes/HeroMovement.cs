@@ -910,10 +910,10 @@ public class HeroMovement : MonoBehaviour, IJumpHit
             if (_tryingToDrop)
             {
                 _tryingToDrop = false;
-                var result = recievable.Transfer(CurrentGrab.GetTransferables());
-                CurrentGrab.ProcessTransferResponse(result);
+                var resultFromRecievable = recievable.Transfer(CurrentGrab.GetTransferables());
+                var dropCurrentGrab = CurrentGrab.ProcessTransferResponse(resultFromRecievable);
 
-                if (result == 0)
+                if (dropCurrentGrab)
                 {
                     ActualDrop();
                 }

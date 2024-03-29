@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 5668338914964389675}
   - component: {fileID: 3228691081678872588}
   - component: {fileID: 3871392435035702163}
-  m_Layer: 0
+  m_Layer: 23
   m_Name: Tray
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -105,12 +105,19 @@ MonoBehaviour:
   _handsOffsets:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
+  _canBeTuggedWhileGrabbed: 0
   _tugOWar: {fileID: 1420075866903311425, guid: 94d9b15f380a5cd4c8c335f14d768ef0,
     type: 3}
   _grabPosition: 1
   _heldObjects: []
   _transferAlert: {fileID: 8124239605694739566, guid: 87d246a5b7f49ad4da7cab4a440f27f0,
     type: 3}
+  _rotationPoints:
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
 --- !u!33 &3228691081678872588
 MeshFilter:
   m_ObjectHideFlags: 0
