@@ -55,7 +55,7 @@ namespace Assets.Scripts.Collectibles
                     break;
                 case BrawlerPowerType.SpeedUp:
                     {
-                        //Player[1].MaxMoveSpeed = Player[1].MaxMoveSpeed * 1.5f;
+                        
                     }
                     break;
                 case BrawlerPowerType.UltraShove:
@@ -65,7 +65,7 @@ namespace Assets.Scripts.Collectibles
                     break;
                 case BrawlerPowerType.MegaJump:
                     {
-                        //Player[1].MaxJumpPower = Player[1].MaxJumpPower * 1.5f;
+                        
                     }
                     break;
             }

@@ -5,19 +5,21 @@ using UnityEngine;
 
 public class Effect
 {
+    private static Effect _noEffect = null;
+
     private EasyTimer _activeTimer;
 
     public bool Active { get; private set; } = false;
+    public float BumpPowerMultiplier
+    { get; set; } = 1f;
     public float ShoveMultiplier
     { get; set; } = 1f;
     public float MoveSpeedMultiplier
     { get; set; } = 1f;
     public float TugPowerMultiplier
-    { get;set; } = 1f;
+    { get; set; } = 1f;
     public float JumpPowerMultiplier
-    { get;set; } = 1f;
-    public float ShoveResistanceMultiplier
-    { get;set; } = 1f;
+    { get; set; } = 1f;
     public int ExtraDoubleJumps
     { get; set; } = 0;
     public float StrugglePowerMultiplier
@@ -73,7 +75,9 @@ public class Effect
 
     public static Effect DefaultEffect()
     {
-        var noEffect = new Effect();
-        return noEffect;
+        if (_noEffect == null)
+            _noEffect = new Effect();
+
+        return _noEffect;
     }
 }
