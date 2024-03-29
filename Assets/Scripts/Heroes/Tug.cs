@@ -195,7 +195,7 @@ public class Tug : MonoBehaviour
 
             Grabbable.Grab(_hero2);
           
-            _hero1.TryShove(-_hero1.FaceDirection, _hero2.ShovePower);
+            _hero1.TryShove(-_hero1.FaceDirection, _hero2);
             _hero2.TryBump(-_hero2.FaceDirection, GlobalValues.CHAR_BUMPFORCE);
 
             Abort();
@@ -208,7 +208,7 @@ public class Tug : MonoBehaviour
 
             Grabbable.Grab(_hero1);
                     
-            _hero2.TryShove(-_hero2.FaceDirection, _hero2.ShovePower);
+            _hero2.TryShove(-_hero2.FaceDirection, _hero1);
             _hero1.TryBump(-_hero1.FaceDirection, GlobalValues.CHAR_BUMPFORCE);
 
             Abort();

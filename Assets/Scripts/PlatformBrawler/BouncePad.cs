@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections;
-using JetBrains.Rider.Unity.Editor;
 
 namespace Assets.Scripts.PlatformBrawler
 {

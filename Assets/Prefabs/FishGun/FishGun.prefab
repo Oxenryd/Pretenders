@@ -172,11 +172,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400004, guid: b4c6e925126c944b88df1172db7aec81, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1.8076451
+      value: -1.808535
       objectReference: {fileID: 0}
     - target: {fileID: 400004, guid: b4c6e925126c944b88df1172db7aec81, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.5333477
+      value: 1.3308722
       objectReference: {fileID: 0}
     - target: {fileID: 400004, guid: b4c6e925126c944b88df1172db7aec81, type: 3}
       propertyPath: m_LocalPosition.z
@@ -184,7 +184,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400004, guid: b4c6e925126c944b88df1172db7aec81, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.9925788
+      value: -0.00061100675
       objectReference: {fileID: 0}
     - target: {fileID: 400004, guid: b4c6e925126c944b88df1172db7aec81, type: 3}
       propertyPath: m_LocalRotation.x
@@ -196,7 +196,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400004, guid: b4c6e925126c944b88df1172db7aec81, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.12160379
+      value: 0.9999999
       objectReference: {fileID: 0}
     - target: {fileID: 400004, guid: b4c6e925126c944b88df1172db7aec81, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -208,7 +208,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400004, guid: b4c6e925126c944b88df1172db7aec81, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 13.969
+      value: 180.07
       objectReference: {fileID: 0}
     - target: {fileID: 400006, guid: b4c6e925126c944b88df1172db7aec81, type: 3}
       propertyPath: m_LocalScale.x
@@ -426,9 +426,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82b2368468a75af4daef8345bc3da08f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _colliders:
+  - {fileID: 7849260055323247531}
+  - {fileID: 1314736714017056905}
+  _rBody: {fileID: 3034369995930200224}
   _meter: {fileID: 2574891146964797387, guid: eda705f58eed7bc4fbf14b74cdb6c247, type: 3}
   _alert: {fileID: 5685868278306586147, guid: b9e2e76fafb519b4a9b923db20cbb25b, type: 3}
-  _grabbablePointOffset: {x: 0, y: 1, z: 1}
+  _grabbablePointOffset: {x: 0.5, y: 1, z: 0}
   _handsOffsets:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}

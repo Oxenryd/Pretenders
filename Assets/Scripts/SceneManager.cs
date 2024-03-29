@@ -2,14 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SceneManager : MonoBehaviour, IScene
+public class SceneManager : MonoBehaviour
 {
+    [SerializeField] private bool _charactersTakeInput = true;
+    [SerializeField] private GameType gameType = GameType.Lobby;
     [SerializeField] private ControlSchemeType _controlScheme;
     [SerializeField] private DragStruggle[] _dragStruggles;
 
     private int _curDragStrug = 0;
     public ControlSchemeType ControlScheme
     { get { return _controlScheme; } }
+    public bool CharactersTakeInput
+    { get { return _charactersTakeInput; } set {  _charactersTakeInput = value; } }
 
     void Awake()
     {
@@ -29,7 +33,6 @@ public class SceneManager : MonoBehaviour, IScene
         if (_curDragStrug > 1)
             _curDragStrug = 0;
         return _dragStruggles[_curDragStrug];
-
     }
 
 }

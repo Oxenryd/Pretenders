@@ -22,7 +22,7 @@ public class Feet : MonoBehaviour
     void FixedUpdate()
     {
         RaycastHit hit;
-        if (Physics.Raycast(_feetTransform.position, Vector3.down, out hit, _restingLength, LayerUtil.Include(GlobalValues.GROUND_LAYER)))
+        if (Physics.Raycast(_feetTransform.position, Vector3.down, out hit, _restingLength, LayerUtil.Include(GlobalValues.GROUND_LAYER, GlobalValues.GROUNDABLE_LAYER)))
         {
             _groundNormal = hit.normal;
             CurrentCollider = hit.collider;
