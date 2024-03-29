@@ -14,10 +14,10 @@ namespace Assets.Scripts.PlatformBrawler
         private BrawlerPowerUp _currentPowerUp;
         [SerializeField] Collider[] PlatformColliders;
         public BrawlerPowerType CurrentPowerUpInRotation { get; set; }
-        private float _respawnTime { get; set; } = 2f;
-        private float _minRespawnBuffer { get; set; } = 0f;
-        private float _maxRespawnBuffer { get; set; } = 2f;
-        private float _timeBeforeFirstSpawn = 5f;
+        private float _respawnTime = 2f;
+        private float _activeTime  = 15f;
+        private float _minRespawnBuffer = 0f;
+        private float _maxRespawnBuffer = 2f;
         private EasyTimer _timeToRespawn;
         private EasyTimer _timeActive;
 
@@ -26,8 +26,8 @@ namespace Assets.Scripts.PlatformBrawler
         public void Start()
         {
             _timeToRespawn = new EasyTimer(_respawnTime);
+            _timeActive = new EasyTimer(_activeTime);
             _timeToRespawn.Reset();
-            _timeActive = new EasyTimer(_timeBeforeFirstSpawn);
             LoadPowerUps();
         }
 
@@ -37,16 +37,18 @@ namespace Assets.Scripts.PlatformBrawler
             {
                 SpawnPowerUp();
             }
+            if (_currentPowerUp != null && _currentPowerUp.Collected)
+            {
+                DespawnPowerUp();
+            }
             if (_currentPowerUp != null && _timeActive.Done)
             {
                 DespawnPowerUp();
             }
-
-            if(_currentPowerUp != null && _currentPowerUp.Collected)
-            {
-                DespawnPowerUp();
-            }
-
+            //if (_currentPowerUp != null)
+            //{
+            //    Debug.Log(_currentPowerUp.Collected);
+            //}
         }
         private void LoadPowerUps()
         {
@@ -64,10 +66,8 @@ namespace Assets.Scripts.PlatformBrawler
         {
             RandomisePowerUp();
             BrawlerPowerType type = CurrentPowerUpInRotation;
-            bool validSpawnPosition = false;
             _currentPowerUp = powerUps[(int)type];
-
-            
+      
             _currentPowerUp.transform.position = RandomiseSpawnPoint();
             Collider powerUpCollider = _currentPowerUp.GetComponent<Collider>();
 
@@ -92,8 +92,8 @@ namespace Assets.Scripts.PlatformBrawler
                     _currentPowerUp.transform.position = RandomiseSpawnPoint();
                 }
             }               
-                _timeActive.Reset();
                 _currentPowerUp.Spawn();
+                _timeActive.Reset();
         }
         private void DespawnPowerUp()
         {
