@@ -17,9 +17,9 @@ public class Effect
     public float MoveSpeedMultiplier
     { get; set; } = 1f;
     public float TugPowerMultiplier
-    { get;set; } = 1f;
+    { get; set; } = 1f;
     public float JumpPowerMultiplier
-    { get;set; } = 1f;
+    { get; set; } = 1f;
     public int ExtraDoubleJumps
     { get; set; } = 0;
     public float StrugglePowerMultiplier
@@ -79,7 +79,7 @@ public class Effect
     {
         if (_noEffect == null)
             _noEffect = new Effect();
-        
+
         return _noEffect;
     }
 }
