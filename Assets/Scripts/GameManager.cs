@@ -173,6 +173,12 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void ApplyControlScheme()
+    {
+
+    }
+
+
     // The GameManager Update is being executed before all other MonoBehaviors Update().
     // Project settings -> Script Execution Order
     void Update()
