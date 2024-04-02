@@ -70,6 +70,16 @@ public class Tray : Grabbable, IRecievable
 
     public override object[] GetTransferables() { return _heldObjects.ToArray(); }
 
+    public override bool ProcessTransferResponse(int response)
+    {
+        if (response == 0)
+        {
+            _heldObjects.Clear();
+
+        }
+        return false;
+    }
+
     public override void KnockOff()
     {
         base.KnockOff();
