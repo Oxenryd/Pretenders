@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int _maxControllables = 4;
     [SerializeField] private InputManager _inputMan;
     [SerializeField] private SceneManager _curSceneman;
+    [SerializeField] private Transitions _screenTransitions;
 
     private float[] _fpsBuffer;
     private int _fpsCounter = 0;
@@ -39,6 +40,9 @@ public class GameManager : MonoBehaviour
     public long TotalFrames { get; private set; }
     public float AverageFramesPerSecond { get; private set; }
     public float CurrentFramesPerSecond { get; private set; }
+
+    public Transitions ScreenTransitions
+    { get { return _screenTransitions; } }
 
     // Events
     public EventHandler<float> EarlyUpdate;
@@ -148,12 +152,20 @@ public class GameManager : MonoBehaviour
 
     private void onSceneLoaded(UnityEngine.SceneManagement.Scene arg0, UnityEngine.SceneManagement.LoadSceneMode arg1)
     {
-        //var sceneMan = GameObject.FindGameObjectWithTag(GlobalStrings.NAME_SCENEMANAGER).GetComponent<SceneManager>();
-        //_curSceneman = sceneMan;
-        //foreach (var character in _playableCharacters)
-        //{
-        //    character.Movement.AcceptInput = _curSceneman.CharactersTakeInput;
-        //}
+        var objects = GameObject.FindGameObjectsWithTag(GlobalStrings.CHARACTER_TAG);
+        List<ICharacter> characters = new List<ICharacter>();
+        foreach (var character in objects)
+        {
+            characters.Add(character.GetComponent<ICharacter>());
+        }
+        _playableCharacters = characters.ToArray();
+
+        var sceneMan = GameObject.FindGameObjectWithTag(GlobalStrings.NAME_SCENEMANAGER).GetComponent<SceneManager>();
+        _curSceneman = sceneMan;
+        foreach (var character in _playableCharacters)
+        {
+            character.Movement.AcceptInput = _curSceneman.CharactersTakeInput;
+        }
     }
 
     void Start()
