@@ -35,18 +35,27 @@ namespace Assets.Scripts.Collectibles
             if (_timeToActivate.Done)
             {
                 OnActivation();
+                Rotation();
             }
             else
             {
                 float lerp = Mathf.PingPong(Time.time, duration) / duration;
                 rend.material.Lerp(InitialMaterial, FinalMaterial, lerp);
-
-                float rotationSpeed = 20f; 
-                float rotationAngle = Time.deltaTime * rotationSpeed;
-                gameObject.transform.Rotate(rotationAngle, 0, 0);
-                float scaleFactor = Mathf.Lerp(0.5f, 1.5f, Mathf.PingPong(Time.time, duration) / duration);
-                gameObject.transform.localScale = new Vector3(scaleFactor, scaleFactor, scaleFactor);
+                Rotation();
+                Scale();
             }
+        }
+
+        private void Rotation()
+        {
+            float rotationSpeed = 20f;
+            float rotationAngle = Time.deltaTime * rotationSpeed;
+            gameObject.transform.Rotate(rotationAngle, 0, 0);
+        }
+        private void Scale()
+        {
+            float scaleFactor = Mathf.Lerp(0.5f, 1.25f, Mathf.PingPong(Time.time, duration) / duration);
+            gameObject.transform.localScale = new Vector3(scaleFactor, scaleFactor, scaleFactor);
         }
 
         public void Spawn()
