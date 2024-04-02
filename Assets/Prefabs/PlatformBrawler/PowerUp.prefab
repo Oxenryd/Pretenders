@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 3006211874396675098}
   - component: {fileID: 1384248430691788719}
   - component: {fileID: 7503547611802527439}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: PowerUp
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -64,7 +64,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: e82ac61ca823e714ca9596cf1e7ac290, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
