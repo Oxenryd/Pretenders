@@ -18,7 +18,7 @@ public class FoodSpawner : MonoBehaviour
     [SerializeField] private Hamburger _hamburgerPrefab;
     [SerializeField] private GameObject _foodContainer;
 
-    private Food[] _foodArray = new Food[1];
+    private Food[] _foodArray = new Food[20];
     private int _spawnIndex = 0;
 
     // Start is called before the first frame update

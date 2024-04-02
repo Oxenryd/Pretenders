@@ -15,8 +15,10 @@ public class Unicorn : MonoBehaviour, IRecievable
     private UnicornState _state = UnicornState.idle;
     private float _changeState;
     private float _passedTimeSinceLastStateChange = 0f;
+    //private List<>
+    [SerializeField] private TransferAlert _transferAlert;
+    public TransferAlert TransferAlert { get { return _transferAlert; }}
 
-    public TransferAlert TransferAlert => throw new NotImplementedException();
     private float _rayCastLength = 3f;
     private int _wallLayerMask;
     private float _directionEqualityThreshold = 0.01f;
@@ -28,6 +30,11 @@ public class Unicorn : MonoBehaviour, IRecievable
         _direction   = transform.forward;
         _targetDirection = _direction;
         _wallLayerMask = 1 << LayerMask.NameToLayer("WALLS");
+
+        var container = GameObject.FindWithTag(GlobalStrings.NAME_UIOVERLAY);
+        _transferAlert = GameObject.Instantiate(_transferAlert, container.transform);
+        _transferAlert.gameObject.SetActive(false);
+
     }
 
     void OnCollisionEnter(Collision collision)
@@ -120,7 +127,6 @@ public class Unicorn : MonoBehaviour, IRecievable
         {
             transform.rotation = TransformHelpers.FixNegativeZRotation(Vector3.forward, _direction);
         }
-
     }
 
     public int Transfer(object[] recievedObject)
@@ -137,6 +143,8 @@ public class Unicorn : MonoBehaviour, IRecievable
         for (int i = 0; i < foodArray.Length; i++)
         {
             _score += foodArray[i].GetPoints();
+            foodArray[i].Detach();
+            foodArray[i].Hide();
         }
         return 0;
     }
