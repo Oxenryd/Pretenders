@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using static UnityEngine.UI.Image;
 
 public static class LayerUtil
 {
@@ -77,7 +78,35 @@ public static class TransformHelpers
         return new Vector3(outX, 0, outZ);
     }
 
-    public static bool PassedGridTarget(HeroMovement hero, Vector3 gridCenterTarget)
+    public static void QuadDirVectorToPlayerInput(this PlayerInputEnum original, Vector3 inputDirection)
+    {
+        original &= ~PlayerInputEnum.DirectionUp;
+        original &= ~PlayerInputEnum.DirectionLeft;
+        original &= ~PlayerInputEnum.DirectionDown;
+        original &= ~PlayerInputEnum.DirectionRight;
+
+        if (inputDirection.z > 0.7071f)
+            original |= PlayerInputEnum.DirectionUp;
+        else if (inputDirection.z < -0.7071f)
+            original |= PlayerInputEnum.DirectionDown;
+
+        if (inputDirection.x > 0.7071f)
+            original |= PlayerInputEnum.DirectionRight;
+
+        else if (inputDirection.x < -0.7071f)
+            original |= PlayerInputEnum.DirectionLeft;
+
+       // return original;
+    }
+
+
+
+//original.value |= (1 << layer);
+
+//original.value &= ~(1 << layer);
+
+
+        public static bool PassedGridTarget(HeroMovement hero, Vector3 gridCenterTarget)
     {
         if (hero.FaceDirection.x > 0)
         {
