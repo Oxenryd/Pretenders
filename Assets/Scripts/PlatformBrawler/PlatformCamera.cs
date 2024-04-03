@@ -55,8 +55,8 @@ public class PlatformCamera : MonoBehaviour
                 up = targets[i].position.z;
             if (targets[i].position.z > down)
                 down = targets[i].position.z;
+            
         }
-
 
         var space = new Rect(left, up, right - left, down - up);
 

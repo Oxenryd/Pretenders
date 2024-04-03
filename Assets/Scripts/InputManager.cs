@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Analytics;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
 
@@ -21,6 +20,13 @@ public class InputManager : MonoBehaviour
     private InputActionMap[] _actionsMaps = new InputActionMap[4];
     private List<InputDevice> _inputDevices = new List<InputDevice>();
     private Dictionary<InputDevice, int> _deviceCharCouple = new Dictionary<InputDevice, int>();
+
+    public event EventHandler<HeroMovement> HeroPressedButton;
+    protected void OnHeroPressedButton(HeroMovement heroMovement)
+    { HeroPressedButton?.Invoke(this, heroMovement); }
+    public void InvokeHeroPressedButton(HeroMovement thisHero)
+    { OnHeroPressedButton(thisHero); }
+
 
     /// <summary>
     /// ActionMaps holds the different actions that a character can perform.
@@ -44,6 +50,11 @@ public class InputManager : MonoBehaviour
     void Awake()
     {
         this.tag = GlobalStrings.NAME_INPUTMANAGER;
+
+        if (GameManager.Instance.InputManager != this)
+            Destroy(this);
+
+        DontDestroyOnLoad(this);
     }
 
     /// <summary>
@@ -208,7 +219,7 @@ public class InputManager : MonoBehaviour
         var ignoreList = GlobalStrings.INPUT_IGNORE.Split(';');
         foreach (var device in InputSystem.devices)
         {
-            if (device is Mouse) // Skip mouse and keyboard
+            if (device is Mouse) // Skip mouse
                 continue;
 
             // Check ignores

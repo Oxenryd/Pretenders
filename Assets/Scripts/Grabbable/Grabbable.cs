@@ -192,7 +192,7 @@ public class Grabbable : MonoBehaviour
     }
     public virtual bool Drop()
     {
-        if (InjectDropAbort()) return false;
+        if (InjectDropAbort() ) return false;
 
         IsGrabbed = false;
         GrabInProgress = false;

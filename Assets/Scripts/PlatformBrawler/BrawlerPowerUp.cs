@@ -5,6 +5,10 @@ namespace Assets.Scripts.Collectibles
 {
     public class BrawlerPowerUp : MonoBehaviour, IPowerUp
     {
+        [SerializeField] Material InitialMaterial;
+        [SerializeField] Material FinalMaterial;
+        private float duration = 1.0f;
+        private Renderer rend;
         [SerializeField] HeroMovement[] Player;
         public BrawlerPowerType Type { get; set; }
         public float LifeTime { get; set; } = 10f;
@@ -13,11 +17,17 @@ namespace Assets.Scripts.Collectibles
         public bool IsCollectable { get; set; } = false;
         public bool Expired { get; set; } = false;
         private EasyTimer _timeToActivate;
+        private Quaternion _initialRotation;
+        private Vector3 _initialScale;
 
         void Start()
         {
             _timeToActivate = new EasyTimer(ActivateTime);
-            gameObject.SetActive(false);            
+            gameObject.SetActive(false);
+            rend = GetComponent<Renderer>();
+            rend.material = InitialMaterial;
+            _initialRotation = gameObject.transform.rotation;
+            _initialScale = gameObject.transform.localScale;
         }
 
         void Update()
@@ -25,8 +35,27 @@ namespace Assets.Scripts.Collectibles
             if (_timeToActivate.Done)
             {
                 OnActivation();
+                Rotation();
             }
-            
+            else
+            {
+                float lerp = Mathf.PingPong(Time.time, duration) / duration;
+                rend.material.Lerp(InitialMaterial, FinalMaterial, lerp);
+                Rotation();
+                Scale();
+            }
+        }
+
+        private void Rotation()
+        {
+            float rotationSpeed = 20f;
+            float rotationAngle = Time.deltaTime * rotationSpeed;
+            gameObject.transform.Rotate(rotationAngle, 0, 0);
+        }
+        private void Scale()
+        {
+            float scaleFactor = Mathf.Lerp(0.5f, 1.25f, Mathf.PingPong(Time.time, duration) / duration);
+            gameObject.transform.localScale = new Vector3(scaleFactor, scaleFactor, scaleFactor);
         }
 
         public void Spawn()
@@ -36,7 +65,10 @@ namespace Assets.Scripts.Collectibles
         }
         public void OnActivation()
         {
+            rend.material = FinalMaterial;
             IsCollectable = true;
+            gameObject.transform.rotation = _initialRotation;
+            gameObject.transform.localScale = _initialScale;
         }
         public void OnPickup()
         {
@@ -77,12 +109,16 @@ namespace Assets.Scripts.Collectibles
         }
         private void OnCollisionEnter(Collision collision)
         {
-            OnPickup();
-            OnExpire();
+            if (IsCollectable)
+            {
+                OnPickup();
+            }
+            else
+            {
+                return;
+            }
         }
-
-
-        /*---------------------------------------The Loop ---------------------------------------*/
+     /*---------------------------------------The Loop ---------------------------------------*/
         //this probably aint true no more tbh
         //CanSpawn is true --> Manager can spawn item
         //Manager spawns item --> OnSpawn called

@@ -3,10 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.TextCore.Text;
 
 /// <summary>
 /// Class that holds information about the game state and other managers.
@@ -17,13 +14,19 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int _maxControllables = 4;
     [SerializeField] private InputManager _inputMan;
     [SerializeField] private SceneManager _curSceneman;
+    [SerializeField] private Transitions _screenTransitions;
 
     private float[] _fpsBuffer;
     private int _fpsCounter = 0;
     private string[] _digitStrings;
     private string[] _numberStrings;
 
+    private bool _loadingScene = false;
+
     private List<MatchResult> _currentResults;
+
+    AsyncOperation _loadingNext;
+    AsyncOperation _unloadingPrevious;
 
     private ICharacter[] _playableCharacters;
     private int _numPlayers = 1;
@@ -39,6 +42,12 @@ public class GameManager : MonoBehaviour
     public long TotalFrames { get; private set; }
     public float AverageFramesPerSecond { get; private set; }
     public float CurrentFramesPerSecond { get; private set; }
+
+    public int LastSceneIndex { get; private set; }
+    public string NextScene { get; private set; }
+
+    public Transitions ScreenTransitions
+    { get { return _screenTransitions; } }
 
     // Events
     public EventHandler<float> EarlyUpdate;
@@ -104,10 +113,33 @@ public class GameManager : MonoBehaviour
     public ICharacter[] PlayableCharacters
     { get { return _playableCharacters; } }
 
+    public void SetupTransition(string nextScene)
+    {
+        NextScene = nextScene;
+        LastSceneIndex = UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex;
+        UnityEngine.SceneManagement.SceneManager.LoadScene(GlobalStrings.SCENE_LOADINGSCREEN);
+        _loadingScene = true;
+        StartCoroutine(loadNext());
+    }
 
+    private IEnumerator unloadPrevious()
+    {
+        _unloadingPrevious = UnityEngine.SceneManagement.SceneManager.UnloadSceneAsync(LastSceneIndex);
+        while (!_unloadingPrevious.isDone)
+        {
+            yield return null;
+        }
+    }
+    private IEnumerator loadNext()
+    {
+        _loadingNext = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(GlobalStrings.SCENE_LOADINGSCREEN);
 
-
-
+        // Wait until the asynchronous scene fully loads
+        while (!_loadingNext.isDone)
+        {
+            yield return null;
+        }
+    }
 
     // Start is called before the first frame update
     void Awake()
@@ -148,12 +180,26 @@ public class GameManager : MonoBehaviour
 
     private void onSceneLoaded(UnityEngine.SceneManagement.Scene arg0, UnityEngine.SceneManagement.LoadSceneMode arg1)
     {
-        //var sceneMan = GameObject.FindGameObjectWithTag(GlobalStrings.NAME_SCENEMANAGER).GetComponent<SceneManager>();
-        //_curSceneman = sceneMan;
-        //foreach (var character in _playableCharacters)
-        //{
-        //    character.Movement.AcceptInput = _curSceneman.CharactersTakeInput;
-        //}
+        var objects = GameObject.FindGameObjectsWithTag(GlobalStrings.CHARACTER_TAG);
+        List<ICharacter> characters = new List<ICharacter>();
+        foreach (var character in objects)
+        {
+            characters.Add(character.GetComponent<ICharacter>());
+        }
+        _playableCharacters = characters.ToArray();
+
+        var sceneMan = GameObject.FindGameObjectWithTag(GlobalStrings.NAME_SCENEMANAGER).GetComponent<SceneManager>();
+        _curSceneman = sceneMan;
+        foreach (var character in _playableCharacters)
+        {
+            character.Movement.AcceptInput = _curSceneman.CharactersTakeInput;
+        }
+
+        if (_loadingScene)
+        {
+            _loadingScene = false;
+            StartCoroutine(unloadPrevious());
+        }
     }
 
     void Start()

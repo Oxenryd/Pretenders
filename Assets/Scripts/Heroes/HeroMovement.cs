@@ -175,6 +175,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     public Rigidbody RigidBody { get { return _body; } }
     public Vector3 GroundPosition
     { get { return new Vector3(transform.position.x, 0, transform.position.z); } }
+    public PlayerInputEnum CurrentFlags { get; set; } = PlayerInputEnum.None;
 
 
     // ------------------------------------------------------------------------------------- METHODS
@@ -304,11 +305,13 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     // ------------------------------------------------------------------------------------- INPUTS START HERE
     public void TryJump(InputAction.CallbackContext context)
     {
-        if (!AcceptInput) return;
         if (context.started)
-        {
-            TryingToJump = true;
+        {        
             _jumpButtonIsDown = true;
+            GameManager.Instance.InputManager.InvokeHeroPressedButton(this);
+
+            if (!AcceptInput) return;
+            TryingToJump = true;
         }
         else if (context.canceled)
         {
@@ -319,28 +322,33 @@ public class HeroMovement : MonoBehaviour, IJumpHit
 
     public void TryPush(InputAction.CallbackContext context)
     {
-        if (!AcceptInput) return;
-        if (!CanMove || IsStunned || IsGrabbing || IsDraggingOther || IsTugging || IsDraggedByOther || IsJumping || IsFalling)
-            return;
-
         if (context.started)
         {
-            _pushButtonIsDown = true;
+            _pushButtonIsDown = true;          
+            GameManager.Instance.InputManager.InvokeHeroPressedButton(this);
+                
+            if (!AcceptInput) return;
+
+            if (!CanMove || IsStunned || IsGrabbing || IsDraggingOther || IsTugging || IsDraggedByOther || IsJumping || IsFalling)
+                return;
+
             _tryingToPush = true;
+
         } else if (context.canceled)
         {
             _pushButtonIsDown = false;
         }
     }
     public void TryGrab(InputAction.CallbackContext context)
-    {
-        if (!AcceptInput) return;
+    {      
         // This is horrible...
         // A lot of functionality for one button.
         // Totally worth it =)
         if (context.started)
         {
             _grabButtonIsDown = true;
+            GameManager.Instance.InputManager.InvokeHeroPressedButton(this);
+            if (!AcceptInput) return;
             if (!IsDraggingOther && !IsDraggedByOther && !IsTugging)
             {
                 if (!IsGrabbing && !IsGrabInProgress && !IsTugging)
@@ -370,12 +378,13 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     }
 
     public void TryTrigger(InputAction.CallbackContext context)
-    {
-        if (!AcceptInput) return;
+    {    
         if (context.started)
         {
-            _triedToTrigger = true;
             _triggerButtonDown = true;
+            GameManager.Instance.InputManager.InvokeHeroPressedButton(this);
+            if (!AcceptInput) return;
+            _triedToTrigger = true;
         }
         else if (context.canceled)
         {
@@ -873,6 +882,9 @@ public class HeroMovement : MonoBehaviour, IJumpHit
             Halt();
             _doneFirstLoop = true;
         }
+
+
+
     }
 
     private void grabDragStuffs()
@@ -898,26 +910,25 @@ public class HeroMovement : MonoBehaviour, IJumpHit
 
         } else if (IsGrabInProgress && (foundObject as Grabbable) != CurrentGrab)
         {
-            CurrentGrab.AbortGrab();
+            CurrentGrab.AbortGrabInProgress();
             CurrentGrab = null;
             IsGrabInProgress = false;
             OnStoppedGrabInProgress();
-        }
-        else if (IsGrabbing && (foundObject as IRecievable) != null)
+        } else if (IsGrabbing && (foundObject as IRecievable) != null)
         {
-            var recievable = (foundObject as IRecievable);
-            recievable.TransferAlert.Ping(this, recievable.transform);
-            if (_tryingToDrop)
-            {
-                _tryingToDrop = false;
-                var resultFromRecievable = recievable.Transfer(CurrentGrab.GetTransferables());
-                var dropCurrentGrab = CurrentGrab.ProcessTransferResponse(resultFromRecievable);
-
-                if (dropCurrentGrab)
-                {
-                    ActualDrop();
-                }
-            }
+          var recievable = (foundObject as IRecievable);
+          recievable.TransferAlert.Ping(this, recievable.transform);
+          if (_tryingToDrop)
+          {
+              _tryingToDrop = false;
+              var resultFromRecievable = recievable.Transfer(CurrentGrab.GetTransferables());
+              var dropCurrentGrab = CurrentGrab.ProcessTransferResponse(resultFromRecievable);
+          
+              if (dropCurrentGrab)
+              {
+                  ActualDrop();
+              }
+          }
         }
 
         // Trying to grab?
@@ -933,8 +944,8 @@ public class HeroMovement : MonoBehaviour, IJumpHit
             _tryingToDrop = false;
             if (IsGrabbing)
             {
-                CurrentGrab.Drop();
-                ActualDrop();
+                if ( CurrentGrab.Drop() )
+                    ActualDrop();
             }
         }
     }

@@ -33,12 +33,12 @@ namespace Assets.Scripts.PlatformBrawler
         private void Update()
         {
             UpdateBounds();
-            if (_timeToMove.Done && gameObject.transform.position != _endPosition)
-            {
-                _acceleration += 0.001f;
-                gameObject.transform.position =
-                    Vector3.Lerp(gameObject.transform.position, _endPosition, Time.deltaTime * _acceleration);
-            }
+            //if (_timeToMove.Done && gameObject.transform.position != _endPosition)
+            //{
+            //    _acceleration += 0.001f;
+            //    gameObject.transform.position =
+            //        Vector3.Lerp(gameObject.transform.position, _endPosition, Time.deltaTime * _acceleration);
+            //}
         }
 
         void UpdateBounds()
