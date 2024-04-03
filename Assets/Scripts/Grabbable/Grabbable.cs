@@ -110,6 +110,9 @@ public class Grabbable : MonoBehaviour
         gameObject.SetActive(true);
     }
 
+    public Collider[] Colliders
+    { get { return _colliders; } }
+
     public bool Hidden { get; set; } = false;
 
     public Vector3 GrabPointOffset

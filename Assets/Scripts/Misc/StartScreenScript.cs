@@ -39,7 +39,7 @@ public class StartScreenScript : MonoBehaviour
 
     private void doProceed()
     {
-        
-        UnityEngine.SceneManagement.SceneManager.LoadScene(1);
+
+        GameManager.Instance.SetupTransition(GlobalStrings.SCENE_LOBBY);
     }
 }

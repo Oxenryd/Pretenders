@@ -43,4 +43,8 @@ public static class GlobalStrings
     public const string HERO_BODY_COLLIDER_TAG = "BodyCollider";
     public const string HERO_STOMP_COLLIDER_TAG = "StompCollider";
 
+    //Scenes
+    public const string SCENE_LOADINGSCREEN = "LoadingScreen";
+    public const string SCENE_LOBBY = "Lobby";
+
 }
