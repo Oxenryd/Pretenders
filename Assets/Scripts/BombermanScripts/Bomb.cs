@@ -24,20 +24,12 @@ public class Bomb : Grabbable
 
     [SerializeField]
     private LineRenderer lineRenderer;
-
-    [SerializeField]
-    [Range(0.01f, 0.25f)]
-    private float timeBetweenPoints = 0.1f;
-
-    [SerializeField]
-    [Range(10, 100)]
-    private int linePoints = 25;
-
+    
     private float throwForce = 22;
-
-    private bool canThrow = true;
+    private float throwVelocity;
 
     private Vector3 launchDirection;
+   
 
     private int currentXplosion = 0;
 
@@ -47,11 +39,9 @@ public class Bomb : Grabbable
     private EasyTimer timer;
     private EasyTimer detonationTickTimer;
     private bool hasDetonated = false;
-    private Dictionary<Vector3, bool> directions = new Dictionary<Vector3, bool>() { { Vector3.back, false }, { Vector3.forward, false }, { Vector3.left, false }, { Vector3.right, false } };
+    private Dictionary<Vector3, bool> directions = new Dictionary<Vector3, bool>() { {Vector3.back, false }, { Vector3.forward, false }, { Vector3.left, false }, {Vector3.right, false } };
     public bool IsActive
     { get; set; } = false;
-
-
 
     void Awake()
     {
@@ -72,13 +62,14 @@ public class Bomb : Grabbable
 
         if (timer.Done && hasDetonated != true)
         {
-            hasDetonated = true;
+             hasDetonated = true;
             detonationTickTimer.Reset();
         }
         if (hasDetonated && detonationTickTimer.Done)
         {
+          //  Debug.Log("Actual landing position: " + gameObject.transform.position);
             currentXplosion++;
-            for (int i = 0; i < directions.Count; i++)
+            for(int i  = 0; i < directions.Count; i++)
             {
                 var directionKey = directions.Keys.ElementAt(i);
                 if (!directions[directionKey])
@@ -86,7 +77,7 @@ public class Bomb : Grabbable
                     ExplosionCheckNearby(directionKey, currentXplosion);
                 }
             }
-            if (currentXplosion >= amountOfExplosions)
+            if ( currentXplosion >= amountOfExplosions)
             {
                 SetInactive();
             }
@@ -94,7 +85,8 @@ public class Bomb : Grabbable
         }
         if (IsGrabbed)
         {
-            DrawTrajectory();
+            launchDirection = (Grabber.FaceDirection + Vector3.up).normalized;
+            SimulateThrowLine();
         }
 
     }
@@ -111,71 +103,60 @@ public class Bomb : Grabbable
     public override void OnDropThrow()
     {
         launchDirection = (Grabber.FaceDirection + Vector3.up).normalized;
-        if (canThrow)
-        {
-            Rigidbody.AddForce(launchDirection * throwForce, ForceMode.Impulse);
-        }
+        Rigidbody.AddForce(launchDirection * throwForce, ForceMode.Impulse);
         lineRenderer.positionCount = 0;
     }
 
-    private void DrawTrajectory()
+
+
+    private void SimulateThrowLine()
     {
-        lineRenderer.enabled = true;
-        lineRenderer.positionCount = Mathf.CeilToInt(linePoints / timeBetweenPoints) + 1;
-        Vector3 startPosition = transform.position;
-        Vector3 startVelocity = throwForce * (Grabber.FaceDirection + Vector3.up).normalized / Rigidbody.mass;
-        int i = 0;
-        lineRenderer.SetPosition(i, startPosition);
-        for (float time = 0; time < linePoints; time += timeBetweenPoints)
+        lineRenderer.positionCount = 0;
+        float maxDuration = 5f;
+        float timeTick = 0.5f;
+        throwVelocity = throwForce / Rigidbody.mass;
+
+        for(float t = 0; t < maxDuration; t += timeTick)
         {
-            i++;
-            Vector3 point = startPosition + time * startVelocity;
-            point.y = startPosition.y + startVelocity.y * time + (Physics.gravity.y / 2f * time * time);
-            lineRenderer.SetPosition(i, point);
+            Vector3 newPosition = transform.position + launchDirection * throwVelocity * t + 0.5f * Physics.gravity * t * t;
+            lineRenderer.positionCount++;
 
-            Vector3 lastPosition = lineRenderer.GetPosition(i - 1);
-            if (Physics.Raycast(lastPosition, (point - lastPosition).normalized, out RaycastHit hit, (point - lastPosition).magnitude, levelMask))
-            {
-                canThrow = false;
-                lineRenderer.SetPosition(i, hit.point);
-                lineRenderer.positionCount = 1 + 1;
-                return;
-            }
-            else
-            {
-                canThrow = true;
-            }
-
-
-            if (point.y <= 0f)
+            if (newPosition.y <= 0f)
             {
                 break;
             }
+            Debug.Log(newPosition);
+            lineRenderer.SetPosition(lineRenderer.positionCount - 1, newPosition);
+
+            //RaycastHit hit;
+            //if (Physics.Raycast(newPosition, Vector3.down, out hit, 2, levelMask))
+            //{
+            //    break;
+            //}
         }
     }
-
     private void ExplosionCheckNearby(Vector3 direction, int tick)
     {
-        RaycastHit hit;
-        Physics.Raycast(transform.position + new Vector3(0, .5f, 0), direction, out hit, tick, levelMask);
+            RaycastHit hit;
+            Physics.Raycast(transform.position + new Vector3(0, .5f, 0), direction, out hit, tick, levelMask);
 
-        if (!hit.collider)
-        {
-            Instantiate(explosion, transform.position + (tick * direction), transform.rotation);
-        }
-        else
-        {
-            if (hit.collider.TryGetComponent<CrateExplosion>(out var crate))
+            if (!hit.collider)
             {
-                crate.Explode();
-                directions[direction] = true;
+               Instantiate(explosion, transform.position + (tick * direction), transform.rotation);
             }
             else
             {
-                directions[direction] = true;
+                if (hit.collider.TryGetComponent<CrateExplosion>(out var crate))
+                {
+                    crate.Explode();
+                    directions[direction] = true;
+                }
+                else
+                {
+                    directions[direction] = true;
 
+                }
             }
-        }
     }
 
 
