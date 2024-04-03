@@ -5,9 +5,15 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
-    path: Assets/Scenes/FetcherTestScene.unity
-    guid: 7b05caa024b249d478fe5ae4886c0372
+  - enabled: 1
+    path: Assets/Scenes/StartScreen.unity
+    guid: d03671c2d87a8d54e91ccf67f07e8427
+  - enabled: 1
+    path: Assets/Scenes/LoadingScreen.unity
+    guid: ba094942e1ca89c4ea3847af00afe33a
+  - enabled: 1
+    path: Assets/Scenes/pierres testscene.unity
+    guid: 363e5284745ed4b40a36f182bf59039e
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: baef36f9223e81a469002c744897bf98,
       type: 2}

@@ -18,6 +18,9 @@ public class Transitions : MonoBehaviour
     private int _circleBoolIndex;
     private int _fadeBoolIndex;
 
+    public float Value
+    { get { return _value; } set {  _value = value; } }
+
     void Start()
     {
         _transValueIndex = Shader.PropertyToID("_transitionValue");

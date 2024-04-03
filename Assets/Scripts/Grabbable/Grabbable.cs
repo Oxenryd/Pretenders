@@ -132,7 +132,7 @@ public class Grabbable : MonoBehaviour
         Tug.Increase(hero.TuggerIndex * hero.TugPower * hero.Effect.CurrentEffects().TugPowerMultiplier);
     }
 
-    public void AbortGrab()
+    public void AbortGrabInProgress()
     {
         IsGrabbed = false;
         _rBody.isKinematic = false;
@@ -185,8 +185,10 @@ public class Grabbable : MonoBehaviour
         _alert.Deactivate();
         StraightenUp();
     }
-    public virtual void Drop()
+    public virtual bool Drop()
     {
+        if (InjectDropAbort() ) return false;
+
         IsGrabbed = false;
         GrabInProgress = false;
         _grabber.ActualDrop();
@@ -209,6 +211,8 @@ public class Grabbable : MonoBehaviour
             OnDropThrow();
             _grabber = null;
         }
+
+        return true;
     }
 
     protected void Awake()
@@ -289,7 +293,7 @@ public class Grabbable : MonoBehaviour
         transform.rotation = Quaternion.identity;
     }
     public virtual void KnockOff() { Drop(); }
-
+    public virtual bool InjectDropAbort() { return false; }
     public virtual void OnDropThrow()
     {
         Rigidbody.AddForce(_rBody.mass * GlobalValues.CHAR_GRAB_DROPFORCE * (_grabber.FaceDirection + Vector3.up).normalized, ForceMode.Impulse);

@@ -1,12 +1,8 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.TextCore.Text;
 
 /// <summary>
 /// Class that holds information about the game state and other managers.
@@ -40,6 +36,9 @@ public class GameManager : MonoBehaviour
     public long TotalFrames { get; private set; }
     public float AverageFramesPerSecond { get; private set; }
     public float CurrentFramesPerSecond { get; private set; }
+
+    public int LastSceneIndex { get; private set; }
+    public string NextScene { get; private set; }
 
     public Transitions ScreenTransitions
     { get { return _screenTransitions; } }
@@ -108,9 +107,16 @@ public class GameManager : MonoBehaviour
     public ICharacter[] PlayableCharacters
     { get { return _playableCharacters; } }
 
+    public void SetupTransition(string nextScene)
+    {
+        NextScene = nextScene;
+        LastSceneIndex = UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex;
+    }
 
+    public void SceneTransit(string nextScene)
+    {
 
-
+    }
 
 
     // Start is called before the first frame update
