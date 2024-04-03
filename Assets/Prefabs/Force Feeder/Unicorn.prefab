@@ -54,7 +54,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 1, y: 1.6732565, z: 1.3726277}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &1325975171579024223
 Rigidbody:
@@ -64,7 +64,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1034777028980248519}
   serializedVersion: 4
-  m_Mass: 1
+  m_Mass: 100
   m_Drag: 0
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -95,9 +95,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d136d4d2d3dfb2d4e8aa8720604fff86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _state: 0
   _transferAlert: {fileID: 8124239605694739566, guid: 87d246a5b7f49ad4da7cab4a440f27f0,
     type: 3}
   _score: 0
+  _foodList: []
 --- !u!1001 &1747818092524496328
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -156,19 +158,12 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6740846644869040900, guid: 0601d719ad0074249986b9c6e99d7fec,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 6825109376793108710, guid: 0601d719ad0074249986b9c6e99d7fec,
         type: 3}
       propertyPath: m_Name
       value: unicornen
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 6112943529792647364, guid: 0601d719ad0074249986b9c6e99d7fec, type: 3}
-    - {fileID: 6821573754986254632, guid: 0601d719ad0074249986b9c6e99d7fec, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

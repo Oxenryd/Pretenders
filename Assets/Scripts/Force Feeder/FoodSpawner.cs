@@ -82,8 +82,13 @@ public class FoodSpawner : MonoBehaviour
 
     void SpawnFood()
     {
+        var idx = _spawnIndex % _foodArray.Length;
+        foreach (var collider in _foodArray[idx].Colliders)
+        {
+            collider.excludeLayers = LayerUtil.Exclude(11, 12, 13, 14);
+        }
 
-        _foodArray[_spawnIndex % _foodArray.Length].Show(transform.position);
+        _foodArray[idx].Show(transform.position);
         _spawnIndex++;
 
         _timeSinceLastFoodSpawn = 0;
