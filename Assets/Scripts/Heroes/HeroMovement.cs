@@ -882,9 +882,6 @@ public class HeroMovement : MonoBehaviour, IJumpHit
             Halt();
             _doneFirstLoop = true;
         }
-
-
-
     }
 
     private void grabDragStuffs()
@@ -904,8 +901,10 @@ public class HeroMovement : MonoBehaviour, IJumpHit
                 {
                     if (Vector3.Dot(FaceDirection, CurrentGrab.Grabber.FaceDirection) < GlobalValues.TUG_DIRECTION_DOT_LIMIT)
                         foundGrab.PickupAlert.Ping(this, foundGrab.transform, true);
-                } else if (!CurrentGrab.IsGrabbed)
+                } else if (!CurrentGrab.IsGrabbed && CurrentGrab.CanBeGrabbed)
                     foundGrab.PickupAlert.Ping(this, foundGrab.transform, false);
+
+                
             }
 
         } else if (IsGrabInProgress && (foundObject as Grabbable) != CurrentGrab)
@@ -1039,7 +1038,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
                 }
             } else
             {
-                if (grabbable.TryGrab(this))
+                if (grabbable.CanBeGrabbed && grabbable.TryGrab(this))
                 {
                     _body.velocity = new Vector3(0, _body.velocity.y, 0);
                     IsGrabInProgress = true;
