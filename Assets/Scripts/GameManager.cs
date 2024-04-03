@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,7 +21,12 @@ public class GameManager : MonoBehaviour
     private string[] _digitStrings;
     private string[] _numberStrings;
 
+    private bool _loadingScene = false;
+
     private List<MatchResult> _currentResults;
+
+    AsyncOperation _loadingNext;
+    AsyncOperation _unloadingPrevious;
 
     private ICharacter[] _playableCharacters;
     private int _numPlayers = 1;
@@ -111,13 +117,29 @@ public class GameManager : MonoBehaviour
     {
         NextScene = nextScene;
         LastSceneIndex = UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex;
+        UnityEngine.SceneManagement.SceneManager.LoadScene(GlobalStrings.SCENE_LOADINGSCREEN);
+        _loadingScene = true;
+        StartCoroutine(loadNext());
     }
 
-    public void SceneTransit(string nextScene)
+    private IEnumerator unloadPrevious()
     {
-
+        _unloadingPrevious = UnityEngine.SceneManagement.SceneManager.UnloadSceneAsync(LastSceneIndex);
+        while (!_unloadingPrevious.isDone)
+        {
+            yield return null;
+        }
     }
+    private IEnumerator loadNext()
+    {
+        _loadingNext = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(GlobalStrings.SCENE_LOADINGSCREEN);
 
+        // Wait until the asynchronous scene fully loads
+        while (!_loadingNext.isDone)
+        {
+            yield return null;
+        }
+    }
 
     // Start is called before the first frame update
     void Awake()
@@ -171,6 +193,12 @@ public class GameManager : MonoBehaviour
         foreach (var character in _playableCharacters)
         {
             character.Movement.AcceptInput = _curSceneman.CharactersTakeInput;
+        }
+
+        if (_loadingScene)
+        {
+            _loadingScene = false;
+            StartCoroutine(unloadPrevious());
         }
     }
 
