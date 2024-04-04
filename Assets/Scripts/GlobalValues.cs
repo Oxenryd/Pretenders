@@ -59,6 +59,8 @@ public static class GlobalValues
 
     public const int   STRINGS_MAX_PRECACHED_NUMBERSTRINGS = 10000;
 
+    public const float SCENE_CIRCLETRANSIT_TIME = 1f;
+
 
 
 }

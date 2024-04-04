@@ -3,7 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UnityEditor.SearchService;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using Scene = UnityEngine.SceneManagement.Scene;
+using UnitySceneManager = UnityEngine.SceneManagement.SceneManager;
 
 /// <summary>
 /// Class that holds information about the game state and other managers.
@@ -14,19 +18,19 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int _maxControllables = 4;
     [SerializeField] private InputManager _inputMan;
     [SerializeField] private SceneManager _curSceneman;
-    [SerializeField] private Transitions _screenTransitions;
 
     private float[] _fpsBuffer;
     private int _fpsCounter = 0;
     private string[] _digitStrings;
     private string[] _numberStrings;
 
-    private bool _loadingScene = false;
+    private bool _firstStart = true;
+
+    public bool InLoadingScreen { get;set; }
 
     private List<MatchResult> _currentResults;
 
-    AsyncOperation _loadingNext;
-    AsyncOperation _unloadingPrevious;
+    private AsyncOperation _unloadingPrevious;
 
     private ICharacter[] _playableCharacters;
     private int _numPlayers = 1;
@@ -36,8 +40,10 @@ public class GameManager : MonoBehaviour
     /// <br>Singleton pattern in unity gameobject is special...</br>
     /// </summary>
     public static GameManager Instance
-        { get { return _instance; } }
+    { get { return _instance; } }
 
+    public float UnloadProgress
+    { get { return _unloadingPrevious.progress; } }
     public int FpsMaximumSamples { get; set; } = 120;
     public long TotalFrames { get; private set; }
     public float AverageFramesPerSecond { get; private set; }
@@ -45,9 +51,6 @@ public class GameManager : MonoBehaviour
 
     public int LastSceneIndex { get; private set; }
     public string NextScene { get; private set; }
-
-    public Transitions ScreenTransitions
-    { get { return _screenTransitions; } }
 
     // Events
     public EventHandler<float> EarlyUpdate;
@@ -88,7 +91,6 @@ public class GameManager : MonoBehaviour
     { get { return _inputMan; } }
     public float DeltaTime { get; private set; }
     public float FixedDeltaTime { get; private set; }
-    public int GroundLayer { get; private set; }
     public int NumOfPlayers
     { 
         get { return _numPlayers; }
@@ -113,40 +115,102 @@ public class GameManager : MonoBehaviour
     public ICharacter[] PlayableCharacters
     { get { return _playableCharacters; } }
 
-    public void SetupTransition(string nextScene)
+    public void TransitToNextScene(string nextScene)
     {
         NextScene = nextScene;
-        LastSceneIndex = UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex;
-        UnityEngine.SceneManagement.SceneManager.LoadScene(GlobalStrings.SCENE_LOADINGSCREEN);
-        _loadingScene = true;
-        StartCoroutine(loadNext());
+        LastSceneIndex = UnitySceneManager.GetActiveScene().buildIndex;
+        UnitySceneManager.LoadScene(GlobalStrings.SCENE_LOADINGSCREEN, LoadSceneMode.Additive);
+        showLoadingScreen();
+        //UnitySceneManager.LoadScene(nextScene);
     }
 
-    private IEnumerator unloadPrevious()
+    private void showLoadingScreen()
     {
-        _unloadingPrevious = UnityEngine.SceneManagement.SceneManager.UnloadSceneAsync(LastSceneIndex);
+        InLoadingScreen = true;
+        UnitySceneManager.LoadScene(GlobalStrings.SCENE_LOADINGSCREEN);
+    }
+    public void UnloadLastScene()
+    {
+        StartCoroutine( unloadLoadScreenScene());
+    }
+
+    private IEnumerator unloadLoadScreenScene()
+    {
+        _unloadingPrevious = UnitySceneManager.UnloadSceneAsync(GlobalStrings.SCENE_LOADINGSCREEN);
+
         while (!_unloadingPrevious.isDone)
         {
             yield return null;
         }
     }
-    private IEnumerator loadNext()
-    {
-        _loadingNext = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(GlobalStrings.SCENE_LOADINGSCREEN);
 
-        // Wait until the asynchronous scene fully loads
-        while (!_loadingNext.isDone)
+    private void onSceneLoaded(Scene arg0, LoadSceneMode arg1)
+    {
+        
+        if (!checkThisIsTheOneAndOnly())
         {
-            yield return null;
+            Destroy(this.gameObject);
+            return;
         }
+
+        if (InLoadingScreen)
+            return;
+
+        if (_firstStart)
+            return;
+
+        findAndEnumHeroes(false);
+
+        //var container = arg0.GetRootGameObjects().Where( gObject => gObject.tag == GlobalStrings.CONT_HEROCONTAINER).First();
+        //List <ICharacter> characters = new List<ICharacter>();
+        //List<HeroMovement> movements = new List<HeroMovement>();
+        //foreach (var character in container.GetComponentsInChildren<ICharacter>())
+        //{
+        //    characters.Add(character);
+        //}
+        //foreach (var movement in container.GetComponentsInChildren<HeroMovement>())
+        //{
+        //    movements.Add(movement);
+        //}
+        //_playableCharacters = characters.ToArray();
+
+        var sceneMan = GameObject.FindGameObjectsWithTag(GlobalStrings.NAME_SCENEMANAGER);//.GetComponent<SceneManager>();
+        _curSceneman = sceneMan[^1].GetComponent<SceneManager>();
+        List<HeroMovement> movements = new List<HeroMovement>();
+        foreach (var character in _playableCharacters)
+        {
+            character.Movement.AcceptInput = _curSceneman.CharactersTakeInput;
+            movements.Add(character.Movement);
+        }
+        _inputMan.ResetHeroes(movements.ToArray());
+    }
+
+    private bool checkThisIsTheOneAndOnly()
+    {
+        if (Instance != null && this != Instance)
+        {
+            //Destroy(this.gameObject);
+            return false;
+        }
+        else
+        {
+            _instance = this;
+        }
+        return true;
     }
 
     // Start is called before the first frame update
     void Awake()
     {
-        this.tag = GlobalStrings.NAME_GAMEMANAGER;
+        if (!checkThisIsTheOneAndOnly() )
+        {
+            Destroy(this.gameObject);
+            return;
+        }
 
-        UnityEngine.SceneManagement.SceneManager.sceneLoaded += onSceneLoaded;
+        this.tag = GlobalStrings.NAME_GAMEMANAGER;
+        UnitySceneManager.sceneLoaded -= onSceneLoaded;
+        UnitySceneManager.sceneLoaded += onSceneLoaded;
 
         // Pre caching strings
         _digitStrings = new string[10];
@@ -159,17 +223,34 @@ public class GameManager : MonoBehaviour
 
         // Setup FPS counter stuffs
         _fpsBuffer = new float[FpsMaximumSamples];
+    }
 
-        if (this != Instance && Instance != null)
+    private void OnDestroy()
+    {
+        UnitySceneManager.sceneLoaded -= onSceneLoaded;
+    }
+
+    void Start()
+    {
+        if (!checkThisIsTheOneAndOnly() )
         {
-            Destroy(this);
+            Destroy(this.gameObject);
             return;
-        } else
-        {
-            _instance = this;
+        }
 
-            // Cache layer so not to compare string literals during updates.
-            GroundLayer = LayerMask.NameToLayer(GlobalStrings.LAYER_GROUND);
+        // First, set up for none players.
+        NumOfPlayers = 0;
+
+        // Makes sure that the GameManger COULD run without an InputManager if that¨s needed.
+        if (_inputMan != null)
+        {
+            findAndEnumHeroes(true);
+
+            // Setting up first Player with simple keyboard Control.
+            //_inputMan.SetupKeyboardPlayerOne();
+            _inputMan.SetupDefaultEmptyInputs();
+
+            _firstStart = false;
         }
 
         // Makeing sure this item survives between scenes.
@@ -178,78 +259,7 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(this);
     }
 
-    private void onSceneLoaded(UnityEngine.SceneManagement.Scene arg0, UnityEngine.SceneManagement.LoadSceneMode arg1)
-    {
-        var objects = GameObject.FindGameObjectsWithTag(GlobalStrings.CHARACTER_TAG);
-        List<ICharacter> characters = new List<ICharacter>();
-        foreach (var character in objects)
-        {
-            characters.Add(character.GetComponent<ICharacter>());
-        }
-        _playableCharacters = characters.ToArray();
-
-        var sceneMan = GameObject.FindGameObjectWithTag(GlobalStrings.NAME_SCENEMANAGER).GetComponent<SceneManager>();
-        _curSceneman = sceneMan;
-        foreach (var character in _playableCharacters)
-        {
-            character.Movement.AcceptInput = _curSceneman.CharactersTakeInput;
-        }
-
-        if (_loadingScene)
-        {
-            _loadingScene = false;
-            StartCoroutine(unloadPrevious());
-        }
-    }
-
-    void Start()
-    {
-        // First, set up for none players.
-        NumOfPlayers = 0;
-
-        // Makes sure that the GameManger COULD run without an InputManager if that¨s needed.
-        if (_inputMan != null)
-        {
-            // Find characters in the scene then assign them to and init the inputmanager.
-            // Also populate this managers' info about characters
-            var sceneChars = GameObject.FindGameObjectsWithTag(GlobalStrings.CHARACTER_TAG);
-            var charList = new List<ICharacter>();
-            
-            for (int i = 0; i < sceneChars.Length; i++)
-            {
-                var character = sceneChars[i].gameObject.GetComponent<ICharacter>();
-                if (character != null && character.Playable == true)
-                {                
-                    charList.Add(character);
-                }
-                if (charList.Count == _maxControllables)
-                    break;
-            }
-
-            // Naive sorting of the characters
-            var sortedCharList = new List<ICharacter>();
-            var iMoveList = new List<HeroMovement>();
-            for (int i = 0; i < charList.Count; i++)
-            {
-                for (int j = 0; j < charList.Count; j++)
-                {
-                    if (charList[j].Index == i)
-                    {
-                        sortedCharList.Add(charList[j]);
-                        iMoveList.Add(charList[j].Movement);
-                        break;
-                    }
-                }
-            }
-
-            _playableCharacters = sortedCharList.ToArray();
-            _inputMan.Initialize(iMoveList.ToArray());
-
-            // Setting up first Player with simple keyboard Control.
-            //_inputMan.SetupKeyboardPlayerOne();
-            _inputMan.SetupDefaultEmptyInputs();
-        }
-    }
+   
 
     public void ApplyControlScheme()
     { ApplyControlScheme(_curSceneman.ControlScheme); }
@@ -353,5 +363,45 @@ public class GameManager : MonoBehaviour
             stringArray[i] = sb.ToString();
         }
         return stringArray;
+    }
+
+    private void findAndEnumHeroes(bool init)
+    {
+        // Find characters in the scene then assign them to and init the inputmanager.
+        // Also populate this managers' info about characters
+        var sceneChars = GameObject.FindGameObjectsWithTag(GlobalStrings.CHARACTER_TAG);
+        var charList = new List<ICharacter>();
+
+        for (int i = 0; i < sceneChars.Length; i++)
+        {
+            var character = sceneChars[i].gameObject.GetComponent<ICharacter>();
+            if (character != null && character.Playable == true)
+            {
+                charList.Add(character);
+            }
+            if (charList.Count == _maxControllables)
+                break;
+        }
+
+        // Naive sorting of the characters
+        var sortedCharList = new List<ICharacter>();
+        var iMoveList = new List<HeroMovement>();
+        for (int i = 0; i < charList.Count; i++)
+        {
+            for (int j = 0; j < charList.Count; j++)
+            {
+                if (charList[j].Index == i)
+                {
+                    sortedCharList.Add(charList[j]);
+                    iMoveList.Add(charList[j].Movement);
+                    break;
+                }
+            }
+        }
+
+        _playableCharacters = sortedCharList.ToArray();
+
+        if (init)
+            _inputMan.Initialize(iMoveList.ToArray());
     }
 }

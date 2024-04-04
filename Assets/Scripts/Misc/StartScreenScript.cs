@@ -14,7 +14,7 @@ public class StartScreenScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        _fadeTimer = new EasyTimer(0.5f);
+        _fadeTimer = new EasyTimer(GlobalValues.SCENE_CIRCLETRANSIT_TIME);
         GameManager.Instance.InputManager.HeroPressedButton += StartProceed;
     }
 
@@ -31,7 +31,10 @@ public class StartScreenScript : MonoBehaviour
         if (!_activated) return;
 
         if (_fadeTimer.Done)
+        {
             doProceed();
+            _activated = false;
+        }
 
         _transition.Value = 1 - _fadeTimer.Ratio;
 
@@ -39,7 +42,6 @@ public class StartScreenScript : MonoBehaviour
 
     private void doProceed()
     {
-
-        GameManager.Instance.SetupTransition(GlobalStrings.SCENE_LOBBY);
+        GameManager.Instance.TransitToNextScene(GlobalStrings.SCENE_LOBBY);
     }
 }

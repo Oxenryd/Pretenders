@@ -38,6 +38,7 @@ public static class GlobalStrings
     //Tags
     public const string PLATFORM_TAG = "Platform";
     public const string CHARACTER_TAG = "Character";
+    public const string TRANSITIONS_TAG = "Transitions";
 
     //Colliders
     public const string HERO_BODY_COLLIDER_TAG = "BodyCollider";

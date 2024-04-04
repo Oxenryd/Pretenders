@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
@@ -16,6 +17,8 @@ public class InputManager : MonoBehaviour
     [SerializeField] private InputActionAsset _actionsFile;
     [SerializeField] private PlayerInput[] _input = new PlayerInput[4];
     [SerializeField] private HeroMovement[] _characters = new HeroMovement[4];
+
+    private static InputManager _instance;
     
     private InputActionMap[] _actionsMaps = new InputActionMap[4];
     private List<InputDevice> _inputDevices = new List<InputDevice>();
@@ -27,6 +30,8 @@ public class InputManager : MonoBehaviour
     public void InvokeHeroPressedButton(HeroMovement thisHero)
     { OnHeroPressedButton(thisHero); }
 
+    public static InputManager Instance
+    { get { return _instance; } }
 
     /// <summary>
     /// ActionMaps holds the different actions that a character can perform.
@@ -52,7 +57,10 @@ public class InputManager : MonoBehaviour
         this.tag = GlobalStrings.NAME_INPUTMANAGER;
 
         if (GameManager.Instance.InputManager != this)
-            Destroy(this);
+        {
+            Destroy(gameObject);
+            return;
+        }
 
         DontDestroyOnLoad(this);
     }
@@ -103,15 +111,30 @@ public class InputManager : MonoBehaviour
     public void SetupDefaultEmptyInputs()
     {
         _deviceCharCouple.Clear();
-        var players = GameManager.Instance.NumOfPlayers;
         for (int i = 0; i < MaxControllableCharacters; i++)
         {
             SetHeroControl(i, true, new InputDevice[] { });          
         }
     }
 
+    private void checkThisIsTheOneAndOnly()
+    {
+        if (Instance != null && this != Instance)
+        {
+            Destroy(this.gameObject);
+            return;
+        }
+        else
+        {
+            _instance = this;
+        }
+    }
 
-   
+    void Start()
+    {
+        checkThisIsTheOneAndOnly();
+    }
+
     /// <summary>
     /// <para>Assign the action maps to each player and their resp. input device.
     /// Provide an array of InputDevice[] for this player to control his/her character.</para>
@@ -137,6 +160,31 @@ public class InputManager : MonoBehaviour
         _actionsMaps[playerIndex].devices = devices;
 
         _subscribeToActions(playerIndex);
+    }
+
+    public void ResetHeroes(HeroMovement[] heroes)
+    {
+        //_characters = new HeroMovement[4];
+        for (int i = 0; i < 4; i++)
+        {
+            //_unSubscribeToActions(i);
+            _characters[i] = heroes[i];
+
+            _input[i] = _characters[i].GetComponent<PlayerInput>();
+
+            var assignedInput = _deviceCharCouple.Where(couple => couple.Value == i).FirstOrDefault();
+            if (assignedInput.Key != null)
+            {
+                SetHeroControl(i, false, new InputDevice[] {assignedInput.Key});
+            } else
+            {
+                SetHeroControl(i, _characters[i].AiControlled, new InputDevice[] {});
+            }
+
+
+
+            //_subscribeToActions(i);
+        }
     }
 
     /// <summary>
