@@ -54,6 +54,9 @@ public class Grabbable : MonoBehaviour
     public bool CanBeTuggedWhileGrabbed
     { get { return _canBeTuggedWhileGrabbed; } set { _canBeTuggedWhileGrabbed = value; } }
 
+    public bool CanBeGrabbed
+    { get; set; } = true;
+
     public void Hide()
     {
         Hidden = true;
