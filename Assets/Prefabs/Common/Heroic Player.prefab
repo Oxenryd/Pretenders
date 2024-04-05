@@ -10096,6 +10096,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 968d239aed46bb943baf3c6b42031841, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _acceptInput: 1
+  _leftHand: {fileID: 0}
+  _rightHand: {fileID: 0}
+  _gridOffset: {x: 0, y: 0, z: 0}
   _controlScheme: 1
   _quickTurnFactor: 0.2
   _jumpBufferTime: 0.13
@@ -10108,8 +10112,12 @@ MonoBehaviour:
   _jumpPower: 8
   _shoveStunDuration: 1
   _struggle: {fileID: 0}
+  _grid: {fileID: 0}
   _bodyCollider: {fileID: 7038100305216380166}
   _headCollider: {fileID: 8067139619435114792}
+  _bombLayer:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!114 &5371608993833561220
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10195,6 +10203,9 @@ MonoBehaviour:
   _enabled: 0
   bombPrefab: {fileID: 170936541569395615, guid: 2b48f418bddb8a74694b19e7c4a8ebcd,
     type: 3}
+  bombLayerMask:
+    serializedVersion: 2
+    m_Bits: 8
   heroGameObject: {fileID: 7935964025310328597}
 --- !u!114 &8371233411761227188
 MonoBehaviour:

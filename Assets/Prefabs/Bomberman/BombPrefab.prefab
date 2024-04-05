@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 8499154204931919746}
   - component: {fileID: 8475167315639777812}
   - component: {fileID: 8801008883637496842}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: BombPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -30,7 +30,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 170936541569395615}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 10, y: 0, z: 1.69}
   m_LocalScale: {x: 3, y: 3, z: 3}
   m_ConstrainProportionsScale: 0
@@ -110,6 +110,7 @@ MonoBehaviour:
   _handsOffsets:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
+  _canBeTuggedWhileGrabbed: 0
   _tugOWar: {fileID: 1420075866903311425, guid: 94d9b15f380a5cd4c8c335f14d768ef0,
     type: 3}
   _grabPosition: 1
@@ -120,6 +121,8 @@ MonoBehaviour:
   delayBeforeExplosion: 5
   delayAfterEachExplosion: 0.05
   lineRenderer: {fileID: 8801008883637496842}
+  timeBetweenPoints: 0.1
+  linePoints: 25
 --- !u!65 &8499154204931919746
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -177,7 +180,7 @@ LineRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 170936541569395615}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
@@ -189,7 +192,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: 774dde75d2d95e3479621e46475ab8a9, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -220,8 +223,8 @@ LineRenderer:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
-        time: 0
-        value: 1
+        time: 0.0079574585
+        value: 0.19496918
         inSlope: 0
         outSlope: 0
         tangentMode: 0
@@ -233,8 +236,8 @@ LineRenderer:
       m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 1, g: 1, b: 1, a: 1}
-      key1: {r: 1, g: 1, b: 1, a: 1}
+      key0: {r: 0, g: 0, b: 0, a: 1}
+      key1: {r: 0, g: 0, b: 0, a: 1}
       key2: {r: 0, g: 0, b: 0, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
       key4: {r: 0, g: 0, b: 0, a: 0}
@@ -258,7 +261,7 @@ LineRenderer:
       atime6: 0
       atime7: 0
       m_Mode: 0
-      m_ColorSpace: -1
+      m_ColorSpace: 0
       m_NumColorKeys: 2
       m_NumAlphaKeys: 2
     numCornerVertices: 0
