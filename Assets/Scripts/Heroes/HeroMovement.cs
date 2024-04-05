@@ -83,7 +83,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     private bool _signalingGrab = false;
     private float _shovePower = GlobalValues.SHOVE_DEFAULT_SHOVEPOWER;
 
-
+    public float ZOffset { get; set; } = 31f;
     public Vector2 StickInputVector
     { get; private set; } = Vector2.zero;
     public bool CanThrowBombs
@@ -887,6 +887,12 @@ public class HeroMovement : MonoBehaviour, IJumpHit
         // Rotate
         transform.rotation = TransformHelpers.FixNegativeZRotation(Vector3.forward, FaceDirection);
 
+        // ---------------------------------------------------------    LERP Z POSITION
+        if (CurrentControlScheme == ControlSchemeType.Platform)
+        {
+            _body.position = new Vector3(_body.position.x, _body.position.y,
+                Mathf.Lerp(_body.position.z, ZOffset, 1));
+        }
         // ---------------------------------------------------------    END OF FIRST LOOP
         if (!_doneFirstLoop)
         {

@@ -839,7 +839,7 @@ MonoBehaviour:
   _cam: {fileID: 278807905}
   _maxZoomIn: 5
   _maxZoomOut: 25
-  _startPos: {x: 0, y: 35, z: -100}
+  _startPos: {x: -0.8, y: 35, z: 0}
   _zoomPanOffset: {x: 0, y: 0, z: -0.1}
   _smoothTimeFactor: 0.08
   _bufferFactor: -0.35

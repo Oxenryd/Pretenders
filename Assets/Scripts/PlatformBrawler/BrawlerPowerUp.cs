@@ -41,7 +41,6 @@ namespace Assets.Scripts.Collectibles
                 rend.material.Lerp(InitialMaterial, FinalMaterial, lerp);
             }
             Rotation();
-            Debug.Log(powerUpEffect.MoveSpeedMultiplier);
         }
 
         private void Rotation()
