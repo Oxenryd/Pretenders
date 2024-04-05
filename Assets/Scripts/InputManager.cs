@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
-using UnityEngine.Analytics;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
 
@@ -17,33 +17,52 @@ public class InputManager : MonoBehaviour
     [SerializeField] private InputActionAsset _actionsFile;
     [SerializeField] private PlayerInput[] _input = new PlayerInput[4];
     [SerializeField] private HeroMovement[] _characters = new HeroMovement[4];
-    
+
+    private static InputManager _instance;
+
     private InputActionMap[] _actionsMaps = new InputActionMap[4];
     private List<InputDevice> _inputDevices = new List<InputDevice>();
     private Dictionary<InputDevice, int> _deviceCharCouple = new Dictionary<InputDevice, int>();
+
+    public event EventHandler<HeroMovement> HeroPressedButton;
+    protected void OnHeroPressedButton(HeroMovement heroMovement)
+    { HeroPressedButton?.Invoke(this, heroMovement); }
+    public void InvokeHeroPressedButton(HeroMovement thisHero)
+    { OnHeroPressedButton(thisHero); }
+
+    public static InputManager Instance
+    { get { return _instance; } }
 
     /// <summary>
     /// ActionMaps holds the different actions that a character can perform.
     /// </summary>
     public InputActionMap[] ActionMaps
-        { get { return _actionsMaps; } }
+    { get { return _actionsMaps; } }
     /// <summary>
     /// ActionsFile is the Input file that holds the definition of maps and their resp. actions.
     /// </summary>
     public InputActionAsset ActionsFile
-        { get { return _actionsFile; } }
+    { get { return _actionsFile; } }
     /// <summary>
     /// List of currently detected devices (since last UpdateDevices() ).
     /// </summary>
     public List<InputDevice> InputDevices
-        { get { return _inputDevices; } }
+    { get { return _inputDevices; } }
     public int MaxControllableCharacters
-        { get { return GameManager.Instance.MaxControllableCharacters; } }
+    { get { return GameManager.Instance.MaxControllableCharacters; } }
 
 
     void Awake()
     {
         this.tag = GlobalStrings.NAME_INPUTMANAGER;
+
+        if (GameManager.Instance.InputManager != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        DontDestroyOnLoad(this);
     }
 
     /// <summary>
@@ -83,7 +102,8 @@ public class InputManager : MonoBehaviour
 
                 if (i < players)
                     _characters[i].AiControlled = false;
-            } else
+            }
+            else
             {
                 SetHeroControl(i, true, new InputDevice[] { });
             }
@@ -92,15 +112,30 @@ public class InputManager : MonoBehaviour
     public void SetupDefaultEmptyInputs()
     {
         _deviceCharCouple.Clear();
-        var players = GameManager.Instance.NumOfPlayers;
         for (int i = 0; i < MaxControllableCharacters; i++)
         {
-            SetHeroControl(i, true, new InputDevice[] { });          
+            SetHeroControl(i, true, new InputDevice[] { });
         }
     }
 
+    private void checkThisIsTheOneAndOnly()
+    {
+        if (Instance != null && this != Instance)
+        {
+            Destroy(this.gameObject);
+            return;
+        }
+        else
+        {
+            _instance = this;
+        }
+    }
 
-   
+    void Start()
+    {
+        checkThisIsTheOneAndOnly();
+    }
+
     /// <summary>
     /// <para>Assign the action maps to each player and their resp. input device.
     /// Provide an array of InputDevice[] for this player to control his/her character.</para>
@@ -118,7 +153,8 @@ public class InputManager : MonoBehaviour
         if (!_characters[playerIndex].AiControlled)
         {
             _actionsMaps[playerIndex] = _actionsFile.FindActionMap(GlobalStrings.INPUT_HEROMOVEMENT).Clone();
-        } else
+        }
+        else
             _actionsMaps[playerIndex] = _actionsFile.FindActionMap(GlobalStrings.INPUT_AI_HEROMOVEMENT).Clone();
 
         _input[playerIndex].currentActionMap = _actionsMaps[playerIndex];
@@ -126,6 +162,32 @@ public class InputManager : MonoBehaviour
         _actionsMaps[playerIndex].devices = devices;
 
         _subscribeToActions(playerIndex);
+    }
+
+    public void ResetHeroes(HeroMovement[] heroes)
+    {
+        //_characters = new HeroMovement[4];
+        for (int i = 0; i < 4; i++)
+        {
+            //_unSubscribeToActions(i);
+            _characters[i] = heroes[i];
+
+            _input[i] = _characters[i].GetComponent<PlayerInput>();
+
+            var assignedInput = _deviceCharCouple.Where(couple => couple.Value == i).FirstOrDefault();
+            if (assignedInput.Key != null)
+            {
+                SetHeroControl(i, false, new InputDevice[] { assignedInput.Key });
+            }
+            else
+            {
+                SetHeroControl(i, _characters[i].AiControlled, new InputDevice[] { });
+            }
+
+
+
+            //_subscribeToActions(i);
+        }
     }
 
     /// <summary>
@@ -208,7 +270,7 @@ public class InputManager : MonoBehaviour
         var ignoreList = GlobalStrings.INPUT_IGNORE.Split(';');
         foreach (var device in InputSystem.devices)
         {
-            if (device is Mouse) // Skip mouse and keyboard
+            if (device is Mouse) // Skip mouse
                 continue;
 
             // Check ignores
@@ -242,7 +304,7 @@ public class InputManager : MonoBehaviour
             for (int j = 0; j < controls.Count; j++)
             {
                 if (controls[j] is ButtonControl && (controls[j] as ButtonControl).wasPressedThisFrame)
-                {                  
+                {
                     if (!_deviceCharCouple.ContainsKey(_inputDevices[i]))
                     {
                         int newIndex = GameManager.Instance.NumOfPlayers++;
@@ -252,7 +314,7 @@ public class InputManager : MonoBehaviour
                         _characters[newIndex].Halt();
                     }
                 }
-            }    
+            }
         }
     }
 }

@@ -83,6 +83,9 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     private bool _signalingGrab = false;
     private float _shovePower = GlobalValues.SHOVE_DEFAULT_SHOVEPOWER;
 
+
+    public Vector2 StickInputVector
+    { get; private set; } = Vector2.zero;
     public bool CanThrowBombs
     { get; set; } = false;
     public bool JumpButtonDown
@@ -304,11 +307,13 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     // ------------------------------------------------------------------------------------- INPUTS START HERE
     public void TryJump(InputAction.CallbackContext context)
     {
-        if (!AcceptInput) return;
         if (context.started)
         {
-            TryingToJump = true;
             _jumpButtonIsDown = true;
+            GameManager.Instance.InputManager.InvokeHeroPressedButton(this);
+
+            if (!AcceptInput) return;
+            TryingToJump = true;
         }
         else if (context.canceled)
         {
@@ -319,28 +324,34 @@ public class HeroMovement : MonoBehaviour, IJumpHit
 
     public void TryPush(InputAction.CallbackContext context)
     {
-        if (!AcceptInput) return;
-        if (!CanMove || IsStunned || IsGrabbing || IsDraggingOther || IsTugging || IsDraggedByOther || IsJumping || IsFalling)
-            return;
-
         if (context.started)
         {
             _pushButtonIsDown = true;
+            GameManager.Instance.InputManager.InvokeHeroPressedButton(this);
+
+            if (!AcceptInput) return;
+
+            if (!CanMove || IsStunned || IsGrabbing || IsDraggingOther || IsTugging || IsDraggedByOther || IsJumping || IsFalling)
+                return;
+
             _tryingToPush = true;
-        } else if (context.canceled)
+
+        }
+        else if (context.canceled)
         {
             _pushButtonIsDown = false;
         }
     }
     public void TryGrab(InputAction.CallbackContext context)
     {
-        if (!AcceptInput) return;
         // This is horrible...
         // A lot of functionality for one button.
         // Totally worth it =)
         if (context.started)
         {
             _grabButtonIsDown = true;
+            GameManager.Instance.InputManager.InvokeHeroPressedButton(this);
+            if (!AcceptInput) return;
             if (!IsDraggingOther && !IsDraggedByOther && !IsTugging)
             {
                 if (!IsGrabbing && !IsGrabInProgress && !IsTugging)
@@ -352,13 +363,15 @@ public class HeroMovement : MonoBehaviour, IJumpHit
                     _tryingToDrop = true;
                 }
 
-            } else if (!IsTugging)
+            }
+            else if (!IsTugging)
             {
                 if (IsDraggingOther)
                     _struggle.Decrease(GlobalValues.CHAR_DRAG_DRAGGER_DECREASE * Effect.CurrentEffects().StrugglePowerMultiplier);
                 else
                     _struggle.Increase(GlobalValues.CHAR_DRAG_DRAGGED_INCREASE * Effect.CurrentEffects().StrugglePowerMultiplier);
-            } else // IsTugging
+            }
+            else // IsTugging
             {
                 CurrentGrab.TugPull(this);
             }
@@ -371,11 +384,12 @@ public class HeroMovement : MonoBehaviour, IJumpHit
 
     public void TryTrigger(InputAction.CallbackContext context)
     {
-        if (!AcceptInput) return;
         if (context.started)
         {
-            _triedToTrigger = true;
             _triggerButtonDown = true;
+            GameManager.Instance.InputManager.InvokeHeroPressedButton(this);
+            if (!AcceptInput) return;
+            _triedToTrigger = true;
         }
         else if (context.canceled)
         {
@@ -408,11 +422,13 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     /// <param name="context"></param>
     public void TryMove(InputAction.CallbackContext context)
     {
+        var inputDir = context.ReadValue<Vector2>();
+        StickInputVector = inputDir;
+
         if (!AcceptInput) return;
+
         if (CanMove && context.started)
         {
-            var inputDir = context.ReadValue<Vector2>();
-
             Vector3 actualDir = _controlScheme == ControlSchemeType.BomberMan
                 ? TransformHelpers.QuadDirQuantize(new Vector3(inputDir.x, 0, inputDir.y))
                 : new Vector3(inputDir.x, 0, inputDir.y);
@@ -421,8 +437,6 @@ public class HeroMovement : MonoBehaviour, IJumpHit
         }
         else if (CanMove && context.performed)
         {
-            var inputDir = context.ReadValue<Vector2>();
-
             Vector3 actualDir = _controlScheme == ControlSchemeType.BomberMan
                 ? TransformHelpers.QuadDirQuantize(new Vector3(inputDir.x, 0, inputDir.y))
                 : new Vector3(inputDir.x, 0, inputDir.y);
@@ -573,7 +587,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
             IsPushing = false;
             if (!Effect.CurrentEffects().StunImmune)
             {
-                
+
                 IsPushFailed = true;
                 Stun(GlobalValues.CHAR_PUSH_FAILED_STUN_TIME);
                 _pushFailTimer.Reset();
@@ -659,7 +673,8 @@ public class HeroMovement : MonoBehaviour, IJumpHit
         if (IsStunned)
         {
             CanMove = false;
-        } else
+        }
+        else
         {
             CanMove = true;
         }
@@ -689,11 +704,13 @@ public class HeroMovement : MonoBehaviour, IJumpHit
             {
                 _doJump();
                 TryingToJump = false;
-            } else if (CanMove && !InJumpBuffer)
+            }
+            else if (CanMove && !InJumpBuffer)
             {
                 _jumpBufferTimer.Reset();
                 InJumpBuffer = true;
-            } else if (_jumpBufferTimer.Done && InJumpBuffer)
+            }
+            else if (_jumpBufferTimer.Done && InJumpBuffer)
             {
                 if (CanMove && IsGrounded)
                 {
@@ -739,7 +756,8 @@ public class HeroMovement : MonoBehaviour, IJumpHit
             {
                 CurrentDirection = Vector3.Lerp(CurrentDirection, TargetDirection, turnT);
                 CurrentSpeed = Mathf.Clamp(Mathf.Lerp(CurrentSpeed, MaxMoveSpeed * Effect.CurrentEffects().MoveSpeedMultiplier, accelT), 0f, TargetSpeed);
-            } else
+            }
+            else
             {
                 _validMovement();
 
@@ -751,7 +769,8 @@ public class HeroMovement : MonoBehaviour, IJumpHit
                 CurrentSpeed = MaxMoveSpeed * Effect.CurrentEffects().MoveSpeedMultiplier;
             }
 
-        } else if (!TryingToMove)
+        }
+        else if (!TryingToMove)
         {
             if (_controlScheme != ControlSchemeType.BomberMan)
             {
@@ -797,7 +816,8 @@ public class HeroMovement : MonoBehaviour, IJumpHit
                     if (TryingToMove)
                     {
                         _targetGridCenter = TransformHelpers.SnapToGrid(GroundPosition + FaceDirection * _grid.cellSize.x / 2, _grid);
-                    } else
+                    }
+                    else
                     {
                         if (TransformHelpers.PassedGridTarget(this, _targetGridCenter))
                         {
@@ -892,13 +912,15 @@ public class HeroMovement : MonoBehaviour, IJumpHit
                 {
                     if (Vector3.Dot(FaceDirection, CurrentGrab.Grabber.FaceDirection) < GlobalValues.TUG_DIRECTION_DOT_LIMIT)
                         foundGrab.PickupAlert.Ping(this, foundGrab.transform, true);
-                } else if (!CurrentGrab.IsGrabbed)
+                }
+                else if (!CurrentGrab.IsGrabbed && CurrentGrab.CanBeGrabbed)
                     foundGrab.PickupAlert.Ping(this, foundGrab.transform, false);
             }
 
-        } else if (IsGrabInProgress && (foundObject as Grabbable) != CurrentGrab)
+        }
+        else if (IsGrabInProgress && (foundObject as Grabbable) != CurrentGrab)
         {
-            CurrentGrab.AbortGrab();
+            CurrentGrab.AbortGrabInProgress();
             CurrentGrab = null;
             IsGrabInProgress = false;
             OnStoppedGrabInProgress();
@@ -910,10 +932,10 @@ public class HeroMovement : MonoBehaviour, IJumpHit
             if (_tryingToDrop)
             {
                 _tryingToDrop = false;
-                var result = recievable.Transfer(CurrentGrab.GetTransferables());
-                CurrentGrab.ProcessTransferResponse(result);
+                var resultFromRecievable = recievable.Transfer(CurrentGrab.GetTransferables());
+                var dropCurrentGrab = CurrentGrab.ProcessTransferResponse(resultFromRecievable);
 
-                if (result == 0)
+                if (dropCurrentGrab)
                 {
                     ActualDrop();
                 }
@@ -933,8 +955,8 @@ public class HeroMovement : MonoBehaviour, IJumpHit
             _tryingToDrop = false;
             if (IsGrabbing)
             {
-                CurrentGrab.Drop();
-                ActualDrop();
+                if (CurrentGrab.Drop())
+                    ActualDrop();
             }
         }
     }
@@ -1026,9 +1048,10 @@ public class HeroMovement : MonoBehaviour, IJumpHit
                     grabbable.StartTug(this, grabbable.Grabber);
                     return true;
                 }
-            } else
+            }
+            else
             {
-                if (grabbable.TryGrab(this))
+                if (grabbable.CanBeGrabbed && grabbable.TryGrab(this))
                 {
                     _body.velocity = new Vector3(0, _body.velocity.y, 0);
                     IsGrabInProgress = true;
