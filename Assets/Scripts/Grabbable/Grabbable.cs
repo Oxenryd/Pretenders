@@ -1,9 +1,8 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.Mathematics;
-using UnityEditor;
 using UnityEngine;
+using UnitySceneManager = UnityEngine.SceneManagement.SceneManager;
+using Scene = UnityEngine.SceneManagement.Scene;
+using LoadSceneMode = UnityEngine.SceneManagement.LoadSceneMode;
 
 public class Grabbable : MonoBehaviour
 {
@@ -25,6 +24,9 @@ public class Grabbable : MonoBehaviour
 
     public Tug Tug { get { return _tugOWar; } }
 
+
+    public bool KinematicByDefault
+    { get; set; } = false;
     private int _grabberLayer = 0;
     public bool GrabInProgress { get; set; } = false;
 
@@ -60,7 +62,8 @@ public class Grabbable : MonoBehaviour
     public void Hide()
     {
         Hidden = true;
-        _rBody.isKinematic = true;
+        if (!KinematicByDefault)
+            _rBody.isKinematic = true;
         foreach (var col in _colliders)
         {
             col.enabled = false;
@@ -73,22 +76,28 @@ public class Grabbable : MonoBehaviour
         IsGrabbed = true;
         IsAttached = true;
         _attachedTo = attachedTo;
-        _rBody.isKinematic = true;
+        if (!KinematicByDefault)
+            _rBody.isKinematic = true;
         foreach (var col in _colliders)
         {
             col.enabled = false;
         }
     }
+
     public void Detach()
+    { Detach(1f); }
+
+    public void Detach(float powerMultiplier)
     {
         IsAttached = false;
         IsGrabbed = false;
         _attachedTo = null;
         Vector3 randomDir = new Vector3(UnityEngine.Random.Range(-1f, 1f), 1f, UnityEngine.Random.Range(-1f, 1f)).normalized;
-        _rBody.isKinematic = false;
+        if (!KinematicByDefault)
+            _rBody.isKinematic = false;
         _pendingColliderEnable = true;
         _colliderTimer.Reset();
-        _rBody.AddForce(randomDir * GlobalValues.GRABBABLE_DEFAULT_MAX_DETACH_POWER * UnityEngine.Random.Range(0.5f, 1f), ForceMode.Impulse);
+        _rBody.AddForce(randomDir * GlobalValues.GRABBABLE_DEFAULT_MAX_DETACH_POWER * UnityEngine.Random.Range(0.5f, 1f) * powerMultiplier, ForceMode.Impulse);
     }
 
     public HeroMovement Grabber
@@ -109,7 +118,8 @@ public class Grabbable : MonoBehaviour
             col.enabled = true;
         }
         _colliderTimer.Reset();
-        _rBody.isKinematic = false;
+        if (!KinematicByDefault)
+            _rBody.isKinematic = false;
         gameObject.SetActive(true);
     }
 
@@ -141,7 +151,8 @@ public class Grabbable : MonoBehaviour
     public void AbortGrabInProgress()
     {
         IsGrabbed = false;
-        _rBody.isKinematic = false;
+        if (!KinematicByDefault)
+            _rBody.isKinematic = false;
         _rBody.velocity = _lastVelocity;
         GrabInProgress = false;
         _meter.Abort();
@@ -156,12 +167,12 @@ public class Grabbable : MonoBehaviour
             GrabInProgress = true;
             _lastVelocity = Vector3.ClampMagnitude(_rBody.velocity, GlobalValues.GRABBABLE_MAX_STORED_VELOCITY_MAGNITUDE);
             _rBody.velocity = Vector3.zero;
-            _rBody.isKinematic = true;
+            if (!KinematicByDefault)
+                _rBody.isKinematic = true;
             _grabber = grabber;
             _meter.Activate(_grabber.GameObject.transform.position + new Vector3(0, 2.3f, 0));
             return true;
-        }
-        else if (GrabInProgress)
+        } else if (GrabInProgress)
         {
             _alert.Hide();
             _meter.Abort();
@@ -193,6 +204,7 @@ public class Grabbable : MonoBehaviour
         _alert.Deactivate();
         StraightenUp();
     }
+
     public virtual bool Drop()
     {
         if (InjectDropAbort() ) return false;
@@ -213,9 +225,12 @@ public class Grabbable : MonoBehaviour
             }
             _pendingColliderEnable = true;
             _colliderTimer.Reset();
-            _rBody.isKinematic = false;
-            _rBody.velocity = Vector3.zero;
-            _rBody.angularVelocity = Vector3.zero;
+            if (!KinematicByDefault)
+            {
+                _rBody.isKinematic = false;
+                _rBody.velocity = Vector3.zero;
+                _rBody.angularVelocity = Vector3.zero;
+            }
             OnDropThrow();
             _grabber = null;
         }
@@ -223,7 +238,7 @@ public class Grabbable : MonoBehaviour
         return true;
     }
 
-    protected void Awake()
+    private void onSceneLoaded(Scene arg0, LoadSceneMode arg1)
     {
         _grabbedTimer = new EasyTimer(TimeToGrab);
         _colliderTimer = new EasyTimer(GlobalValues.GRABBABLE_COLLIDER_TIMEOUT_DEFAULTTIME);
@@ -234,6 +249,16 @@ public class Grabbable : MonoBehaviour
         _alert.gameObject.SetActive(false);
         _tugOWar = Instantiate(_tugOWar, container.transform);
         _tugOWar.Grabbable = this;
+    }
+
+    protected void Awake()
+    {
+        UnitySceneManager.sceneLoaded += onSceneLoaded;
+
+    }
+    protected void OnDestroy()
+    {
+        UnitySceneManager.sceneLoaded -= onSceneLoaded;
     }
     protected void Start()
     {

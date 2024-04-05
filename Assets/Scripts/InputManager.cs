@@ -309,6 +309,7 @@ public class InputManager : MonoBehaviour
                         SetHeroControl(newIndex, false, new InputDevice[] { _inputDevices[i] });
                         Debug.Log(PLAYERJOIN + newIndex + DEVICECONNECTED + _inputDevices[i].name);
                         _characters[newIndex].Halt();
+                        InvokeHeroPressedButton(_characters[newIndex]);
                     }
                 }
             }    

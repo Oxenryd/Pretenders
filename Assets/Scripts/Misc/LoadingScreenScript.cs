@@ -16,10 +16,11 @@ public class LoadingScreenScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        StartCoroutine(loadNext());
+        loadNext();
         _textFade = new EasyTimer(0.5f, false);
         GameManager.Instance.InLoadingScreen = false;
     }
+
     void Update()
     {
         if (_break) return;
@@ -45,19 +46,19 @@ public class LoadingScreenScript : MonoBehaviour
             _break = true;
     }
 
+    //private IEnumerator loadNext()
+    //{
+    //    _loadingNext = UnitySceneManager.LoadSceneAsync(GameManager.Instance.NextScene, LoadSceneMode.Additive);
+    //    while (!_loadingNext.isDone)
+    //    {
+    //        yield return null;
+    //    }
+    //    Scene nextScene = UnitySceneManager.GetSceneByName(GameManager.Instance.NextScene);
+    //    var result = UnitySceneManager.SetActiveScene(nextScene);
+    //}
 
-    private IEnumerator loadNext()
+    private void loadNext()
     {
-        _loadingNext = UnitySceneManager.LoadSceneAsync(GameManager.Instance.NextScene, LoadSceneMode.Additive);
-
-        while (!_loadingNext.isDone)
-        {
-            yield return null;
-        }
-        Scene nextScene = UnitySceneManager.GetSceneByName(GameManager.Instance.NextScene);
-        UnitySceneManager.SetActiveScene(nextScene);
+        _loadingNext = UnitySceneManager.LoadSceneAsync(GameManager.Instance.NextScene);
     }
-
-
-
 }

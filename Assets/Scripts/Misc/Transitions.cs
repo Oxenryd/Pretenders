@@ -18,6 +18,8 @@ public class Transitions : MonoBehaviour
     private int _circleBoolIndex;
     private int _fadeBoolIndex;
 
+    public TransitionType TransitionType
+    {  get { return _transitionType; }set { _transitionType = value; } }
     public float Value
     { get { return _value; } set {  _value = value; } }
 

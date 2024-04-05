@@ -14,10 +14,13 @@ using UnitySceneManager = UnityEngine.SceneManagement.SceneManager;
 /// </summary>
 public class GameManager : MonoBehaviour
 {
+    private Transform _camTransform;
+
     // Don't forget to alter these in Inspector.  
     [SerializeField] private int _maxControllables = 4;
     [SerializeField] private InputManager _inputMan;
     [SerializeField] private SceneManager _curSceneman;
+    [SerializeField] private Music _music;
 
     private float[] _fpsBuffer;
     private int _fpsCounter = 0;
@@ -41,6 +44,14 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public static GameManager Instance
     { get { return _instance; } }
+
+    public void SetCurrentSceneManager(SceneManager sceneManager)
+    {
+        _curSceneman = sceneManager;
+    }
+
+    public Music Music
+    { get { return _music; } }
 
     public float UnloadProgress
     { get { return _unloadingPrevious.progress; } }
@@ -146,7 +157,7 @@ public class GameManager : MonoBehaviour
 
     private void onSceneLoaded(Scene arg0, LoadSceneMode arg1)
     {
-        
+        _camTransform = Camera.main.transform;
         if (!checkThisIsTheOneAndOnly())
         {
             Destroy(this.gameObject);
@@ -283,6 +294,8 @@ public class GameManager : MonoBehaviour
 
         // Invoke Early Update for subscribers.
         OnEarlyUpdate(DeltaTime);
+
+        transform.position = _camTransform.position;
     }
     private void FixedUpdate()
     {

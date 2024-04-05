@@ -24,6 +24,7 @@ public static class GlobalStrings
     public const string INPUT_IGNORE = "";
     public const string INPUT_HEROMOVEMENT = "HeroMovement";
     public const string INPUT_AI_HEROMOVEMENT = "AiHeroMovement";
+
     // Action names
     public const string INPUT_MOVE = "Move";
     public const string INPUT_MOVE_JUMP = "Jump";

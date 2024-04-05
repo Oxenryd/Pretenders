@@ -31,7 +31,7 @@ TagManager:
   - UI
   - BoundsCollider
   - 
-  - 
+  - Platform
   - Wall
   - Ground
   - Hero1

@@ -83,6 +83,9 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     private bool _signalingGrab = false;
     private float _shovePower = GlobalValues.SHOVE_DEFAULT_SHOVEPOWER;
 
+
+    public Vector2 StickInputVector
+    { get; private set; } = Vector2.zero;
     public bool CanThrowBombs
     { get; set; } = false;
     public bool JumpButtonDown
@@ -175,7 +178,6 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     public Rigidbody RigidBody { get { return _body; } }
     public Vector3 GroundPosition
     { get { return new Vector3(transform.position.x, 0, transform.position.z); } }
-    public PlayerInputEnum CurrentFlags { get; set; } = PlayerInputEnum.None;
 
 
     // ------------------------------------------------------------------------------------- METHODS
@@ -417,11 +419,13 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     /// <param name="context"></param>
     public void TryMove(InputAction.CallbackContext context)
     {
+        var inputDir = context.ReadValue<Vector2>();
+        StickInputVector = inputDir;
+
         if (!AcceptInput) return;
+
         if (CanMove && context.started)
         {
-            var inputDir = context.ReadValue<Vector2>();
-
             Vector3 actualDir = _controlScheme == ControlSchemeType.BomberMan
                 ? TransformHelpers.QuadDirQuantize(new Vector3(inputDir.x, 0, inputDir.y))
                 : new Vector3(inputDir.x, 0, inputDir.y);
@@ -430,8 +434,6 @@ public class HeroMovement : MonoBehaviour, IJumpHit
         }
         else if (CanMove && context.performed)
         {
-            var inputDir = context.ReadValue<Vector2>();
-
             Vector3 actualDir = _controlScheme == ControlSchemeType.BomberMan
                 ? TransformHelpers.QuadDirQuantize(new Vector3(inputDir.x, 0, inputDir.y))
                 : new Vector3(inputDir.x, 0, inputDir.y);
