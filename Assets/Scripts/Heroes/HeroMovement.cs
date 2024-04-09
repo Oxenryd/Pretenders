@@ -1039,7 +1039,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
                 }
             } else
             {
-                if (grabbable.TryGrab(this))
+                if (grabbable.CanBeGrabbed && grabbable.TryGrab(this))
                 {
                     _body.velocity = new Vector3(0, _body.velocity.y, 0);
                     IsGrabInProgress = true;
