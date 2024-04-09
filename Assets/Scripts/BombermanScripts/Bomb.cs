@@ -62,7 +62,7 @@ public class Bomb : Grabbable
 
     void Awake()
     {
-        base.Awake();
+        //base.Awake();
         KinematicByDefault = true;
         lineRenderer.startColor = Color.white;
         timer = new EasyTimer(delayBeforeExplosion);
@@ -178,11 +178,11 @@ public class Bomb : Grabbable
         }
         else
         {
-            base.Drop();
+            Rigidbody.isKinematic = false;
+            base.OnDropThrow();
         }
         startedThrowProcess = false;
         threwBomb = false;
-
     }
 
     private void DrawTrajectory()
