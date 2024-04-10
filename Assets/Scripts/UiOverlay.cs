@@ -9,14 +9,15 @@ public class UiOverlay : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _fpsValueText;
     [SerializeField] private bool _showFps = true;
 
-    void Awake()
+    void Start()
     {
         this.tag = GlobalStrings.NAME_UIOVERLAY;
+        toggleFps(_showFps);
     }
 
-    void Update()
+    void LateUpdate()
     {
-        if (!_showFps)
+        if (_showFps)
         {
             _fpsValueText.text = GameManager.Instance.GetCurrentAvgFpsAsString();
         }
@@ -24,12 +25,12 @@ public class UiOverlay : MonoBehaviour
 
 
 
-    private void ToggleFps()
+    private void toggleFps()
     {
         _showFps = !_showFps;
         _fpsValueText.transform.parent.gameObject.SetActive(_showFps);
     }
-    private void ToggleFps(bool on)
+    private void toggleFps(bool on)
     {
         _showFps = on;
         _fpsValueText.transform.parent.gameObject.SetActive(on);

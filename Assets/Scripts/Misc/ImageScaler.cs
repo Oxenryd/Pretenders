@@ -12,6 +12,6 @@ public class ImageScaler : MonoBehaviour
     // Update is called once per frame
     void LateUpdate()
     {
-        _image.rectTransform.sizeDelta = _cam.pixelRect.size;
+        //_image.rectTransform.sizeDelta = _cam.pixelRect.size;
     }
 }

@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Scene = UnityEngine.SceneManagement.Scene;
@@ -21,6 +20,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private InputManager _inputMan;
     [SerializeField] private SceneManager _curSceneman;
     [SerializeField] private Music _music;
+    [SerializeField] private Transitions _transitions;
 
     private float[] _fpsBuffer;
     private int _fpsCounter = 0;
@@ -59,7 +59,8 @@ public class GameManager : MonoBehaviour
     public long TotalFrames { get; private set; }
     public float AverageFramesPerSecond { get; private set; }
     public float CurrentFramesPerSecond { get; private set; }
-
+    public Transitions Transitions
+    { get { return _transitions; } }
     public int LastSceneIndex { get; private set; }
     public string NextScene { get; private set; }
 
@@ -126,13 +127,15 @@ public class GameManager : MonoBehaviour
     public ICharacter[] PlayableCharacters
     { get { return _playableCharacters; } }
 
-    public void TransitToNextScene(string nextScene)
+    public void TransitToNextScene(string nextScene)                                            // Not doing Additive sceneloading
     {
         NextScene = nextScene;
         LastSceneIndex = UnitySceneManager.GetActiveScene().buildIndex;
-        UnitySceneManager.LoadScene(GlobalStrings.SCENE_LOADINGSCREEN, LoadSceneMode.Additive);
-        showLoadingScreen();
+        // UnitySceneManager.LoadScene(GlobalStrings.SCENE_LOADINGSCREEN, LoadSceneMode.Additive);
+        // showLoadingScreen();
         //UnitySceneManager.LoadScene(nextScene);
+        UnitySceneManager.LoadScene(NextScene);
+
     }
 
     private void showLoadingScreen()
@@ -172,18 +175,21 @@ public class GameManager : MonoBehaviour
 
         findAndEnumHeroes(false);
 
-        //var container = arg0.GetRootGameObjects().Where( gObject => gObject.tag == GlobalStrings.CONT_HEROCONTAINER).First();
-        //List <ICharacter> characters = new List<ICharacter>();
-        //List<HeroMovement> movements = new List<HeroMovement>();
-        //foreach (var character in container.GetComponentsInChildren<ICharacter>())
+        //var transitions = GameObject.FindGameObjectsWithTag(GlobalStrings.TRANSITIONS_TAG);
+        //for (int i = 0; i < transitions.Length; i++)
         //{
-        //    characters.Add(character);
+        //    if (transitions[i] != _transitions)
+        //    {
+        //        var parent = transitions[i].transform.parent;
+        //        var index = transitions[i].transform.GetSiblingIndex();
+        //        this.transform.SetParent(parent);
+        //        this.transform.SetSiblingIndex(index);
+        //        Destroy(transitions[i]);
+        //    }
         //}
-        //foreach (var movement in container.GetComponentsInChildren<HeroMovement>())
-        //{
-        //    movements.Add(movement);
-        //}
-        //_playableCharacters = characters.ToArray();
+
+        var transition = GameObject.FindGameObjectWithTag(GlobalStrings.TRANSITIONS_TAG);
+        _transitions = transition.GetComponent<Transitions>();
 
         var sceneMan = GameObject.FindGameObjectsWithTag(GlobalStrings.NAME_SCENEMANAGER);//.GetComponent<SceneManager>();
         _curSceneman = sceneMan[^1].GetComponent<SceneManager>();

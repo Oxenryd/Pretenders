@@ -52,7 +52,6 @@ public static class GlobalStrings
     // Start menu
     public const string START_MSG0 = "In a world of chaos, a daring few rise to the occasion.";
     public const string START_MSG1 = "But only one can become the new media pet, a new Instagram phenomena and an eager reality show celebrity..";
-    public const string START_MSG2 = "But until this one has been chosen...";
-    public const string START_MSG3 = "... all of our \"heroes\" are still just...";
+    public const string START_MSG2 = "But until this one has been chosen\nall of our \"heroes\" are still just...";
 
 }

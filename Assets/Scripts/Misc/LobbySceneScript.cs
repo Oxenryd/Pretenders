@@ -17,6 +17,7 @@ public class LobbySceneScript : MonoBehaviour
         _fadeTimer = new EasyTimer(GlobalValues.SCENE_CIRCLETRANSIT_TIME);
         _transition.Value = 0;
         _fadeTimer.Reset();
+        GameManager.Instance.Music.Fadeout(3f);
     }
 
     //private void StartProceed(object sender, HeroMovement e)

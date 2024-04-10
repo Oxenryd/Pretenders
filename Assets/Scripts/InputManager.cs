@@ -301,7 +301,9 @@ public class InputManager : MonoBehaviour
             for (int j = 0; j < controls.Count; j++)
             {
                 if (controls[j] is ButtonControl && (controls[j] as ButtonControl).wasPressedThisFrame)
-                {                  
+                {
+                    if (controls[j].device is Mouse)
+                        break;
                     if (!_deviceCharCouple.ContainsKey(_inputDevices[i]))
                     {
                         int newIndex = GameManager.Instance.NumOfPlayers++;
