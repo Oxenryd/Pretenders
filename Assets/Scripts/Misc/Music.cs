@@ -37,7 +37,7 @@ public class Music : MonoBehaviour
         _mixingChannel = _channel1;
         _songs = new PtSong[]
         {
-            new PtSong( (AudioClip)Resources.Load("Sounds/BGM/pretendersTheme", typeof(AudioClip)), 1.98f, 71.520f, false, true)
+            new PtSong( (AudioClip)Resources.Load("Sounds/BGM/pretendersTheme", typeof(AudioClip)), 1.98f, 71.520f, true, true)
         };
         _currentSongindex = -1;
     }

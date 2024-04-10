@@ -40,7 +40,6 @@ public class SceneManager : MonoBehaviour
             _dragStruggles[i].Initialize();
             _dragStruggles[i].gameObject.SetActive(false);
         }
-        //GameManager.Instance.SetCurrentSceneManager(this);
     }
 
     public DragStruggle NextDragStruggle()

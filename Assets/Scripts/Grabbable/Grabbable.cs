@@ -12,6 +12,7 @@ public class Grabbable : MonoBehaviour
     [SerializeField] protected PickupAlert _alert;
     [SerializeField] protected Vector3 _grabbablePointOffset = new Vector3(0, 1f, 1f);
     [SerializeField] protected Vector3[] _handsOffsets = { new Vector3(), new Vector3() };
+    [SerializeField] protected Quaternion _grabbableRotationOffset = Quaternion.identity;
     [SerializeField] protected bool _canBeTuggedWhileGrabbed = false;
     private HeroMovement _grabber;
     private Vector3 _lastVelocity;
@@ -23,8 +24,6 @@ public class Grabbable : MonoBehaviour
     [SerializeField] private GrabbablePosition _grabPosition = GrabbablePosition.InFrontTwoHands;
 
     public Tug Tug { get { return _tugOWar; } }
-
-
     public bool KinematicByDefault
     { get; set; } = false;
     private int _grabberLayer = 0;
@@ -237,8 +236,7 @@ public class Grabbable : MonoBehaviour
 
         return true;
     }
-
-    private void onSceneLoaded(Scene arg0, LoadSceneMode arg1)
+    protected void Awake()
     {
         _grabbedTimer = new EasyTimer(TimeToGrab);
         _colliderTimer = new EasyTimer(GlobalValues.GRABBABLE_COLLIDER_TIMEOUT_DEFAULTTIME);
@@ -249,16 +247,6 @@ public class Grabbable : MonoBehaviour
         _alert.gameObject.SetActive(false);
         _tugOWar = Instantiate(_tugOWar, container.transform);
         _tugOWar.Grabbable = this;
-    }
-
-    protected void Awake()
-    {
-        UnitySceneManager.sceneLoaded += onSceneLoaded;
-
-    }
-    protected void OnDestroy()
-    {
-        UnitySceneManager.sceneLoaded -= onSceneLoaded;
     }
     protected void Start()
     {
@@ -291,11 +279,11 @@ public class Grabbable : MonoBehaviour
                 case GrabbablePosition.AsBackpack:
                 case GrabbablePosition.AboveHeadOneHand:
                 case GrabbablePosition.InFrontOneHand:
-                    transform.rotation = TransformHelpers.FixNegativeZRotation(Vector3.forward, _grabber.FaceDirection);
+                    transform.rotation = TransformHelpers.FixNegativeZRotation(Vector3.forward, _grabber.FaceDirection) * _grabbableRotationOffset;
                     transform.position = _grabber.LeftHand.position + _grabber.LeftHand.rotation * new Vector3(GrabPointOffset.x, GrabPointOffset.y, GrabPointOffset.z);
                     break;
                 case GrabbablePosition.InFrontTwoHands:
-                    transform.rotation = TransformHelpers.FixNegativeZRotation(Vector3.forward, _grabber.FaceDirection);
+                    transform.rotation = TransformHelpers.FixNegativeZRotation(Vector3.forward, _grabber.FaceDirection) * _grabbableRotationOffset;
                     transform.position = _grabber.GameObject.transform.position + (_grabber.FaceDirection * GrabPointOffset.z + new Vector3(0, GrabPointOffset.y, 0) + transform.rotation * new Vector3(GrabPointOffset.x, 0, 0));
                     break;
             }

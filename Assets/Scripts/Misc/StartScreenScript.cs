@@ -7,37 +7,44 @@ using UnityEngine.SceneManagement;
 
 public class StartScreenScript : MonoBehaviour
 {
+    private string[] _messages = {
+        GlobalStrings.START_MSG0,
+        GlobalStrings.START_MSG1,
+        GlobalStrings.START_MSG2,
+        GlobalStrings.START_MSG3
+    };
+    private int _currentMsg = 0;
+    private bool _fadeingTextIn = false;
+    private bool _fadeingTextOut = false;
+    private bool _holdingText = false;
+
     [SerializeField] Transitions _transition;
     [SerializeField] TextMeshProUGUI _text;
     [SerializeField] TextMeshProUGUI _backStory;
-    [SerializeField] TextMeshProUGUI _backStory2;
 
     [SerializeField] float _backStorySpeed = 5f;
 
-    [SerializeField] float _delayTime = 10f;
+    [SerializeField] float _delayBetweenMsgTime = 2f;
     [SerializeField] float _fadeinTime = 4f;
     [SerializeField] float _textFadeTime = 1f;
-    [SerializeField] float _story2Delay = 10f;
-    [SerializeField] float _story2fadeTime = 1f;
+    [SerializeField] float _textHoldTime = 3f;
 
 
     private EasyTimer _fadeOutTimer;
-    private EasyTimer _startDelayTimer;
+    private EasyTimer _msgDelayTimer;
     private EasyTimer _fadeInTimer;
     private EasyTimer _textFadeTimer;
-    private EasyTimer _story2DelayTimer;
-    private EasyTimer _story2FadeTimer;
+    private EasyTimer _textHoldTimer;
 
     private Color _textColor = new Color(84, 0, 60, 0);
 
     private bool _done = false;
-    private bool _fadingInStory2 = false;
 
     private enum Phase
     {
-        Delay, FadeIn, TextFade, FadeOut, Transit
+        Messages, TextFade, FadeOut, Transit
     }
-    private Phase _phase = Phase.Delay;
+    private Phase _phase = Phase.Messages;
 
     void Awake()
     {
@@ -48,21 +55,17 @@ public class StartScreenScript : MonoBehaviour
     void Start()
     {
         _fadeOutTimer = new EasyTimer(GlobalValues.SCENE_CIRCLETRANSIT_TIME);
-        _startDelayTimer = new EasyTimer(_delayTime);
+        _msgDelayTimer = new EasyTimer(_delayBetweenMsgTime);
         _fadeInTimer = new EasyTimer(_fadeinTime);
         _textFadeTimer = new EasyTimer(_textFadeTime);
-        _story2DelayTimer = new EasyTimer(_story2Delay);
-        _story2FadeTimer = new EasyTimer(_story2fadeTime);
+        _textHoldTimer = new EasyTimer(_textHoldTime);
+
         GameManager.Instance.InputManager.HeroPressedButton += StartProceed;
 
         _fadeOutTimer.Reset();
-        _startDelayTimer.Reset();
+        _msgDelayTimer.Reset();
         _fadeInTimer.Reset();
         _textFadeTimer.Reset();
-        _story2DelayTimer.Reset();
-        _story2FadeTimer.Reset();
-
-        _backStory2.color = new Color(_backStory2.color.r, _backStory2.color.g, _backStory2.color.b, 0);
 
         GameManager.Instance.Music.PlayNow(Music.OPENINGTHEME);
     }
@@ -71,8 +74,6 @@ public class StartScreenScript : MonoBehaviour
 
     private void StartProceed(object sender, HeroMovement e)
     {
-        //var hero = e.GetComponent<Hero>();
-        //if (hero.Index != 0) return;
         _phase = Phase.FadeOut;
         _fadeOutTimer.Reset();
         _transition.TransitionType = TransitionType.CircleFade;
@@ -82,56 +83,60 @@ public class StartScreenScript : MonoBehaviour
     {
         if (_done) return;
 
-        if (_story2DelayTimer.Done && ( _phase == Phase.Delay || _phase == Phase.FadeIn) && !_fadingInStory2)
-        {
-            _fadingInStory2 = true;
-            _story2FadeTimer.Reset();
-            
-        }
-        if (_fadingInStory2)
-        {
-            _backStory2.color = new Color(_backStory2.color.r, _backStory2.color.g, _backStory2.color.b, _story2FadeTimer.Ratio);
-        }
-
         switch (_phase)
         {
-            case Phase.Delay:
-                _transition.Value = 0;
-                _backStory.rectTransform.position = new Vector3(
-                    _backStory.rectTransform.position.x,
-                    _backStory.rectTransform.position.y + GameManager.Instance.DeltaTime * _backStorySpeed,
-                    _backStory.rectTransform.position.z);
-
-                if (_startDelayTimer.Done)
-                {
-                    _phase = Phase.FadeIn;
-                    _fadeInTimer.Reset();
-                }
-
-
-                break;
-
-            case Phase.FadeIn:
+            case Phase.Messages:
                 _transition.TransitionType = TransitionType.FadeToBlack;
                 _transition.Value = _fadeInTimer.Ratio;
-                _backStory2.color = new Color(_backStory2.color.r, _backStory2.color.g, _backStory2.color.b, 1 - _fadeInTimer.Ratio);
                 _text.color = new Color(0, 0, 0, 0);
-                if (_fadeInTimer.Done)
-                {             
-                    _phase = Phase.TextFade;
+                if (_msgDelayTimer.Done && !_fadeingTextIn && !_holdingText && !_fadeingTextOut)
+                {
                     _textFadeTimer.Reset();
+                    _fadeingTextIn = true;
+                    _backStory.text = _messages[_currentMsg];
+                    _backStory.color = new Color(1f, 1f, 1f, _textFadeTimer.Ratio);
                 }
+
+                if (_fadeingTextIn && !_holdingText)
+                {
+                    _backStory.color = new Color(1f, 1f, 1f, _textFadeTimer.Ratio);
+                    if (_textFadeTimer.Done)
+                    {
+                        _fadeingTextIn = false;
+                        _holdingText = true;
+                        _textHoldTimer.Reset();
+                    }
+                }
+
+                if (_holdingText)
+                {
+                    _backStory.color = new Color(1f, 1f, 1f, 1f);
+                    if (_textHoldTimer.Done)
+                    {
+                        _holdingText = false;
+                        _fadeingTextOut = true;
+                        _textFadeTimer.Reset();
+                    }
+                }
+
+                if (_fadeingTextOut)
+                {
+                    _backStory.color = new Color(1f, 1f, 1f, 1 - _textFadeTimer.Ratio);
+                    if ( _textFadeTimer.Done)
+                    {
+                        _fadeingTextOut = false;
+                        _currentMsg++;
+                    }
+                }
+
                 break;
 
             case Phase.TextFade:
-                _backStory2.enabled = false;
                 _text.color = new Color(_textColor.r, _textColor.g, _textColor.b, _textFadeTimer.Ratio);
-                _backStory2.color = new Color(0, 0, 0, 0);
                 break;
 
             case Phase.FadeOut:
                 _transition.Value = 1 - _fadeOutTimer.Ratio;
-                _backStory2.color = new Color(0, 0, 0, 0);
                 if (_fadeOutTimer.Done)
                     _phase = Phase.Transit;                             
                 break;
