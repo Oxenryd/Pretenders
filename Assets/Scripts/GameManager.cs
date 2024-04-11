@@ -63,7 +63,7 @@ public class GameManager : MonoBehaviour
     { get { return _transitions; } }
     public int LastSceneIndex { get; private set; }
     public string NextScene { get; private set; }
-
+    public bool FromSceneLoaded { get; private set; } = false;
     // Events
     public EventHandler<float> EarlyUpdate;
     public EventHandler<float> EarlyFixedUpdate;
@@ -159,7 +159,7 @@ public class GameManager : MonoBehaviour
     }
 
     private void onSceneLoaded(Scene arg0, LoadSceneMode arg1)
-    {
+    {  
         _camTransform = Camera.main.transform;
         if (!checkThisIsTheOneAndOnly())
         {
@@ -200,6 +200,8 @@ public class GameManager : MonoBehaviour
             movements.Add(character.Movement);
         }
         _inputMan.ResetHeroes(movements.ToArray());
+
+        FromSceneLoaded = true;
     }
 
     private bool checkThisIsTheOneAndOnly()
@@ -249,6 +251,8 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        Cursor.visible = false;
+
         if (!checkThisIsTheOneAndOnly() )
         {
             Destroy(this.gameObject);

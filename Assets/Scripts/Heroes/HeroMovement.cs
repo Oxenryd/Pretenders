@@ -32,6 +32,10 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     public event EventHandler DroppedGrabbable;
     public event EventHandler StoppedGrabInProgress;
     public event EventHandler Triggered;
+    public event EventHandler PressedTriggerButton;
+    public event EventHandler PressedJumpButton;
+    public event EventHandler PressedPushButton;
+    public event EventHandler PressedGrabButton;
     public void OnGrabGrabbable(Grabbable grabbable)
     { GrabbedGrabbable?.Invoke(this, grabbable); }
     public void OnDropGrabbable()
@@ -40,6 +44,14 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     { StoppedGrabInProgress?.Invoke(this, EventArgs.Empty); }
     protected void OnTriggered()
     { Triggered?.Invoke(this, EventArgs.Empty); }
+    protected void OnPressedTriggerButton()
+    { PressedTriggerButton?.Invoke(this, EventArgs.Empty); }
+    protected void OnPressedJumpButton()
+    { PressedJumpButton?.Invoke(this, EventArgs.Empty); }
+    protected void OnPressedPushButton()
+    { PressedPushButton?.Invoke(this, EventArgs.Empty); }
+    protected void OnPressedGrabButton()
+    { PressedGrabButton?.Invoke(this, EventArgs.Empty); }
 
     private EasyTimer _accelTimer;
     private EasyTimer _turnTimer;
@@ -307,6 +319,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     // ------------------------------------------------------------------------------------- INPUTS START HERE
     public void TryJump(InputAction.CallbackContext context)
     {
+        OnPressedJumpButton();
         if (context.started)
         {        
             _jumpButtonIsDown = true;
@@ -324,6 +337,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
 
     public void TryPush(InputAction.CallbackContext context)
     {
+        OnPressedPushButton();
         if (context.started)
         {
             _pushButtonIsDown = true;          
@@ -342,7 +356,8 @@ public class HeroMovement : MonoBehaviour, IJumpHit
         }
     }
     public void TryGrab(InputAction.CallbackContext context)
-    {      
+    {
+        OnPressedGrabButton();
         // This is horrible...
         // A lot of functionality for one button.
         // Totally worth it =)
@@ -380,7 +395,8 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     }
 
     public void TryTrigger(InputAction.CallbackContext context)
-    {    
+    {
+        OnPressedTriggerButton();
         if (context.started)
         {
             _triggerButtonDown = true;

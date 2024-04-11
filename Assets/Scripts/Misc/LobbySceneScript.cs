@@ -15,24 +15,20 @@ public class LobbySceneScript : MonoBehaviour
     void Start()
     {
         _fadeTimer = new EasyTimer(GlobalValues.SCENE_CIRCLETRANSIT_TIME);
-        _transition.Value = 0;
+        if (GameManager.Instance.FromSceneLoaded)
+            GameManager.Instance.Transitions.Value = 0;
+        else
+            _transition.Value = 1;
         _fadeTimer.Reset();
         GameManager.Instance.Music.Fadeout(3f);
     }
-
-    //private void StartProceed(object sender, HeroMovement e)
-    //{
-    //    var hero = e.GetComponent<Hero>();
-    //    if (hero.Index != 0) return;
-    //    _activated = true;
-    //    _fadeTimer.Reset();
-    //}
 
     void Update()
     {
         if (!_fadedIn)
         {
-            _transition.Value = _fadeTimer.Ratio;
+            if (GameManager.Instance.FromSceneLoaded)
+                GameManager.Instance.Transitions.Value = _fadeTimer.Ratio;
         }
         if (_fadeTimer.Done)
             _fadedIn = true;  

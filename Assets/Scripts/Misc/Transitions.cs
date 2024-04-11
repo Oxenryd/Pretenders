@@ -25,7 +25,6 @@ public class Transitions : MonoBehaviour
 
     void Start()
     {
-        //DontDestroyOnLoad(this);
         _transValueIndex = Shader.PropertyToID("_transitionValue");
         _aspectIndex = Shader.PropertyToID("_aspectRatio");
         _fadeBoolIndex = Shader.PropertyToID("_fadeTransition");
@@ -47,7 +46,6 @@ public class Transitions : MonoBehaviour
 
         var ratio = _cam.pixelRect.width / _cam.pixelRect.height;
         _image.enabled = true;
-       // _image.rectTransform.sizeDelta = _cam.pixelRect.size;
         
         _image.material.SetFloat(_aspectIndex, ratio);
 
