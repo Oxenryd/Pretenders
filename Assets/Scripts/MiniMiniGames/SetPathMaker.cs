@@ -10,6 +10,8 @@ public class SetPathMaker : MonoBehaviour
 
     public int platformSize = 4;
 
+    public bool winnerFound = false;
+
     void AddPlatformToPath(int rowNr, int colNr, Vector3 pathTopLeftPos)
     {
         Vector3 platformPos = new Vector3(pathTopLeftPos.x + colNr*platformSize + platformSize / 2, 0, pathTopLeftPos.z - rowNr*platformSize - platformSize / 2);
@@ -52,9 +54,37 @@ public class SetPathMaker : MonoBehaviour
         }
     }
 
+    bool IsCollidingWithGoal(Vector3 posToCheck)
+    {
+        Vector3 goalPos = pathEndPrefab.transform.position;
+
+        if (posToCheck.x > goalPos.x)
+        {
+            if (posToCheck.z > 40) // Goalpaths Z value == 40 (FIX LATER HARDCODE)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     // Update is called once per frame
     void Update()
     {
-        
+
+        if (winnerFound == false)
+        {
+            GameObject[] heroObjects = GameObject.FindGameObjectsWithTag("Character");
+
+            for (global::System.Int32 heroIndex = 0; heroIndex < 4; heroIndex++)
+            {
+                if (IsCollidingWithGoal(heroObjects[heroIndex].transform.position))
+                {
+                    Debug.Log("Winner! Player: " + heroIndex);
+                    winnerFound = true;
+                }
+            }
+        }
     }
 }
