@@ -63,6 +63,7 @@ public static class GlobalValues
 
     public const float SCENE_CIRCLETRANSIT_TIME = 1f;
 
+    public static float[] TOURNAMENT_SCORES = new float[] { 6f, 4f, 2f, 1f };
 
 
 }

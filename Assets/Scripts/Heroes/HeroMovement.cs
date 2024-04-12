@@ -319,10 +319,9 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     // ------------------------------------------------------------------------------------- INPUTS START HERE
     public void TryJump(InputAction.CallbackContext context)
     {
-
-        OnPressedJumpButton();
         if (context.started)
-        {        
+        {
+            OnPressedJumpButton();
             _jumpButtonIsDown = true;
             GameManager.Instance.InputManager.InvokeHeroPressedButton(this);
 
@@ -337,10 +336,10 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     }
 
     public void TryPush(InputAction.CallbackContext context)
-    {
-        OnPressedPushButton();
+    {      
         if (context.started)
         {
+            OnPressedPushButton();
             _pushButtonIsDown = true;          
             GameManager.Instance.InputManager.InvokeHeroPressedButton(this);
                 
@@ -357,13 +356,13 @@ public class HeroMovement : MonoBehaviour, IJumpHit
         }
     }
     public void TryGrab(InputAction.CallbackContext context)
-    {
-        OnPressedGrabButton();
+    {     
         // This is horrible...
         // A lot of functionality for one button.
         // Totally worth it =)
         if (context.started)
         {
+            OnPressedGrabButton();
             _grabButtonIsDown = true;
             GameManager.Instance.InputManager.InvokeHeroPressedButton(this);
             if (!AcceptInput) return;
@@ -398,10 +397,10 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     }
 
     public void TryTrigger(InputAction.CallbackContext context)
-    {
-        OnPressedTriggerButton();
+    {      
         if (context.started)
         {
+            OnPressedTriggerButton();
             _triggerButtonDown = true;
             GameManager.Instance.InputManager.InvokeHeroPressedButton(this);
             if (!AcceptInput) return;
