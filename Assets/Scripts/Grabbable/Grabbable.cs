@@ -1,40 +1,106 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
+using UnitySceneManager = UnityEngine.SceneManagement.SceneManager;
+using Scene = UnityEngine.SceneManagement.Scene;
+using LoadSceneMode = UnityEngine.SceneManagement.LoadSceneMode;
 
 public class Grabbable : MonoBehaviour
 {
-    [SerializeField] Collider _collider;
-    [SerializeField] private PickupMeter _meter;
-    [SerializeField] private PickupAlert _alert;
-    private ICharacterMovement _grabber;
+    [SerializeField] protected Collider[] _colliders;
+    [SerializeField] protected Rigidbody _rBody;
+    [SerializeField] protected PickupMeter _meter;
+    [SerializeField] protected PickupAlert _alert;
+    [SerializeField] protected Vector3 _grabbablePointOffset = new Vector3(0, 1f, 1f);
+    [SerializeField] protected Vector3[] _handsOffsets = { new Vector3(), new Vector3() };
+    [SerializeField] protected Quaternion _grabbableRotationOffset = Quaternion.identity;
+    [SerializeField] protected bool _canBeTuggedWhileGrabbed = false;
+    private HeroMovement _grabber;
     private Vector3 _lastVelocity;
-    private Rigidbody _rBody;
+    private IRecievable _attachedTo;
     private EasyTimer _grabbedTimer;
     private EasyTimer _colliderTimer;
     private bool _pendingColliderEnable = false;
-    private Dictionary<ICharacterMovement, bool> _potentialGrabbersGrabbing = new Dictionary<ICharacterMovement, bool>();
     [SerializeField] private Tug _tugOWar = null;
-    private GrabbablePosition _grabPosition = GrabbablePosition.InFrontTwoHands;
+    [SerializeField] private GrabbablePosition _grabPosition = GrabbablePosition.InFrontTwoHands;
+
+    public Tug Tug { get { return _tugOWar; } }
+
+    public bool KinematicByDefault
+    { get; set; } = false;
+    private int _grabberLayer = 0;
     public bool GrabInProgress { get; set; } = false;
 
+    public bool DetachOnDrop { get; set; } = true;
+    public int GrabberLayer
+    { get { return _grabberLayer; } }
+    public bool ColliderEnabledWhileGrabbed
+    { get; set; } = false;
+
+    public float AttachPointDistance
+    { get; set; } = 0f;
+
+    public bool IsAttached
+    { get; set; }
+    public Rigidbody Rigidbody
+    { get { return _rBody; } }
     public GrabbablePosition GrabbablePosition
     { get { return _grabPosition; } set { _grabPosition = value; } }
 
     public float TimeToGrab
     { get; set; } = GlobalValues.CHAR_GRAB_RADIUS_DEFAULT_TIMETOGRAB;
+    public PickupAlert PickupAlert
+    { get { return _alert; } }
+    /// <summary>
+    /// Needs ColliderEnabledWhileGrabbed to be set to 'true' to work.
+    /// </summary>
+    public bool CanBeTuggedWhileGrabbed
+    { get { return _canBeTuggedWhileGrabbed; } set { _canBeTuggedWhileGrabbed = value; } }
+
+    public bool CanBeGrabbed
+    { get; set; } = true;
 
     public void Hide()
     {
         Hidden = true;
-        _rBody.isKinematic = true;
-        _collider.enabled = false;
+        if (!KinematicByDefault)
+            _rBody.isKinematic = true;
+        foreach (var col in _colliders)
+        {
+            col.enabled = false;
+        }
         gameObject.SetActive(false);
     }
 
-    public ICharacterMovement Grabber
+    public void Attach(IRecievable attachedTo)
+    {
+        IsGrabbed = true;
+        IsAttached = true;
+        _attachedTo = attachedTo;
+        if (!KinematicByDefault)
+            _rBody.isKinematic = true;
+        foreach (var col in _colliders)
+        {
+            col.enabled = false;
+        }
+    }
+
+    public void Detach()
+    { Detach(1f); }
+
+    public void Detach(float powerMultiplier)
+    {
+        IsAttached = false;
+        IsGrabbed = false;
+        _attachedTo = null;
+        Vector3 randomDir = new Vector3(UnityEngine.Random.Range(-1f, 1f), 1f, UnityEngine.Random.Range(-1f, 1f)).normalized;
+        if (!KinematicByDefault)
+            _rBody.isKinematic = false;
+        _pendingColliderEnable = true;
+        _colliderTimer.Reset();
+        _rBody.AddForce(randomDir * GlobalValues.GRABBABLE_DEFAULT_MAX_DETACH_POWER * UnityEngine.Random.Range(0.5f, 1f) * powerMultiplier, ForceMode.Impulse);
+    }
+
+    public HeroMovement Grabber
     { get { return _grabber; } }
 
     public void Show(Vector3 position)
@@ -46,17 +112,24 @@ public class Grabbable : MonoBehaviour
     {
         Hidden = false;
         gameObject.SetActive(true);
-        //_collider.enabled = true;
-        _pendingColliderEnable = true;
+        _pendingColliderEnable = false;
+        foreach (var col in _colliders)
+        {
+            col.enabled = true;
+        }
         _colliderTimer.Reset();
-        _rBody.isKinematic = false;
+        if (!KinematicByDefault)
+            _rBody.isKinematic = false;
         gameObject.SetActive(true);
     }
+
+    public Collider[] Colliders
+    { get { return _colliders; } }
 
     public bool Hidden { get; set; } = false;
 
     public Vector3 GrabPointOffset
-    { get { return new Vector3(0, 1f, 1f); } }
+    { get { return _grabbablePointOffset; } }
 
     public GameObject GameObject
     { get { return this.GameObject; } }
@@ -64,83 +137,110 @@ public class Grabbable : MonoBehaviour
     public bool IsGrabbed
     { get; set; }
 
+    public void StartTug(HeroMovement hero1, HeroMovement hero2)
+    {
+        hero1.SetTug(-1);
+        hero2.SetTug(1);
+        Tug.Activate(hero1, hero2);
+    }
+    public void TugPull(HeroMovement hero)
+    {
+        Tug.Increase(hero.TuggerIndex * hero.TugPower * hero.Effect.CurrentEffects().TugPowerMultiplier);
+    }
 
-    public void AbortGrab()
+    public void AbortGrabInProgress()
     {
         IsGrabbed = false;
-        _rBody.isKinematic = false;
+        if (!KinematicByDefault)
+            _rBody.isKinematic = false;
         _rBody.velocity = _lastVelocity;
         GrabInProgress = false;
         _meter.Abort();
-        _grabber = null;       
+        _grabber = null;
     }
 
-    public void SignalCanNotGrab(ICharacterMovement potentialGrabber)
+    public bool TryGrab(HeroMovement grabber)
     {
-        if (IsGrabbed) return;
-        _alert.Deactivate();
-        _potentialGrabbersGrabbing.Remove(potentialGrabber);
-    }
-
-    public void SignalCanGrab(ICharacterMovement potentialGrabber)
-    {
-        if (IsGrabbed) return;
-
-        if (!_potentialGrabbersGrabbing.ContainsKey(potentialGrabber))
-            _potentialGrabbersGrabbing.Add(potentialGrabber, false);
-
-        if (_alert.Mode == AlertMode.Inactive || _alert.Mode == AlertMode.DeAnimating)
+        if (!IsGrabbed && !GrabInProgress)
         {
-            var hero = potentialGrabber.GameObject.GetComponent<Hero>();
-            _alert.Activate(transform, hero.PrimaryColor);
-        }
-    }
-
-    public bool TryGrab(ICharacterMovement grabber)
-    {
-        if (!IsGrabbed)
-        {
-            if (!_potentialGrabbersGrabbing.ContainsKey(grabber))
-                _potentialGrabbersGrabbing.Add(grabber, true);
-            else
-                _potentialGrabbersGrabbing[grabber] = true;
-
-            // TODO!! If another grabber enter the grabbing -> Start a tug!!!
-
-            _alert.Deactivate();
+            _alert.Hide();
             GrabInProgress = true;
-            _lastVelocity = _rBody.velocity;
-            _rBody.isKinematic = true;
+            _lastVelocity = Vector3.ClampMagnitude(_rBody.velocity, GlobalValues.GRABBABLE_MAX_STORED_VELOCITY_MAGNITUDE);
+            _rBody.velocity = Vector3.zero;
+            if (!KinematicByDefault)
+                _rBody.isKinematic = true;
             _grabber = grabber;
-            _meter.Activate(_grabber.GameObject.transform.position + new Vector3(0, 2, 0) + _grabber.TargetDirection.normalized * 1f);
+            _meter.Activate(_grabber.GameObject.transform.position + new Vector3(0, 2.3f, 0));
             return true;
+        }
+        else if (GrabInProgress)
+        {
+            _alert.Hide();
+            _meter.Abort();
+            StartTug(grabber, _grabber);
         }
         return false;
     }
 
-    public void Grab(ICharacterMovement grabber)
+    public virtual void Grab(HeroMovement grabber)
     {
-        _potentialGrabbersGrabbing.Clear();
         IsGrabbed = true;
-        _grabber.Grab(this);      
-        _collider.enabled = false;
+        GrabInProgress = false;
+        if (ColliderEnabledWhileGrabbed)
+        {
+            _grabberLayer = grabber.GameObject.layer;
+            foreach (var col in _colliders)
+            {
+                col.enabled = true;
+                col.excludeLayers = LayerUtil.Include(GlobalValues.GROUND_LAYER, grabber.GameObject.layer);
+            }
+        }
+        else
+            foreach (var col in _colliders)
+            {
+                col.enabled = false;
+            }
+        _grabber = grabber;
+        _grabber.Grab(this);
         _alert.Deactivate();
-    }
-    public void Drop()
-    {
-        IsGrabbed = false;
-        _grabber.Drop(this);
-        _pendingColliderEnable = true;
-        _colliderTimer.Reset();
-        _rBody.isKinematic = false;
-        _rBody.AddForce(GlobalValues.CHAR_GRAB_DROPFORCE * (_grabber.CurrentDirection + Vector3.up).normalized, ForceMode.Impulse);
-        _grabber = null;
+        StraightenUp();
     }
 
-    void Awake()
+    public virtual bool Drop()
     {
-        _collider = gameObject.GetComponent<Collider>();
-        _rBody = _collider.attachedRigidbody;
+        if (InjectDropAbort()) return false;
+
+        IsGrabbed = false;
+        GrabInProgress = false;
+        _grabber.ActualDrop();
+        if (!IsAttached)
+        {
+            if (ColliderEnabledWhileGrabbed)
+            {
+                foreach (var col in _colliders)
+                {
+                    col.enabled = false;
+                    col.excludeLayers = LayerUtil.Exclude(GlobalValues.GROUND_LAYER, _grabber.GameObject.layer);
+                }
+                _grabberLayer = -1;
+            }
+            _pendingColliderEnable = true;
+            _colliderTimer.Reset();
+            if (!KinematicByDefault)
+            {
+                _rBody.isKinematic = false;
+                _rBody.velocity = Vector3.zero;
+                _rBody.angularVelocity = Vector3.zero;
+            }
+            OnDropThrow();
+            _grabber = null;
+        }
+
+        return true;
+    }
+    
+    protected void Awake()
+    {
         _grabbedTimer = new EasyTimer(TimeToGrab);
         _colliderTimer = new EasyTimer(GlobalValues.GRABBABLE_COLLIDER_TIMEOUT_DEFAULTTIME);
         var container = GameObject.FindWithTag(GlobalStrings.NAME_UIOVERLAY);
@@ -148,17 +248,13 @@ public class Grabbable : MonoBehaviour
         _meter.gameObject.SetActive(false);
         _alert = Instantiate(_alert, container.transform);
         _alert.gameObject.SetActive(false);
-
+        _tugOWar = Instantiate(_tugOWar, container.transform);
+        _tugOWar.Grabbable = this;
     }
-    private void Start()
+
+    protected void Start()
     {
         _meter.PickupComplete += OnPickupComplete;
-        _meter.PickupAborted += OnPickupAborted;
-    }
-
-    private void OnPickupAborted(object sender, EventArgs e)
-    {
-        AbortGrab();
     }
 
     private void OnPickupComplete(object sender, EventArgs e)
@@ -166,21 +262,65 @@ public class Grabbable : MonoBehaviour
         Grab(_grabber);
     }
 
-    public void Update()
+    protected void Update()
     {
         if (Hidden)
             return;
 
-        if (_pendingColliderEnable)
+        if (_pendingColliderEnable && !IsGrabbed && _colliderTimer.Done)
         {
-            _collider.enabled = true;
+            foreach (var col in _colliders)
+            {
+                col.enabled = true;
+            }
             _pendingColliderEnable = false;
         }
 
-        if (IsGrabbed)
+        if (IsGrabbed && !IsAttached)
         {
-            transform.position = _grabber.GameObject.transform.position + (_grabber.CurrentDirection + new Vector3(0, GrabPointOffset.y, 0) * GrabPointOffset.z) ;
+            switch (_grabPosition)
+            {
+                case GrabbablePosition.AsBackpack:
+                case GrabbablePosition.AboveHeadOneHand:
+                case GrabbablePosition.InFrontOneHand:
+                    transform.rotation = TransformHelpers.FixNegativeZRotation(Vector3.forward, _grabber.FaceDirection) * _grabbableRotationOffset;
+                    transform.position = _grabber.LeftHand.position + _grabber.LeftHand.rotation * new Vector3(GrabPointOffset.x, GrabPointOffset.y, GrabPointOffset.z);
+                    break;
+                case GrabbablePosition.InFrontTwoHands:
+                    transform.rotation = TransformHelpers.FixNegativeZRotation(Vector3.forward, _grabber.FaceDirection) * _grabbableRotationOffset;
+                    transform.position = _grabber.GameObject.transform.position + (_grabber.FaceDirection * GrabPointOffset.z + new Vector3(0, GrabPointOffset.y, 0) + transform.rotation * new Vector3(GrabPointOffset.x, 0, 0));
+                    break;
+            }
         }
     }
-}
 
+    /// <summary>
+    /// Default behaviour is to just Drop() which also makes the Grabber to be set to drop.
+    /// Return whether or not to drop current grab after processing.
+    /// </summary>
+    /// <param name="response"></param>
+    public virtual bool ProcessTransferResponse(int response)
+    {
+        if (response == 0)
+        {
+            _grabber.ActualDrop(); Drop();
+            return true;
+        }
+        return false;
+    }
+    public virtual object[] GetTransferables() { return new GameObject[] { this.gameObject }; }
+
+    public virtual bool TriggerEnter() { return false; }
+    public virtual bool TriggerExit() { return false; }
+
+    protected virtual void StraightenUp()
+    {
+        transform.rotation = Quaternion.identity;
+    }
+    public virtual void KnockOff() { Drop(); }
+    public virtual bool InjectDropAbort() { return false; }
+    public virtual void OnDropThrow()
+    {
+        Rigidbody.AddForce(_rBody.mass * GlobalValues.CHAR_GRAB_DROPFORCE * (_grabber.FaceDirection + Vector3.up).normalized, ForceMode.Impulse);
+    }
+}

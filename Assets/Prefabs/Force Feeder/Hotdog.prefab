@@ -31,7 +31,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 5.043, y: 2.0539763, z: -4.664}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2.5, y: 2.5, z: 2.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -148,4 +148,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cde0c59a62f140e4482af69354553602, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _collider: {fileID: 0}
+  _colliders:
+  - {fileID: 1291859712704910555}
+  _rBody: {fileID: 3808212980659781811}
+  _meter: {fileID: 2574891146964797387, guid: eda705f58eed7bc4fbf14b74cdb6c247, type: 3}
+  _alert: {fileID: 5685868278306586147, guid: b9e2e76fafb519b4a9b923db20cbb25b, type: 3}
+  _grabbablePointOffset: {x: 0, y: 1, z: 1}
+  _handsOffsets:
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  _tugOWar: {fileID: 1420075866903311425, guid: 94d9b15f380a5cd4c8c335f14d768ef0,
+    type: 3}
+  _grabPosition: 0

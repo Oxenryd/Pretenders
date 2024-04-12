@@ -40,6 +40,15 @@
                     "processors": "",
                     "interactions": "Press(behavior=2)",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Push",
+                    "type": "Button",
+                    "id": "583462b6-0a57-4282-99ed-73354e2fbd20",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=2)",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -243,17 +252,6 @@
                 },
                 {
                     "name": "",
-                    "id": "d27577c9-5b5c-4277-974c-a5f8c8178222",
-                    "path": "<HID::Padix Co. Ltd. USB,2-axis 8-button gamepad>/button2",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Jump",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "5ca05ba2-c74f-428e-9f69-501bd46c38a6",
                     "path": "<Gamepad>/buttonWest",
                     "interactions": "",
@@ -267,17 +265,6 @@
                     "name": "",
                     "id": "fdd9666e-dd15-4b73-9eac-4fb7d2933cbb",
                     "path": "<Keyboard>/j",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Grab",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "938f56d1-e0e1-4fd3-a2e2-82feeab473f2",
-                    "path": "<HID::Padix Co. Ltd. USB,2-axis 8-button gamepad>/button4",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -304,6 +291,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "Trigger",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e52a44ec-bdcd-4457-816c-4049e07850a1",
+                    "path": "<Gamepad>/buttonNorth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Push",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c77f5a05-6cf0-4f38-bfcb-9f49c3e6e2a6",
+                    "path": "<Keyboard>/i",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Push",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
@@ -335,6 +344,24 @@
                     "name": "Grab",
                     "type": "Button",
                     "id": "28b9f22d-fae4-4cde-be1a-5636151460b7",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=2)",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Trigger",
+                    "type": "Button",
+                    "id": "21cc4d73-9976-427f-a4e0-cb1dee50df95",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=2)",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Push",
+                    "type": "Button",
+                    "id": "62898eaf-7f40-4849-88bb-af2b7b7d8e7a",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "Press(behavior=2)",

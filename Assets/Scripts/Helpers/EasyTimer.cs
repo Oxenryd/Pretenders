@@ -10,7 +10,7 @@ public class EasyTimer
     private bool _countDown = false;
     private bool _onTime = false;
     private bool _pendingReset = false;
-
+    private int _cycles = 0;
 
     public event EventHandler<float> Timed;
     /// <summary>
@@ -23,8 +23,16 @@ public class EasyTimer
         Timed.Invoke(this, deltaTime);
     }
 
+    public void ResetCycles()
+    { _cycles = 0; }
+
     public bool TickInFixedUpdate
     { get; private set; }
+
+    public int CompletedCycles
+    { get { return _cycles; } }
+    public bool CyclesEven
+    { get { return _cycles % 2 == 0; } }
 
     /// <summary>
     /// Returns a ratio between 0-1 how far into its current cycle this timer currently is at.
@@ -164,6 +172,7 @@ public class EasyTimer
                     OnTimerDone(e);
                 _pendingReset = true;
                 _onTime = true;
+                _cycles++;
                 return;
             }
         } else if (!_pendingReset)
@@ -175,6 +184,7 @@ public class EasyTimer
                     OnTimerDone(e);
                 _pendingReset = true;
                 _onTime = true;
+                _cycles++;
                 return;
             }
         }

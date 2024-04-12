@@ -10,22 +10,34 @@ TagManager:
   - Character
   - BomberBlock
   - BombCrate
+  - Platform
   - MiscContainer
   - UiOverlay
   - BombermanWall
   - BombermanGrid
+  - SceneManager
+  - BodyCollider
+  - StompCollider
+  - FeetCollider
+  - BomberTree
+  - TugPrefab
+  - Transitions
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Blocks
   - Water
   - UI
+  - BoundsCollider
   - 
-  - 
-  - 
-  - 
+  - Platform
+  - Wall
   - Ground
+  - Hero1
+  - Hero2
+  - Hero3
+  - Hero4
   - 
   - 
   - 
@@ -33,12 +45,8 @@ TagManager:
   - 
   - 
   - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Objects
+  - Groundable
   - 
   - 
   - 

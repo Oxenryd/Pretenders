@@ -4,11 +4,23 @@ using UnityEngine;
 
 public class Food : Grabbable
 {
+    [SerializeField] protected int _points;
 
-    // Update is called once per frame
-    public void Update()
+    private void Start()
     {
-        base.Update();
+        base.Start();
     }
+
+    public int GetPoints()
+    {
+        return _points;
+    }
+
+    public override object[] GetTransferables()
+    {
+        return new Food[] { this };
+    }
+
+
 
 }
