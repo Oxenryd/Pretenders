@@ -11,7 +11,6 @@ namespace Assets.Scripts.Collectibles
         private Effect powerUpEffect;
         private float duration = 1.0f;
         private Renderer rend;
-        [SerializeField] HeroMovement[] Player;
         [SerializeField] BrawlerPowerType type;
         public float LifeTime { get; set; } = 10f;
         public float ActivateTime { get; set; } = 5f;
@@ -102,9 +101,15 @@ namespace Assets.Scripts.Collectibles
         }
         private void OnCollisionEnter(Collision collision)
         {
+            var hero = collision.collider.gameObject.GetComponent<HeroMovement>();
+            if (hero == null) 
+            {
+                return;
+            }
             if (IsCollectable)
             {
                 OnPickup();
+                hero.Effect = powerUpEffect;
             }
             else
             {
