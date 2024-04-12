@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 
 public class TransferAlert : MonoBehaviour
@@ -72,7 +69,6 @@ public class TransferAlert : MonoBehaviour
         var canvas = GetComponent<Canvas>();
         canvas.worldCamera = _camera;
     }
-
     // Update is called once per frame
     void Update()
     {

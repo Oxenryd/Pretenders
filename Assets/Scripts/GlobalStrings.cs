@@ -24,6 +24,7 @@ public static class GlobalStrings
     public const string INPUT_IGNORE = "";
     public const string INPUT_HEROMOVEMENT = "HeroMovement";
     public const string INPUT_AI_HEROMOVEMENT = "AiHeroMovement";
+
     // Action names
     public const string INPUT_MOVE = "Move";
     public const string INPUT_MOVE_JUMP = "Jump";
@@ -38,6 +39,7 @@ public static class GlobalStrings
     //Tags
     public const string PLATFORM_TAG = "Platform";
     public const string CHARACTER_TAG = "Character";
+    public const string TRANSITIONS_TAG = "Transitions";
 
     //Colliders
     public const string HERO_BODY_COLLIDER_TAG = "BodyCollider";
@@ -46,5 +48,10 @@ public static class GlobalStrings
     //Scenes
     public const string SCENE_LOADINGSCREEN = "LoadingScreen";
     public const string SCENE_LOBBY = "Lobby";
+
+    // Start menu
+    public const string START_MSG0 = "In a world of chaos, a daring few rise to the occasion.";
+    public const string START_MSG1 = "But only one can become the new media pet, a new Instagram phenomena and an eager reality show celebrity..";
+    public const string START_MSG2 = "But until this one has been chosen\nall of our \"heroes\" are still just...";
 
 }

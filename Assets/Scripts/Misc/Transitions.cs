@@ -18,6 +18,8 @@ public class Transitions : MonoBehaviour
     private int _circleBoolIndex;
     private int _fadeBoolIndex;
 
+    public TransitionType TransitionType
+    {  get { return _transitionType; }set { _transitionType = value; } }
     public float Value
     { get { return _value; } set {  _value = value; } }
 
@@ -44,7 +46,6 @@ public class Transitions : MonoBehaviour
 
         var ratio = _cam.pixelRect.width / _cam.pixelRect.height;
         _image.enabled = true;
-        _image.rectTransform.sizeDelta = _cam.pixelRect.size;
         
         _image.material.SetFloat(_aspectIndex, ratio);
 

@@ -44,6 +44,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85b794fb013144147a7f839e51dd6307, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _charactersTakeInput: 1
+  gameType: 0
   _controlScheme: 1
   _dragStruggles:
   - {fileID: 6349559475264027924, guid: 48160db732e4d7d409d1048ecc76a8f0, type: 3}

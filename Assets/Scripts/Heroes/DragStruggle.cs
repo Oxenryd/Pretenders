@@ -39,9 +39,9 @@ public class DragStruggle : MonoBehaviour
     public bool Active
     { get { return _active; } set {  _active = value; } }
 
-    void Awake()
+    public void Initialize()
     {
-        _imageTimer = new EasyTimer(FLICKER_TIME);      
+        _imageTimer = new EasyTimer(FLICKER_TIME);
         _fadeTimer = new EasyTimer(FADE_TIME);
         _maxStruggleTime = new EasyTimer(GlobalValues.CHAR_STRUGGLE_MAX_TIME);
         _camera = Camera.main;

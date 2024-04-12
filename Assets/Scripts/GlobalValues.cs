@@ -53,12 +53,15 @@ public static class GlobalValues
     public const float GRABBABLE_MAX_STORED_VELOCITY_MAGNITUDE = 10f;
     public const float GRABBABLE_DEFAULT_MAX_DETACH_POWER = 10f;
 
+    public const int   PLATFORM_LAYER = 8;
     public const int   OBJECTS_LAYER = 22;
     public const int   GROUND_LAYER = 10;
     public const int   WALL_LAYER = 9;
     public const int   GROUNDABLE_LAYER = 23;
 
     public const int   STRINGS_MAX_PRECACHED_NUMBERSTRINGS = 10000;
+
+    public const float SCENE_CIRCLETRANSIT_TIME = 1f;
 
 
 

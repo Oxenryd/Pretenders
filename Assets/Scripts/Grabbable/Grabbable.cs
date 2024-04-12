@@ -23,7 +23,8 @@ public class Grabbable : MonoBehaviour
     [SerializeField] private Tug _tugOWar = null;
     [SerializeField] private GrabbablePosition _grabPosition = GrabbablePosition.InFrontTwoHands;
 
-    public Tug Tug { get { return _tugOWar; }
+    public Tug Tug { get { return _tugOWar; } }
+
     public bool KinematicByDefault
     { get; set; } = false;
     private int _grabberLayer = 0;
@@ -171,8 +172,7 @@ public class Grabbable : MonoBehaviour
             _grabber = grabber;
             _meter.Activate(_grabber.GameObject.transform.position + new Vector3(0, 2.3f, 0));
             return true;
-        }
-        else if (GrabInProgress)
+        } else if (GrabInProgress)
         {
             _alert.Hide();
             _meter.Abort();

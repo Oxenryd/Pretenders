@@ -100,13 +100,7 @@ public static class TransformHelpers
     }
 
 
-
-//original.value |= (1 << layer);
-
-//original.value &= ~(1 << layer);
-
-
-        public static bool PassedGridTarget(HeroMovement hero, Vector3 gridCenterTarget)
+    public static bool PassedGridTarget(HeroMovement hero, Vector3 gridCenterTarget)
     {
         if (hero.FaceDirection.x > 0)
         {
