@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class Hamburger : Food
 {
-    public Hamburger()
+    void Start()
     {
+        base.Start();
         _points = 7;
     }
 }

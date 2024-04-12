@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class Banana : Food
 {
-    public Banana()
+    void Start()
     {
+        base.Start();
         _points = 3;
     }
 }

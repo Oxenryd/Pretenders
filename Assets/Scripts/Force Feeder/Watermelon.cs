@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class Watermelon : Food
 {
-    public Watermelon()
+    void Start()
     {
+        base.Start();
         _points = 10;
     }
 }

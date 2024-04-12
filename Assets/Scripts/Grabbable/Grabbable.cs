@@ -24,6 +24,7 @@ public class Grabbable : MonoBehaviour
     [SerializeField] private GrabbablePosition _grabPosition = GrabbablePosition.InFrontTwoHands;
 
     public Tug Tug { get { return _tugOWar; } }
+
     public bool KinematicByDefault
     { get; set; } = false;
     private int _grabberLayer = 0;
@@ -206,7 +207,7 @@ public class Grabbable : MonoBehaviour
 
     public virtual bool Drop()
     {
-        if (InjectDropAbort() ) return false;
+        if (InjectDropAbort()) return false;
 
         IsGrabbed = false;
         GrabInProgress = false;
@@ -248,6 +249,7 @@ public class Grabbable : MonoBehaviour
         _tugOWar = Instantiate(_tugOWar, container.transform);
         _tugOWar.Grabbable = this;
     }
+
     protected void Start()
     {
         _meter.PickupComplete += OnPickupComplete;
