@@ -33,7 +33,7 @@ public class Bomb : Grabbable
     [Range(10, 100)]
     private int linePoints = 25;
 
-    private float throwForce = 22;
+    private float throwForce = 5;
 
     private bool canThrow = true;
 
@@ -43,6 +43,13 @@ public class Bomb : Grabbable
 
     private int amountOfExplosions = 5;
 
+    private bool startedThrowProcess = false;
+
+    private bool threwBomb = false;
+
+    //Fixa stackoverflow exception när man klickar på J
+    //Vänta med explosion när man kastat
+    //Nolla när man släppt bomb trajectory på ett ställe man inte får kasta
 
     private EasyTimer timer;
     private EasyTimer detonationTickTimer;
@@ -55,7 +62,8 @@ public class Bomb : Grabbable
 
     void Awake()
     {
-        base.Awake();
+        //base.Awake();
+        KinematicByDefault = true;
         lineRenderer.startColor = Color.white;
         timer = new EasyTimer(delayBeforeExplosion);
         detonationTickTimer = new EasyTimer(delayAfterEachExplosion);
@@ -72,6 +80,9 @@ public class Bomb : Grabbable
 
         if (timer.Done && hasDetonated != true)
         {
+            canThrow = true;
+            if (IsGrabbed)
+                Drop();
             hasDetonated = true;
             detonationTickTimer.Reset();
         }
@@ -92,11 +103,50 @@ public class Bomb : Grabbable
             }
             detonationTickTimer.Reset();
         }
+
         if (IsGrabbed)
         {
-            DrawTrajectory();
-        }
 
+            if (Grabber.TriggerButtonDown)
+            {
+                DrawTrajectory();
+                startedThrowProcess = true;
+                var newValue = throwForce + 10f * GameManager.Instance.DeltaTime;
+                throwForce = Mathf.Clamp(newValue, 0, 27);
+            }
+            if (startedThrowProcess && !Grabber.TriggerButtonDown)
+            {
+                threwBomb = true;
+                startedThrowProcess = false;
+                if (canThrow)
+                {
+                    Rigidbody.isKinematic = false;
+                    detonationTickTimer.Reset();
+                    Drop();
+                }
+                else if (!canThrow)
+                {
+                    throwForce = 5;
+                    lineRenderer.positionCount = 0;
+                }
+            }
+        }
+        if (HitTheFloor())
+        {
+            Rigidbody.isKinematic = true;
+            gameObject.transform.position = new Vector3(Mathf.RoundToInt(gameObject.transform.position.x / 2) * 2, 0, Mathf.RoundToInt(gameObject.transform.position.z / 2) * 2);
+        }
+    }
+    private bool HitTheFloor()
+    {
+        if (gameObject.transform.position.y <= 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
     public void SpawnBomb(Vector3 charPosition)
     {
@@ -105,21 +155,41 @@ public class Bomb : Grabbable
         currentXplosion = 0;
         IsActive = true;
         gameObject.SetActive(true);
-        gameObject.transform.position = charPosition;
+        gameObject.transform.position = new Vector3(charPosition.x, 0, charPosition.z);
     }
-
+    public override bool InjectDropAbort()
+    {
+        if (!canThrow)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
     public override void OnDropThrow()
     {
-        launchDirection = (Grabber.FaceDirection + Vector3.up).normalized;
-        if (canThrow)
+        if (threwBomb)
         {
+            launchDirection = (Grabber.FaceDirection + Vector3.up).normalized;
             Rigidbody.AddForce(launchDirection * throwForce, ForceMode.Impulse);
+            lineRenderer.positionCount = 0;
         }
-        lineRenderer.positionCount = 0;
+        else
+        {
+            Rigidbody.isKinematic = false;
+            base.OnDropThrow();
+        }
+        startedThrowProcess = false;
+        threwBomb = false;
     }
 
     private void DrawTrajectory()
     {
+        Material material = lineRenderer.material;
+        Color currentColor = material.GetColor("_TintColor");
+
         lineRenderer.enabled = true;
         lineRenderer.positionCount = Mathf.CeilToInt(linePoints / timeBetweenPoints) + 1;
         Vector3 startPosition = transform.position;
@@ -136,13 +206,16 @@ public class Bomb : Grabbable
             Vector3 lastPosition = lineRenderer.GetPosition(i - 1);
             if (Physics.Raycast(lastPosition, (point - lastPosition).normalized, out RaycastHit hit, (point - lastPosition).magnitude, levelMask))
             {
+
+                currentColor.a = 0.2f;
+                material.SetColor("_TintColor", currentColor);
                 canThrow = false;
-                lineRenderer.SetPosition(i, hit.point);
-                lineRenderer.positionCount = 1 + 1;
                 return;
             }
             else
             {
+                currentColor.a = 1;
+                material.SetColor("_TintColor", currentColor);
                 canThrow = true;
             }
 
