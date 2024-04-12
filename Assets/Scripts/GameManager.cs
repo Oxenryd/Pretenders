@@ -26,6 +26,8 @@ public class GameManager : MonoBehaviour
     private int _fpsCounter = 0;
     private string[] _digitStrings;
     private string[] _numberStrings;
+    private float[] _tournamentScore;
+
 
     private bool _firstStart = true;
 
@@ -96,7 +98,17 @@ public class GameManager : MonoBehaviour
 
     public MatchResult[] GetMatchResults()
     { return _currentResults.ToArray(); }
-
+    public float GetTournamentScore(int playerIndex)
+    { return _tournamentScore[playerIndex]; }
+    public void IncreaseTournamentScore(int playerIndex, float score)
+    { _tournamentScore[playerIndex] += score; }
+    public void ResetTournamentScore()
+    {
+        for (int i = 0; i < _tournamentScore.Length; i++)
+        {
+            _tournamentScore[i] = 0f;
+        }
+    }
     public SceneManager SceneManager
     { get { return _curSceneman; } }
     public InputManager InputManager
@@ -226,6 +238,8 @@ public class GameManager : MonoBehaviour
             Destroy(this.gameObject);
             return;
         }
+
+        _tournamentScore = new float[] { 0f,0f,0f,0f };
 
         this.tag = GlobalStrings.NAME_GAMEMANAGER;
         UnitySceneManager.sceneLoaded -= onSceneLoaded;
