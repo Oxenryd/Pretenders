@@ -10,19 +10,19 @@ public class Tray : Grabbable, IRecievable
     public TransferAlert TransferAlert
     { get { return _transferAlert; } }
 
-    private Vector3[] _anchorPoints = new Vector3[]{ new Vector3(0.45f, 0f, 0.45f), new Vector3(-0.45f, 0f, -0.45f), new Vector3(-0.45f, 0f, 0.45f), new Vector3(0.45f, 0f, -0.45f) };
+    private Vector3[] _anchorPoints = new Vector3[]{ new Vector3(0.45f, 0f, 0.45f), new Vector3(-0.45f, 0f, -0.45f), new Vector3(-0.45f, 0f, 0.45f), new Vector3(0.45f, 0f, -0.45f), new Vector3(0f, 0f, 0f) };
     [SerializeField] private Vector3[] _rotationPoints = new Vector3[5];
 
     void Start()
     {
         base.Start();
-        _heldObjects = new List<Food>(GlobalValues.BASKET_MAX_SIZE);
+        _heldObjects = new List<Food>(GlobalValues.TRAY_MAX_SIZE);
 
         var container = GameObject.FindWithTag(GlobalStrings.NAME_UIOVERLAY);
         _transferAlert = GameObject.Instantiate(_transferAlert, container.transform);
         _transferAlert.gameObject.SetActive(false);
 
-        for(int i = 0; i< GlobalValues.BASKET_MAX_SIZE; i++)
+        for(int i = 0; i< GlobalValues.TRAY_MAX_SIZE; i++)
         {
             _rotationPoints[i] = new Vector3(0f, Random.Range(30, 60), 0f);
         }
@@ -55,7 +55,7 @@ public class Tray : Grabbable, IRecievable
         // Find an empty slot on the tray
         for (int i = 0; i < recievedObject.Length; i++)
         {
-            if (_heldObjects.Count < GlobalValues.BASKET_MAX_SIZE)
+            if (_heldObjects.Count < GlobalValues.TRAY_MAX_SIZE)
             {
                 foodArray[i].Attach(this);
                 _heldObjects.Add(foodArray[i]);
@@ -69,6 +69,16 @@ public class Tray : Grabbable, IRecievable
     }
 
     public override object[] GetTransferables() { return _heldObjects.ToArray(); }
+
+    public override bool ProcessTransferResponse(int response)
+    {
+        if (response == 0)
+        {
+            _heldObjects.Clear();
+
+        }
+        return false;
+    }
 
     public override void KnockOff()
     {

@@ -3,27 +3,39 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.TextCore.Text;
+using UnityEngine.SceneManagement;
+using Scene = UnityEngine.SceneManagement.Scene;
+using UnitySceneManager = UnityEngine.SceneManagement.SceneManager;
 
 /// <summary>
 /// Class that holds information about the game state and other managers.
 /// </summary>
 public class GameManager : MonoBehaviour
 {
+    private Transform _camTransform;
+
     // Don't forget to alter these in Inspector.  
     [SerializeField] private int _maxControllables = 4;
     [SerializeField] private InputManager _inputMan;
     [SerializeField] private SceneManager _curSceneman;
+    [SerializeField] private Music _music;
+    [SerializeField] private Transitions _transitions;
 
     private float[] _fpsBuffer;
     private int _fpsCounter = 0;
     private string[] _digitStrings;
     private string[] _numberStrings;
+    private float[] _tournamentScore;
+
+
+    private bool _firstStart = true;
+
+    public bool InLoadingScreen { get;set; }
 
     private List<MatchResult> _currentResults;
+
+    private AsyncOperation _unloadingPrevious;
 
     private ICharacter[] _playableCharacters;
     private int _numPlayers = 1;
@@ -33,13 +45,27 @@ public class GameManager : MonoBehaviour
     /// <br>Singleton pattern in unity gameobject is special...</br>
     /// </summary>
     public static GameManager Instance
-        { get { return _instance; } }
+    { get { return _instance; } }
 
+    public void SetCurrentSceneManager(SceneManager sceneManager)
+    {
+        _curSceneman = sceneManager;
+    }
+
+    public Music Music
+    { get { return _music; } }
+
+    public float UnloadProgress
+    { get { return _unloadingPrevious.progress; } }
     public int FpsMaximumSamples { get; set; } = 120;
     public long TotalFrames { get; private set; }
     public float AverageFramesPerSecond { get; private set; }
     public float CurrentFramesPerSecond { get; private set; }
-
+    public Transitions Transitions
+    { get { return _transitions; } }
+    public int LastSceneIndex { get; private set; }
+    public string NextScene { get; private set; }
+    public bool FromSceneLoaded { get; private set; } = false;
     // Events
     public EventHandler<float> EarlyUpdate;
     public EventHandler<float> EarlyFixedUpdate;
@@ -72,14 +98,23 @@ public class GameManager : MonoBehaviour
 
     public MatchResult[] GetMatchResults()
     { return _currentResults.ToArray(); }
-
+    public float GetTournamentScore(int playerIndex)
+    { return _tournamentScore[playerIndex]; }
+    public void IncreaseTournamentScore(int playerIndex, float score)
+    { _tournamentScore[playerIndex] += score; }
+    public void ResetTournamentScore()
+    {
+        for (int i = 0; i < _tournamentScore.Length; i++)
+        {
+            _tournamentScore[i] = 0f;
+        }
+    }
     public SceneManager SceneManager
     { get { return _curSceneman; } }
     public InputManager InputManager
     { get { return _inputMan; } }
     public float DeltaTime { get; private set; }
     public float FixedDeltaTime { get; private set; }
-    public int GroundLayer { get; private set; }
     public int NumOfPlayers
     { 
         get { return _numPlayers; }
@@ -104,17 +139,111 @@ public class GameManager : MonoBehaviour
     public ICharacter[] PlayableCharacters
     { get { return _playableCharacters; } }
 
+    public void TransitToNextScene(string nextScene)                                            // Not doing Additive sceneloading
+    {
+        NextScene = nextScene;
+        LastSceneIndex = UnitySceneManager.GetActiveScene().buildIndex;
+        // UnitySceneManager.LoadScene(GlobalStrings.SCENE_LOADINGSCREEN, LoadSceneMode.Additive);
+        // showLoadingScreen();
+        //UnitySceneManager.LoadScene(nextScene);
+        UnitySceneManager.LoadScene(NextScene);
 
+    }
 
+    private void showLoadingScreen()
+    {
+        InLoadingScreen = true;
+        UnitySceneManager.LoadScene(GlobalStrings.SCENE_LOADINGSCREEN);
+    }
+    public void UnloadLastScene()
+    {
+        StartCoroutine( unloadLoadScreenScene());
+    }
 
+    private IEnumerator unloadLoadScreenScene()
+    {
+        _unloadingPrevious = UnitySceneManager.UnloadSceneAsync(GlobalStrings.SCENE_LOADINGSCREEN);
 
+        while (!_unloadingPrevious.isDone)
+        {
+            yield return null;
+        }
+    }
+
+    private void onSceneLoaded(Scene arg0, LoadSceneMode arg1)
+    {  
+        _camTransform = Camera.main.transform;
+        if (!checkThisIsTheOneAndOnly())
+        {
+            Destroy(this.gameObject);
+            return;
+        }
+
+        if (InLoadingScreen)
+            return;
+
+        if (_firstStart)
+            return;
+
+        findAndEnumHeroes(false);
+
+        //var transitions = GameObject.FindGameObjectsWithTag(GlobalStrings.TRANSITIONS_TAG);
+        //for (int i = 0; i < transitions.Length; i++)
+        //{
+        //    if (transitions[i] != _transitions)
+        //    {
+        //        var parent = transitions[i].transform.parent;
+        //        var index = transitions[i].transform.GetSiblingIndex();
+        //        this.transform.SetParent(parent);
+        //        this.transform.SetSiblingIndex(index);
+        //        Destroy(transitions[i]);
+        //    }
+        //}
+
+        var transition = GameObject.FindGameObjectWithTag(GlobalStrings.TRANSITIONS_TAG);
+        _transitions = transition.GetComponent<Transitions>();
+
+        var sceneMan = GameObject.FindGameObjectsWithTag(GlobalStrings.NAME_SCENEMANAGER);//.GetComponent<SceneManager>();
+        _curSceneman = sceneMan[^1].GetComponent<SceneManager>();
+        List<HeroMovement> movements = new List<HeroMovement>();
+        foreach (var character in _playableCharacters)
+        {
+            character.Movement.AcceptInput = _curSceneman.CharactersTakeInput;
+            movements.Add(character.Movement);
+        }
+        _inputMan.ResetHeroes(movements.ToArray());
+
+        FromSceneLoaded = true;
+    }
+
+    private bool checkThisIsTheOneAndOnly()
+    {
+        if (Instance != null && this != Instance)
+        {
+            //Destroy(this.gameObject);
+            return false;
+        }
+        else
+        {
+            _instance = this;
+        }
+        return true;
+    }
 
     // Start is called before the first frame update
     void Awake()
     {
-        this.tag = GlobalStrings.NAME_GAMEMANAGER;
+        if (!checkThisIsTheOneAndOnly() )
+        {
+            Destroy(this.gameObject);
+            return;
+        }
 
-        UnityEngine.SceneManagement.SceneManager.activeSceneChanged += onSceneChanged;
+        _tournamentScore = new float[] { 0f,0f,0f,0f };
+
+        this.tag = GlobalStrings.NAME_GAMEMANAGER;
+        UnitySceneManager.sceneLoaded -= onSceneLoaded;
+        UnitySceneManager.sceneLoaded += onSceneLoaded;
 
         // Pre caching strings
         _digitStrings = new string[10];
@@ -127,17 +256,36 @@ public class GameManager : MonoBehaviour
 
         // Setup FPS counter stuffs
         _fpsBuffer = new float[FpsMaximumSamples];
+    }
 
-        if (this != Instance && Instance != null)
+    private void OnDestroy()
+    {
+        UnitySceneManager.sceneLoaded -= onSceneLoaded;
+    }
+
+    void Start()
+    {
+        Cursor.visible = false;
+
+        if (!checkThisIsTheOneAndOnly() )
         {
-            Destroy(this);
+            Destroy(this.gameObject);
             return;
-        } else
-        {
-            _instance = this;
+        }
 
-            // Cache layer so not to compare string literals during updates.
-            GroundLayer = LayerMask.NameToLayer(GlobalStrings.LAYER_GROUND);
+        // First, set up for none players.
+        NumOfPlayers = 0;
+
+        // Makes sure that the GameManger COULD run without an InputManager if that¨s needed.
+        if (_inputMan != null)
+        {
+            findAndEnumHeroes(true);
+
+            // Setting up first Player with simple keyboard Control.
+            //_inputMan.SetupKeyboardPlayerOne();
+            _inputMan.SetupDefaultEmptyInputs();
+
+            _firstStart = false;
         }
 
         // Makeing sure this item survives between scenes.
@@ -146,63 +294,7 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(this);
     }
 
-    private void onSceneChanged(UnityEngine.SceneManagement.Scene arg0, UnityEngine.SceneManagement.Scene arg1)
-    {
-        //_curSceneman = GameObject.FindGameObjectWithTag(GlobalStrings.NAME_SCENEMANAGER).GetComponent<SceneManager>();
-        //foreach (var character in _playableCharacters)
-        //{
-        //    character.Movement.AcceptInput = _curSceneman.CharactersTakeInput;
-        //}
-    }
-
-    void Start()
-    {
-        // First, set up for none players.
-        NumOfPlayers = 0;
-
-        // Makes sure that the GameManger COULD run without an InputManager if that¨s needed.
-        if (_inputMan != null)
-        {
-            // Find characters in the scene then assign them to and init the inputmanager.
-            // Also populate this managers' info about characters
-            var sceneChars = GameObject.FindGameObjectsWithTag(GlobalStrings.CHARACTER_TAG);
-            var charList = new List<ICharacter>();
-            
-            for (int i = 0; i < sceneChars.Length; i++)
-            {
-                var character = sceneChars[i].gameObject.GetComponent<ICharacter>();
-                if (character != null && character.Playable == true)
-                {                
-                    charList.Add(character);
-                }
-                if (charList.Count == _maxControllables)
-                    break;
-            }
-
-            // Naive sorting of the characters
-            var sortedCharList = new List<ICharacter>();
-            var iMoveList = new List<HeroMovement>();
-            for (int i = 0; i < charList.Count; i++)
-            {
-                for (int j = 0; j < charList.Count; j++)
-                {
-                    if (charList[j].Index == i)
-                    {
-                        sortedCharList.Add(charList[j]);
-                        iMoveList.Add(charList[j].Movement);
-                        break;
-                    }
-                }
-            }
-
-            _playableCharacters = sortedCharList.ToArray();
-            _inputMan.Initialize(iMoveList.ToArray());
-
-            // Setting up first Player with simple keyboard Control.
-            //_inputMan.SetupKeyboardPlayerOne();
-            _inputMan.SetupDefaultEmptyInputs();
-        }
-    }
+   
 
     public void ApplyControlScheme()
     { ApplyControlScheme(_curSceneman.ControlScheme); }
@@ -226,6 +318,8 @@ public class GameManager : MonoBehaviour
 
         // Invoke Early Update for subscribers.
         OnEarlyUpdate(DeltaTime);
+
+        transform.position = _camTransform.position;
     }
     private void FixedUpdate()
     {
@@ -306,5 +400,45 @@ public class GameManager : MonoBehaviour
             stringArray[i] = sb.ToString();
         }
         return stringArray;
+    }
+
+    private void findAndEnumHeroes(bool init)
+    {
+        // Find characters in the scene then assign them to and init the inputmanager.
+        // Also populate this managers' info about characters
+        var sceneChars = GameObject.FindGameObjectsWithTag(GlobalStrings.CHARACTER_TAG);
+        var charList = new List<ICharacter>();
+
+        for (int i = 0; i < sceneChars.Length; i++)
+        {
+            var character = sceneChars[i].gameObject.GetComponent<ICharacter>();
+            if (character != null && character.Playable == true)
+            {
+                charList.Add(character);
+            }
+            if (charList.Count == _maxControllables)
+                break;
+        }
+
+        // Naive sorting of the characters
+        var sortedCharList = new List<ICharacter>();
+        var iMoveList = new List<HeroMovement>();
+        for (int i = 0; i < charList.Count; i++)
+        {
+            for (int j = 0; j < charList.Count; j++)
+            {
+                if (charList[j].Index == i)
+                {
+                    sortedCharList.Add(charList[j]);
+                    iMoveList.Add(charList[j].Movement);
+                    break;
+                }
+            }
+        }
+
+        _playableCharacters = sortedCharList.ToArray();
+
+        if (init)
+            _inputMan.Initialize(iMoveList.ToArray());
     }
 }

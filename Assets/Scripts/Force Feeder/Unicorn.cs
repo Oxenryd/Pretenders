@@ -1,33 +1,45 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using Unity.Mathematics;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class Unicorn : MonoBehaviour, IRecievable
 {
+
     private float _speed = 1f;
-    private float _lerpSpeed = 2f;
+    private float _rotationSpeed = 2f;
     private Vector3 _direction;
     private Vector3 _targetDirection;
-    private enum UnicornState {idle, walking, turning, eating, pooping, puking, denying };
-    private UnicornState _state = UnicornState.idle;
-    private float _changeState;
+    [SerializeField] private UnicornState _state = UnicornState.idle;
+    [SerializeField] private int _index;
+    public int Index { get { return _index; } }
+    private float _changeStateTrigger;
     private float _passedTimeSinceLastStateChange = 0f;
-
-    public TransferAlert TransferAlert => throw new NotImplementedException();
+    [SerializeField] private TransferAlert _transferAlert;
+    public TransferAlert TransferAlert { get { return _transferAlert; } }
     private float _rayCastLength = 3f;
     private int _wallLayerMask;
-    private float _directionEqualityThreshold = 0.01f;
-    public int _score; 
-    // Start is called before the first frame update
+    [SerializeField] private int _score = 0;
+    public int Score { get { return _score; } }
+    [SerializeField] private List<Food> _foodList = new List<Food>();
+    private Food _foodToBeEaten = null;
+    private float _eatingDistanceThreshold = 2f;
+
+    private EasyTimer _easyTimer;
+
+
+    public event ScoreReachedEventHandler OnScoreReached;
+
     void Start()
     {
-        _changeState = UnityEngine.Random.Range(2,6);
-        _direction   = transform.forward;
+        _easyTimer = new EasyTimer(1f);
+        _changeStateTrigger = UnityEngine.Random.Range(2, 6);
+        _direction = transform.forward;
         _targetDirection = _direction;
         _wallLayerMask = 1 << LayerMask.NameToLayer("WALLS");
+
+        var container = GameObject.FindWithTag(GlobalStrings.NAME_UIOVERLAY);
+        _transferAlert = GameObject.Instantiate(_transferAlert, container.transform);
+        _transferAlert.gameObject.SetActive(false);
+
     }
 
     void OnCollisionEnter(Collision collision)
@@ -43,83 +55,108 @@ public class Unicorn : MonoBehaviour, IRecievable
     void FixedUpdate()
     {
         Vector3 rayOrigin = transform.position; // Starting from the object's position
-        Vector3 rayDirection = transform.forward;
+        Vector3 rayDirection = _targetDirection - transform.position; // Direction towards the target
+
         RaycastHit hitInfo;
 
-        // Define the radius of the sphere
-        float sphereRadius = 2f; // Adjust the radius as needed
-
-        // Perform the sphere cast
-        if (Physics.SphereCast(rayOrigin, sphereRadius, rayDirection, out hitInfo, _rayCastLength, _wallLayerMask))
+        // Perform the raycast
+        if (Physics.Raycast(rayOrigin, rayDirection, out hitInfo, _rayCastLength, _wallLayerMask))
         {
-            Vector3 hitNormal = hitInfo.normal;
-            _targetDirection = Vector3.Reflect(_direction, hitNormal);
+            // Get the direction to the hit point
+            Vector3 targetDirection = hitInfo.point - transform.position;
+
+            // Calculate the rotation towards the hit point
+            Quaternion targetRotation = Quaternion.LookRotation(targetDirection);
+
+            // Smoothly rotate towards the hit point
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * _rotationSpeed);
+        }
+    }
+
+    void Update()
+    {
+        UpdateState();
+
+        //Actions performed during a state
+        if (_state == UnicornState.walking)
+        {
+            Walk();
+        }
+        else if (_state == UnicornState.eating)
+        {
+            Eat();
+        }
+
+    }
+
+    void Eat()
+    {
+        if (_foodToBeEaten == null && _foodList.Count > 0)
+        {
+            _foodToBeEaten = FindClosestFood();
+        }
+
+        if (_foodToBeEaten != null)
+        {
+            // Rotate towards the food
+            Vector3 directionToFood = (_foodToBeEaten.transform.position - transform.position).normalized;
+            Quaternion targetRotation = Quaternion.LookRotation(directionToFood);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * _rotationSpeed);
+
+            // Move towards the food
+            transform.position += transform.forward * _speed * Time.deltaTime;
+
+            // If close enough to the food, eat it
+            float distanceToFood = Vector3.Distance(transform.position, _foodToBeEaten.transform.position);
+            if (distanceToFood < _eatingDistanceThreshold && _easyTimer.Done)
+            {
+                EatFood();
+            }
+        }
+    }
+
+    private void EatFood()
+    {
+        _foodList.Remove(_foodToBeEaten);
+        _foodToBeEaten.Hide();
+        _foodToBeEaten = null;
+    }
+
+    public void Walk()
+    {
+        float dotProduct = Vector3.Dot(_direction, _targetDirection);
+
+        if (dotProduct > 0.95)
+        {
+            _direction = _targetDirection;
+
         }
         else
         {
-            // Handle case when sphere cast doesn't hit anything
-        }
-    }
-
-
-    // Update is called once per frame
-    void Update()
-    {
-
-        if (_state == UnicornState.walking)
-        {
-            MoveUnicorn();
+            RotatateDirection();
         }
 
-       if (_state == UnicornState.walking || _state == UnicornState.idle)
-        {
-            _passedTimeSinceLastStateChange += GameManager.Instance.DeltaTime;
-        }
-
-       //Change state
-        if (_passedTimeSinceLastStateChange > _changeState)
-        {
-            if (_state == UnicornState.idle)
-            {
-                _targetDirection = new Vector3(UnityEngine.Random.Range(-1f, 1f), 0f, UnityEngine.Random.Range(-1f, 1f));
-                _state = UnicornState.walking;
-            }
-            else if (_state == UnicornState.walking)
-            {
-                _state = UnicornState.idle;
-            }
-            _changeState = UnityEngine.Random.Range(3, 6);
-            _passedTimeSinceLastStateChange = 0f;
-        }
-
-
-        if (_targetDirection != _direction)
-        {
-            // Calculate the distance between _direction and _targetDirection
-            float distance = Vector3.Distance(_direction, _targetDirection);
-
-            // If the distance is within the threshold, assign _targetDirection to _direction
-            if (distance < _directionEqualityThreshold)
-            {
-                _direction = _targetDirection;
-            }
-            else
-            {
-                // Otherwise, lerp towards the target direction
-                _direction = Vector3.Lerp(_direction, _targetDirection, Time.deltaTime * _lerpSpeed);
-            }
-        }
-    }
-
-
-    void MoveUnicorn()
-    {
         transform.position = transform.position + _direction.normalized * _speed * Time.deltaTime;
 
         if (_direction != Vector3.zero)
         {
             transform.rotation = TransformHelpers.FixNegativeZRotation(Vector3.forward, _direction);
         }
+    }
+
+    private void RotatateDirection()
+    {
+
+        float rotationSpeed = Time.deltaTime * _rotationSpeed;
+
+        Quaternion currentRotation = Quaternion.LookRotation(_direction);
+        Quaternion targetRotation = Quaternion.LookRotation(_targetDirection);
+
+        // Slerp between the current rotation and the target rotation
+        Quaternion newRotation = Quaternion.Slerp(currentRotation, targetRotation, rotationSpeed);
+
+        // Convert the new rotation back to a direction vector
+        _direction = newRotation * Vector3.forward;
 
     }
 
@@ -137,21 +174,105 @@ public class Unicorn : MonoBehaviour, IRecievable
         for (int i = 0; i < foodArray.Length; i++)
         {
             _score += foodArray[i].GetPoints();
+            foodArray[i].Detach(0.25f);
+            _foodList.Add(foodArray[i]);
+
+            foreach (var collider in foodArray[i].Colliders)
+            {
+                collider.excludeLayers = LayerUtil.Include(11, 12, 13, 14);
+            }
         }
+
+        if (_score >= GlobalValues.WINNING_POINTS_FORCE_FEEDER)
+        {
+            OnScoreReached?.Invoke();
+        }
+
         return 0;
     }
 
     void OnDrawGizmos()
     {
-        Gizmos.color = Color.yellow; // Set the color of the wire sphere
+        Gizmos.color = Color.yellow; // Set the color of the ray
 
         Vector3 rayOrigin = transform.position; // Starting from the object's position
         Vector3 rayDirection = transform.forward;
 
-        // Define the radius of the sphere
-        float sphereRadius = 2f; // Adjust the radius as needed
+        // Define the maximum distance for the raycast
+        float maxRaycastDistance = 2f; // Adjust as needed
 
-        // Draw the wire sphere representing the sphere cast
-        Gizmos.DrawWireSphere(rayOrigin + rayDirection * _rayCastLength, sphereRadius);
+        // Draw the ray
+        Gizmos.DrawRay(rayOrigin, rayDirection * maxRaycastDistance);
     }
+
+
+    void UpdateState()
+    {
+        if (_state != UnicornState.eating && _foodList.Count > 0)
+        {
+            _state = UnicornState.eating;
+        }
+        else if (_state == UnicornState.eating && _foodList.Count == 0)
+        {
+            _state = UnicornState.idle;
+        }
+        else if (_state == UnicornState.walking || _state == UnicornState.idle)
+        {
+            _passedTimeSinceLastStateChange += GameManager.Instance.DeltaTime;
+
+            // Changing gamestate if passedTimeSinceLastGameState is greater than changestate
+            if (_passedTimeSinceLastStateChange > _changeStateTrigger)
+            {
+                if (_state == UnicornState.idle)
+                {
+                    _targetDirection = new Vector3(UnityEngine.Random.Range(-1f, 1f), 0f, UnityEngine.Random.Range(-1f, 1f));
+                    _state = UnicornState.walking;
+                }
+                else if (_state == UnicornState.walking)
+                {
+                    _state = UnicornState.idle;
+                }
+
+                _changeStateTrigger = UnityEngine.Random.Range(3, 6);
+                _passedTimeSinceLastStateChange = 0f;
+            }
+        }
+
+
+
+    }
+
+
+
+    public Food FindClosestFood()
+    {
+        float closestDistance = float.MaxValue;
+        Food closestFood = null;
+        if (_foodList.Count == 0) return null;
+
+        _easyTimer.Reset();
+        for (int i = 0; i < _foodList.Count; i++)
+        {
+            if (_foodList[i] != null)
+            {
+                float distance = Vector3.Distance(transform.position, _foodList[i].transform.position);
+                if (distance < closestDistance)
+                {
+                    closestFood = _foodList[i];
+                    closestDistance = distance;
+                }
+            }
+        }
+
+        _targetDirection = closestFood.transform.position - transform.position;
+
+        return closestFood;
+    }
+
+
+
+
+    public delegate int[] ScoreReachedEventHandler();
+
 }
+

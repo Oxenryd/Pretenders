@@ -18,13 +18,12 @@ public class FoodSpawner : MonoBehaviour
     [SerializeField] private Hamburger _hamburgerPrefab;
     [SerializeField] private GameObject _foodContainer;
 
-    private Food[] _foodArray = new Food[1];
+    private Food[] _foodArray = new Food[100];
     private int _spawnIndex = 0;
 
     // Start is called before the first frame update
     void Start()
     {
-
         for (int i = 0; i < _foodArray.Length; i++)
         {
             Food foodItem = Random.Range(0, 10) < 5 ? Instantiate(_bananaPrefab) : Random.Range(0, 10) < 5 ? Instantiate(_hotDogPrefab) : Random.Range(0, 10) < 7 ? Instantiate(_hamburgerPrefab) : Instantiate(_waterMelonPrefab);
@@ -79,11 +78,12 @@ public class FoodSpawner : MonoBehaviour
         return oppositeDirection.normalized;
     }
 
-
     void SpawnFood()
     {
-
-        _foodArray[_spawnIndex % _foodArray.Length].Show(transform.position);
+        var idx = _spawnIndex % _foodArray.Length;
+ 
+        _foodArray[idx].Show(transform.position);
+        _foodArray[idx].CanBeGrabbed = true;
         _spawnIndex++;
 
         _timeSinceLastFoodSpawn = 0;

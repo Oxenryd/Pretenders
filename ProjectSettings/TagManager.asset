@@ -21,6 +21,7 @@ TagManager:
   - FeetCollider
   - BomberTree
   - TugPrefab
+  - Transitions
   layers:
   - Default
   - TransparentFX

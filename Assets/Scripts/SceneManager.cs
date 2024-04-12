@@ -1,6 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnitySceneManager = UnityEngine.SceneManagement.SceneManager;
+using Scene = UnityEngine.SceneManagement.Scene;
+using LoadSceneMode = UnityEngine.SceneManagement.LoadSceneMode;
 
 public class SceneManager : MonoBehaviour
 {
@@ -17,12 +21,23 @@ public class SceneManager : MonoBehaviour
 
     void Awake()
     {
+        UnitySceneManager.sceneLoaded += onSceneLoaded;
+    }
+    private void OnDestroy()
+    {
+        UnitySceneManager.sceneLoaded -= onSceneLoaded;
+    }
+    private void onSceneLoaded(Scene argo, LoadSceneMode arg1)
+    {
+        if (GameManager.Instance.InLoadingScreen) return;
         this.tag = GlobalStrings.NAME_SCENEMANAGER;
 
         var container = GameObject.FindWithTag(GlobalStrings.NAME_UIOVERLAY);
-        for (int i = 0; i < 2; i++)
+        for (int i = 0; i < _dragStruggles.Length; i++)
         {
-            _dragStruggles[i] = Instantiate(_dragStruggles[i], container.transform);
+            var gObject = (GameObject)Resources.Load("Prefabs/Common/DragStruggle",  typeof(GameObject));
+            _dragStruggles[i] = Instantiate(gObject.GetComponent<DragStruggle>(), container.transform);
+            _dragStruggles[i].Initialize();
             _dragStruggles[i].gameObject.SetActive(false);
         }
     }
@@ -34,5 +49,4 @@ public class SceneManager : MonoBehaviour
             _curDragStrug = 0;
         return _dragStruggles[_curDragStrug];
     }
-
 }

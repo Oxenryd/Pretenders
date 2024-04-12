@@ -177,11 +177,10 @@ public class InputManager : MonoBehaviour
             var assignedInput = _deviceCharCouple.Where(couple => couple.Value == i).FirstOrDefault();
             if (assignedInput.Key != null)
             {
-                SetHeroControl(i, false, new InputDevice[] { assignedInput.Key });
-            }
-            else
+                SetHeroControl(i, false, new InputDevice[] {assignedInput.Key});
+            } else
             {
-                SetHeroControl(i, _characters[i].AiControlled, new InputDevice[] { });
+                SetHeroControl(i, _characters[i].AiControlled, new InputDevice[] {});
             }
 
 
@@ -305,6 +304,9 @@ public class InputManager : MonoBehaviour
             {
                 if (controls[j] is ButtonControl && (controls[j] as ButtonControl).wasPressedThisFrame)
                 {
+
+                    if (controls[j].device is Mouse)
+                        break;
                     if (!_deviceCharCouple.ContainsKey(_inputDevices[i]))
                     {
                         int newIndex = GameManager.Instance.NumOfPlayers++;
@@ -312,6 +314,7 @@ public class InputManager : MonoBehaviour
                         SetHeroControl(newIndex, false, new InputDevice[] { _inputDevices[i] });
                         Debug.Log(PLAYERJOIN + newIndex + DEVICECONNECTED + _inputDevices[i].name);
                         _characters[newIndex].Halt();
+                        InvokeHeroPressedButton(_characters[newIndex]);
                     }
                 }
             }

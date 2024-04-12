@@ -6,6 +6,11 @@ public class Food : Grabbable
 {
     [SerializeField] protected int _points;
 
+    private void Start()
+    {
+        base.Start();
+    }
+
     public int GetPoints()
     {
         return _points;
@@ -15,5 +20,7 @@ public class Food : Grabbable
     {
         return new Food[] { this };
     }
+
+
 
 }
