@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.3 (0e150ed6c4, 2023-07-21)"
+   sodipodi:docname="ScoreBoxRaw.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#111111"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="0.27118408"
+     inkscape:cx="1111.7909"
+     inkscape:cy="241.53335"
+     inkscape:window-width="1920"
+     inkscape:window-height="1057"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1">
+    <linearGradient
+       id="linearGradient1"
+       inkscape:collect="always">
+      <stop
+         style="stop-color:#ffffff;stop-opacity:1;"
+         offset="0"
+         id="stop1" />
+      <stop
+         style="stop-color:#808080;stop-opacity:1;"
+         offset="1"
+         id="stop2" />
+    </linearGradient>
+    <inkscape:path-effect
+       effect="fillet_chamfer"
+       id="path-effect1"
+       is_visible="true"
+       lpeversion="1"
+       nodesatellites_param="F,0,0,1,0,23.835888,0,1 @ F,0,1,1,0,23.835888,0,1 @ F,0,1,1,0,23.835888,0,1 @ F,0,1,1,0,23.835888,0,1"
+       radius="0"
+       unit="px"
+       method="auto"
+       mode="F"
+       chamfer_steps="1"
+       flexible="false"
+       use_knot_distance="true"
+       apply_no_radius="true"
+       apply_with_radius="true"
+       only_selected="false"
+       hide_knots="false" />
+    <inkscape:path-effect
+       effect="fillet_chamfer"
+       id="path-effect1-7"
+       is_visible="true"
+       lpeversion="1"
+       nodesatellites_param="F,0,0,1,0,23.835888,0,1 @ F,0,1,1,0,23.835888,0,1 @ F,0,1,1,0,23.835888,0,1 @ F,0,1,1,0,23.835888,0,1"
+       radius="0"
+       unit="px"
+       method="auto"
+       mode="F"
+       chamfer_steps="1"
+       flexible="false"
+       use_knot_distance="true"
+       apply_no_radius="true"
+       apply_with_radius="true"
+       only_selected="false"
+       hide_knots="false" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient1"
+       id="linearGradient2"
+       x1="-8.9634151"
+       y1="-12.616627"
+       x2="415.27023"
+       y2="180.58789"
+       gradientUnits="userSpaceOnUse" />
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       style="fill:url(#linearGradient2);fill-opacity:1;stroke:#000000;stroke-width:0.0921882"
+       d="m 64.863774,183.65805 c -5.189435,-1.04178 -9.615549,-3.33055 -13.423331,-6.94129 -4.198075,-3.98084 -6.705458,-8.44139 -8.08976,-14.39141 -0.383366,-1.64778 -0.435473,-3.95919 -0.52496,-23.28647 -0.107204,-23.15322 -2.65e-4,-63.360332 1.026025,-67.158732 2.858466,-10.578243 11.967715,-18.434003 22.933662,-19.777842 3.038925,-0.372412 450.64275,-0.372412 453.68168,0 12.51064,1.533138 22.22208,11.244574 23.75522,23.755222 0.36303,2.962333 0.3714,80.946792 0.01,84.191032 -1.23975,11.1182 -8.99354,20.08408 -20.14409,23.29303 l -1.91338,0.55064 -28.17217,0.0513 c -23.14417,0.0422 -427.760257,-0.009 -429.138548,-0.28549 z M 518.1499,178.3112 c 9.49618,-1.44901 16.78751,-8.00756 19.56594,-17.59958 l 0.55703,-1.92304 v -22.3182 -59.393279 l -0.68216,-2.195234 c -1.34733,-4.335789 -3.15579,-7.412072 -6.09621,-10.370037 -3.09829,-3.116765 -7.10483,-5.374571 -11.57932,-6.525294 -1.50656,-0.387451 -3.72405,-0.422625 -26.6446,-0.422625 -27.49887,0 -425.260744,-0.07628 -429.254442,1.497063 -3.909758,1.540275 -8.27697,4.926833 -10.65994,8.266271 -1.445019,2.025013 -3.113918,5.599213 -3.812201,8.164409 l -0.564373,2.073278 v 59.027398 21.95234 l 0.567743,2.07328 c 1.181672,4.31522 3.29755,7.94047 6.483856,11.10914 3.770921,3.75005 8.5971,6.05718 14.168995,6.7734 0.402458,0.0517 410.283122,0.10986 422.826442,0.12917 18.8243,0.029 23.21061,-0.0266 25.12324,-0.31846 z"
+       id="path1"
+       inkscape:export-filename="..\scoreBox.png"
+       inkscape:export-xdpi="64"
+       inkscape:export-ydpi="64"
+       sodipodi:nodetypes="cssscssscscccccscccssssssscccsscsc" />
+  </g>
+</svg>

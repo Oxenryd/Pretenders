@@ -1,9 +1,7 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class LobbySceneScript : MonoBehaviour
 {
@@ -27,6 +25,11 @@ public class LobbySceneScript : MonoBehaviour
         GameManager.Instance.InputManager.Heroes[0].PressedPushButton += testTournamentRando;
     }
 
+    /// <summary>
+    /// DEBUG DEBUG DEBUG
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     private void testTournamentRando(object sender, EventArgs e)
     {
         GameManager.Instance.StartNewTournament();
@@ -37,12 +40,25 @@ public class LobbySceneScript : MonoBehaviour
         }
         Debug.Log( sb.ToString() );
 
-        //System.Random rand = new System.Random();
-        //var playerScores = new float[]
-        //{
-        //    GlobalValues.
-        //};
-        //var matchResult = new 
+        System.Random rand = new System.Random();
+
+        var positionTaken = new bool[] { false, false, false, false };
+        List<int> positions = new();
+
+        for (int i = 0; i < 4; i++)
+        {
+            while (true)
+            {
+                var pos = rand.Next(0, 4);
+                if (!positionTaken[pos])
+                {
+                    positionTaken[pos] = true;
+                    positions.Add(pos);
+                    break;
+                }
+            }
+        }
+        var matchResult = new MatchResult(GameType.Lobby, positions.ToArray());
 
     }
 

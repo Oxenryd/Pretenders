@@ -51,6 +51,9 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance
     { get { return _instance; } }
 
+    public bool Tournament
+    { get; private set; } = false;
+
     public void SetCurrentSceneManager(SceneManager sceneManager)
     {
         _curSceneman = sceneManager;
@@ -92,6 +95,7 @@ public class GameManager : MonoBehaviour
 
     public void StartNewTournament()
     {
+        Tournament = true;
         _scoreMultiplier = new float[] { 1f, 1f, 1f,1f };
         _currentTournamentScene = 0;
         _lastStandings.Clear();
