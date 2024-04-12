@@ -27,12 +27,16 @@ public class GameManager : MonoBehaviour
     private string[] _digitStrings;
     private string[] _numberStrings;
     private float[] _tournamentScore;
+    private float[] _scoreMultiplier;
 
+    private string[] _tournamentGameList;
+    private int _currentTournamentScene = 0;
 
     private bool _firstStart = true;
 
     public bool InLoadingScreen { get;set; }
 
+    private List<int> _lastStandings;
     private List<MatchResult> _currentResults;
 
     private AsyncOperation _unloadingPrevious;
@@ -88,14 +92,60 @@ public class GameManager : MonoBehaviour
 
     public void StartNewTournament()
     {
-        _currentResults = new List<MatchResult>();
+        _scoreMultiplier = new float[] { 1f, 1f, 1f,1f };
+        _currentTournamentScene = 0;
+        _lastStandings.Clear();
+        _currentResults.Clear();
+        List<int> matchOrder = new();
+        List<int> minigameOrder = new();
+        System.Random rand = new();
+
+        while (matchOrder.Count < GlobalStrings.MATCHES_NAMES.Length)
+        {
+            var index = rand.Next(0, 3);
+            if (!matchOrder.Contains(index))
+                matchOrder.Add(index);
+        }
+        while (minigameOrder.Count < GlobalStrings.MINIGAMES_NAMES.Length)
+        {
+            var index = rand.Next(0, 2);
+            if (!minigameOrder.Contains(index))
+                minigameOrder.Add(index);
+        }
+
+        List<string> stringList = new List<string>();
+        for (int i = 0; i < matchOrder.Count; i++)
+        {
+            stringList.Add(GlobalStrings.MATCHES_NAMES[matchOrder[i]]);
+            if (i < matchOrder.Count - 1)
+                stringList.Add(GlobalStrings.MINIGAMES_NAMES[minigameOrder[i]]);
+        }
+        _tournamentGameList = stringList.ToArray();
     }
+
+    public float GetPlayerMultiplier(int playerIndex)
+    { return _scoreMultiplier[playerIndex]; }
+    public void SetPlayerMultiplier(int playerIndex, float multiplier)
+    { _scoreMultiplier[playerIndex] = multiplier; }
+    public void ResetPlayerMultipliers()
+    { _scoreMultiplier = new float[] { 1f, 1f, 1f, 1f};}
+    public string GetTournamentNextScene()
+    {
+        var sceneString = _tournamentGameList[_currentTournamentScene];
+        _currentTournamentScene++;
+        return sceneString;
+    }
+
+    public string[] TournamentGameList
+    { get { return _tournamentGameList; } }
 
     public void AddNewMatchResult(MatchResult result)
     {
         _currentResults.Add(result);
     }
 
+    public int[] GetLastStandings()
+    { return _lastStandings.ToArray(); }
     public MatchResult[] GetMatchResults()
     { return _currentResults.ToArray(); }
     public float GetTournamentScore(int playerIndex)
@@ -150,11 +200,6 @@ public class GameManager : MonoBehaviour
 
     }
 
-    private void showLoadingScreen()
-    {
-        InLoadingScreen = true;
-        UnitySceneManager.LoadScene(GlobalStrings.SCENE_LOADINGSCREEN);
-    }
     public void UnloadLastScene()
     {
         StartCoroutine( unloadLoadScreenScene());
@@ -187,19 +232,6 @@ public class GameManager : MonoBehaviour
 
         findAndEnumHeroes(false);
 
-        //var transitions = GameObject.FindGameObjectsWithTag(GlobalStrings.TRANSITIONS_TAG);
-        //for (int i = 0; i < transitions.Length; i++)
-        //{
-        //    if (transitions[i] != _transitions)
-        //    {
-        //        var parent = transitions[i].transform.parent;
-        //        var index = transitions[i].transform.GetSiblingIndex();
-        //        this.transform.SetParent(parent);
-        //        this.transform.SetSiblingIndex(index);
-        //        Destroy(transitions[i]);
-        //    }
-        //}
-
         var transition = GameObject.FindGameObjectWithTag(GlobalStrings.TRANSITIONS_TAG);
         _transitions = transition.GetComponent<Transitions>();
 
@@ -220,7 +252,6 @@ public class GameManager : MonoBehaviour
     {
         if (Instance != null && this != Instance)
         {
-            //Destroy(this.gameObject);
             return false;
         }
         else
@@ -233,6 +264,8 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
+        _currentResults = new List<MatchResult>();
+        _lastStandings = new List<int>();
         if (!checkThisIsTheOneAndOnly() )
         {
             Destroy(this.gameObject);

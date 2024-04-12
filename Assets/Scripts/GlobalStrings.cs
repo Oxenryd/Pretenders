@@ -54,4 +54,14 @@ public static class GlobalStrings
     public const string START_MSG1 = "But only one can become the new media pet, a new Instagram phenomena and an eager reality show celebrity..";
     public const string START_MSG2 = "But until this one has been chosen\nall of our \"heroes\" are still just...";
 
+    // GAMES
+    public static string[] MATCHES_NAMES =
+    { 
+        "ForceFeeder", "Bomberman", "Brawler"
+    };
+    public static string[] MINIGAMES_NAMES =
+    {
+        "SetPath", "FallingBlocks"
+    };
+
 }
