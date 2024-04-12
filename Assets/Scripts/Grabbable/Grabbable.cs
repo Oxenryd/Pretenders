@@ -172,7 +172,8 @@ public class Grabbable : MonoBehaviour
             _grabber = grabber;
             _meter.Activate(_grabber.GameObject.transform.position + new Vector3(0, 2.3f, 0));
             return true;
-        } else if (GrabInProgress)
+        }
+        else if (GrabInProgress)
         {
             _alert.Hide();
             _meter.Abort();
@@ -237,6 +238,7 @@ public class Grabbable : MonoBehaviour
 
         return true;
     }
+    
     protected void Awake()
     {
         _grabbedTimer = new EasyTimer(TimeToGrab);

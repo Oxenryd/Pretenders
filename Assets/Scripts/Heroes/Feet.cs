@@ -38,6 +38,7 @@ public class Feet : MonoBehaviour
                 }
                 else
                     notGrounded();
+
             } else
             {
                 doGrounded(hit);

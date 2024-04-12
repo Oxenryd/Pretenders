@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.Interfaces;
+using System;
 using UnityEngine;
 
 namespace Assets.Scripts.Collectibles
@@ -7,18 +8,16 @@ namespace Assets.Scripts.Collectibles
     {
         [SerializeField] Material InitialMaterial;
         [SerializeField] Material FinalMaterial;
+        private Effect powerUpEffect;
         private float duration = 1.0f;
         private Renderer rend;
-        [SerializeField] HeroMovement[] Player;
-        public BrawlerPowerType Type { get; set; }
+        [SerializeField] BrawlerPowerType type;
         public float LifeTime { get; set; } = 10f;
         public float ActivateTime { get; set; } = 5f;
         public bool Collected { get; set; } = false;
         public bool IsCollectable { get; set; } = false;
         public bool Expired { get; set; } = false;
         private EasyTimer _timeToActivate;
-        private Quaternion _initialRotation;
-        private Vector3 _initialScale;
 
         void Start()
         {
@@ -26,8 +25,7 @@ namespace Assets.Scripts.Collectibles
             gameObject.SetActive(false);
             rend = GetComponent<Renderer>();
             rend.material = InitialMaterial;
-            _initialRotation = gameObject.transform.rotation;
-            _initialScale = gameObject.transform.localScale;
+            powerUpEffect = new Effect();
         }
 
         void Update()
@@ -35,27 +33,20 @@ namespace Assets.Scripts.Collectibles
             if (_timeToActivate.Done)
             {
                 OnActivation();
-                Rotation();
             }
             else
             {
                 float lerp = Mathf.PingPong(Time.time, duration) / duration;
                 rend.material.Lerp(InitialMaterial, FinalMaterial, lerp);
-                Rotation();
-                Scale();
             }
+            Rotation();
         }
 
         private void Rotation()
         {
-            float rotationSpeed = 20f;
+            float rotationSpeed = 30f;
             float rotationAngle = Time.deltaTime * rotationSpeed;
-            gameObject.transform.Rotate(rotationAngle, 0, 0);
-        }
-        private void Scale()
-        {
-            float scaleFactor = Mathf.Lerp(0.5f, 1.25f, Mathf.PingPong(Time.time, duration) / duration);
-            gameObject.transform.localScale = new Vector3(scaleFactor, scaleFactor, scaleFactor);
+            gameObject.transform.Rotate(rotationAngle, rotationAngle, rotationAngle);
         }
 
         public void Spawn()
@@ -67,8 +58,6 @@ namespace Assets.Scripts.Collectibles
         {
             rend.material = FinalMaterial;
             IsCollectable = true;
-            gameObject.transform.rotation = _initialRotation;
-            gameObject.transform.localScale = _initialScale;
         }
         public void OnPickup()
         {
@@ -78,29 +67,32 @@ namespace Assets.Scripts.Collectibles
         }
         public void ApplyEffect()
         {
-            switch (Type) 
+            switch (type) 
             {
                 case BrawlerPowerType.WeightGain:
                     {
-
+                        
                     }
                     break;
                 case BrawlerPowerType.SpeedUp:
                     {
-                        
+                        powerUpEffect.MoveSpeedMultiplier = 2f;
+                        powerUpEffect.Activate();
                     }
                     break;
                 case BrawlerPowerType.UltraShove:
                     {
-
+                        powerUpEffect.ShoveMultiplier = 2f;
+                        powerUpEffect.Activate();
                     }
                     break;
                 case BrawlerPowerType.MegaJump:
                     {
-                        
+                        powerUpEffect.JumpPowerMultiplier = 2f;
+                        powerUpEffect.Activate();
                     }
                     break;
-            }
+            }        
         }
         public void OnExpire()
         {
@@ -109,9 +101,15 @@ namespace Assets.Scripts.Collectibles
         }
         private void OnCollisionEnter(Collision collision)
         {
+            var hero = collision.collider.gameObject.GetComponent<HeroMovement>();
+            if (hero == null) 
+            {
+                return;
+            }
             if (IsCollectable)
             {
                 OnPickup();
+                hero.Effect = powerUpEffect;
             }
             else
             {

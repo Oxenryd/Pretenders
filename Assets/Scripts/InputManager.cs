@@ -19,7 +19,7 @@ public class InputManager : MonoBehaviour
     [SerializeField] private HeroMovement[] _characters = new HeroMovement[4];
 
     private static InputManager _instance;
-    
+
     private InputActionMap[] _actionsMaps = new InputActionMap[4];
     private List<InputDevice> _inputDevices = new List<InputDevice>();
     private Dictionary<InputDevice, int> _deviceCharCouple = new Dictionary<InputDevice, int>();
@@ -37,19 +37,19 @@ public class InputManager : MonoBehaviour
     /// ActionMaps holds the different actions that a character can perform.
     /// </summary>
     public InputActionMap[] ActionMaps
-        { get { return _actionsMaps; } }
+    { get { return _actionsMaps; } }
     /// <summary>
     /// ActionsFile is the Input file that holds the definition of maps and their resp. actions.
     /// </summary>
     public InputActionAsset ActionsFile
-        { get { return _actionsFile; } }
+    { get { return _actionsFile; } }
     /// <summary>
     /// List of currently detected devices (since last UpdateDevices() ).
     /// </summary>
     public List<InputDevice> InputDevices
-        { get { return _inputDevices; } }
+    { get { return _inputDevices; } }
     public int MaxControllableCharacters
-        { get { return GameManager.Instance.MaxControllableCharacters; } }
+    { get { return GameManager.Instance.MaxControllableCharacters; } }
 
 
     void Awake()
@@ -102,7 +102,8 @@ public class InputManager : MonoBehaviour
 
                 if (i < players)
                     _characters[i].AiControlled = false;
-            } else
+            }
+            else
             {
                 SetHeroControl(i, true, new InputDevice[] { });
             }
@@ -113,7 +114,7 @@ public class InputManager : MonoBehaviour
         _deviceCharCouple.Clear();
         for (int i = 0; i < MaxControllableCharacters; i++)
         {
-            SetHeroControl(i, true, new InputDevice[] { });          
+            SetHeroControl(i, true, new InputDevice[] { });
         }
     }
 
@@ -152,7 +153,8 @@ public class InputManager : MonoBehaviour
         if (!_characters[playerIndex].AiControlled)
         {
             _actionsMaps[playerIndex] = _actionsFile.FindActionMap(GlobalStrings.INPUT_HEROMOVEMENT).Clone();
-        } else
+        }
+        else
             _actionsMaps[playerIndex] = _actionsFile.FindActionMap(GlobalStrings.INPUT_AI_HEROMOVEMENT).Clone();
 
         _input[playerIndex].currentActionMap = _actionsMaps[playerIndex];
@@ -302,6 +304,7 @@ public class InputManager : MonoBehaviour
             {
                 if (controls[j] is ButtonControl && (controls[j] as ButtonControl).wasPressedThisFrame)
                 {
+
                     if (controls[j].device is Mouse)
                         break;
                     if (!_deviceCharCouple.ContainsKey(_inputDevices[i]))
@@ -314,7 +317,7 @@ public class InputManager : MonoBehaviour
                         InvokeHeroPressedButton(_characters[newIndex]);
                     }
                 }
-            }    
+            }
         }
     }
 }

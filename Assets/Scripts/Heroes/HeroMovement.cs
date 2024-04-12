@@ -95,7 +95,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     private bool _signalingGrab = false;
     private float _shovePower = GlobalValues.SHOVE_DEFAULT_SHOVEPOWER;
 
-
+    public float ZOffset { get; set; } = 31f;
     public Vector2 StickInputVector
     { get; private set; } = Vector2.zero;
     public bool CanThrowBombs
@@ -319,6 +319,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     // ------------------------------------------------------------------------------------- INPUTS START HERE
     public void TryJump(InputAction.CallbackContext context)
     {
+
         OnPressedJumpButton();
         if (context.started)
         {        
@@ -377,13 +378,15 @@ public class HeroMovement : MonoBehaviour, IJumpHit
                     _tryingToDrop = true;
                 }
 
-            } else if (!IsTugging)
+            }
+            else if (!IsTugging)
             {
                 if (IsDraggingOther)
                     _struggle.Decrease(GlobalValues.CHAR_DRAG_DRAGGER_DECREASE * Effect.CurrentEffects().StrugglePowerMultiplier);
                 else
                     _struggle.Increase(GlobalValues.CHAR_DRAG_DRAGGED_INCREASE * Effect.CurrentEffects().StrugglePowerMultiplier);
-            } else // IsTugging
+            }
+            else // IsTugging
             {
                 CurrentGrab.TugPull(this);
             }
@@ -600,7 +603,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
             IsPushing = false;
             if (!Effect.CurrentEffects().StunImmune)
             {
-                
+
                 IsPushFailed = true;
                 Stun(GlobalValues.CHAR_PUSH_FAILED_STUN_TIME);
                 _pushFailTimer.Reset();
@@ -686,7 +689,8 @@ public class HeroMovement : MonoBehaviour, IJumpHit
         if (IsStunned)
         {
             CanMove = false;
-        } else
+        }
+        else
         {
             CanMove = true;
         }
@@ -716,11 +720,13 @@ public class HeroMovement : MonoBehaviour, IJumpHit
             {
                 _doJump();
                 TryingToJump = false;
-            } else if (CanMove && !InJumpBuffer)
+            }
+            else if (CanMove && !InJumpBuffer)
             {
                 _jumpBufferTimer.Reset();
                 InJumpBuffer = true;
-            } else if (_jumpBufferTimer.Done && InJumpBuffer)
+            }
+            else if (_jumpBufferTimer.Done && InJumpBuffer)
             {
                 if (CanMove && IsGrounded)
                 {
@@ -766,7 +772,8 @@ public class HeroMovement : MonoBehaviour, IJumpHit
             {
                 CurrentDirection = Vector3.Lerp(CurrentDirection, TargetDirection, turnT);
                 CurrentSpeed = Mathf.Clamp(Mathf.Lerp(CurrentSpeed, MaxMoveSpeed * Effect.CurrentEffects().MoveSpeedMultiplier, accelT), 0f, TargetSpeed);
-            } else
+            }
+            else
             {
                 _validMovement();
 
@@ -778,7 +785,8 @@ public class HeroMovement : MonoBehaviour, IJumpHit
                 CurrentSpeed = MaxMoveSpeed * Effect.CurrentEffects().MoveSpeedMultiplier;
             }
 
-        } else if (!TryingToMove)
+        }
+        else if (!TryingToMove)
         {
             if (_controlScheme != ControlSchemeType.BomberMan)
             {
@@ -824,7 +832,8 @@ public class HeroMovement : MonoBehaviour, IJumpHit
                     if (TryingToMove)
                     {
                         _targetGridCenter = TransformHelpers.SnapToGrid(GroundPosition + FaceDirection * _grid.cellSize.x / 2, _grid);
-                    } else
+                    }
+                    else
                     {
                         if (TransformHelpers.PassedGridTarget(this, _targetGridCenter))
                         {
@@ -894,6 +903,12 @@ public class HeroMovement : MonoBehaviour, IJumpHit
         // Rotate
         transform.rotation = TransformHelpers.FixNegativeZRotation(Vector3.forward, FaceDirection);
 
+        // ---------------------------------------------------------    LERP Z POSITION
+        if (CurrentControlScheme == ControlSchemeType.Platform)
+        {
+            _body.position = new Vector3(_body.position.x, _body.position.y,
+                Mathf.Lerp(_body.position.z, ZOffset, 1));
+        }
         // ---------------------------------------------------------    END OF FIRST LOOP
         if (!_doneFirstLoop)
         {
@@ -920,12 +935,11 @@ public class HeroMovement : MonoBehaviour, IJumpHit
                     if (Vector3.Dot(FaceDirection, CurrentGrab.Grabber.FaceDirection) < GlobalValues.TUG_DIRECTION_DOT_LIMIT)
                         foundGrab.PickupAlert.Ping(this, foundGrab.transform, true);
                 } else if (!CurrentGrab.IsGrabbed && CurrentGrab.CanBeGrabbed)
-                    foundGrab.PickupAlert.Ping(this, foundGrab.transform, false);
-
-                
+                    foundGrab.PickupAlert.Ping(this, foundGrab.transform, false);     
             }
 
-        } else if (IsGrabInProgress && (foundObject as Grabbable) != CurrentGrab)
+        }
+        else if (IsGrabInProgress && (foundObject as Grabbable) != CurrentGrab)
         {
             CurrentGrab.AbortGrabInProgress();
             CurrentGrab = null;
@@ -1054,7 +1068,8 @@ public class HeroMovement : MonoBehaviour, IJumpHit
                     grabbable.StartTug(this, grabbable.Grabber);
                     return true;
                 }
-            } else
+            }
+            else
             {
                 if (grabbable.CanBeGrabbed && grabbable.TryGrab(this))
                 {

@@ -26,19 +26,6 @@ public class PlatformCamera : MonoBehaviour
         float right = float.MaxValue;
         float up = float.MaxValue;
         float down = float.MinValue;
-        //for (int i = 0; i < _targets.Length; i++)
-        //{
-            
-        //    if (_targets[i].position.x > left)
-        //        left = _targets[i].position.x;
-        //    if (_targets[i].position.x < right)
-        //        right = _targets[i].position.x;
-        //    if (_targets[i].position.z < up)
-        //        up = _targets[i].position.z;
-        //    if (_targets[i].position.z > down)
-        //        down = _targets[i].position.z;
-
-        //}
         
         for (int i = 0; i < targets.Count; i++)
         {
@@ -54,8 +41,7 @@ public class PlatformCamera : MonoBehaviour
             if (targets[i].position.z < up)
                 up = targets[i].position.z;
             if (targets[i].position.z > down)
-                down = targets[i].position.z;
-            
+                down = targets[i].position.z;            
         }
 
         var space = new Rect(left, up, right - left, down - up);
@@ -70,7 +56,7 @@ public class PlatformCamera : MonoBehaviour
         // Stationary camera or moving with group?
         Vector3 cameraPosition = _stationary ?
             _startPos - _cam.transform.forward * Mathf.Clamp(requiredDistance, _maxZoomIn, _maxZoomOut) :
-            new Vector3(space.center.x, space.center.y * 1.2f, 0) - _cam.transform.forward * Mathf.Clamp(requiredDistance, _maxZoomIn, _maxZoomOut);
+            new Vector3(space.center.x, space.center.y * 1.1f, 0) - _cam.transform.forward * Mathf.Clamp(requiredDistance, _maxZoomIn, _maxZoomOut);
         var targetPosition = _zoomDependentOffset ?
             cameraPosition + _zoomPanOffset * requiredDistance :
             cameraPosition;

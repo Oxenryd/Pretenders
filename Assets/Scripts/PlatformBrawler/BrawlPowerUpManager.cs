@@ -44,11 +44,7 @@ namespace Assets.Scripts.PlatformBrawler
             if (_currentPowerUp != null && _timeActive.Done)
             {
                 DespawnPowerUp();
-            }
-            //if (_currentPowerUp != null)
-            //{
-            //    Debug.Log(_currentPowerUp.Collected);
-            //}
+            }           
         }
         private void LoadPowerUps()
         {
