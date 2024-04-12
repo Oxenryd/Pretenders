@@ -5,37 +5,40 @@ using System.Collections.Generic;
 using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
-//using static System.IO.Enumeration.FileSystemEnumerable<TResult>;
 using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
 
 public class Unicorn : MonoBehaviour, IRecievable
 {
+
     private float _speed = 1f;
     private float _rotationSpeed = 2f;
     private Vector3 _direction;
     private Vector3 _targetDirection;
-    private enum UnicornState {idle, walking, turning, eating, pooping, puking, denying };
     [SerializeField] private UnicornState _state = UnicornState.idle;
+    [SerializeField] private int _index;
+    public int Index { get { return _index; } }
     private float _changeStateTrigger;
     private float _passedTimeSinceLastStateChange = 0f;
-    //private List<>
     [SerializeField] private TransferAlert _transferAlert;
-    public TransferAlert TransferAlert { get { return _transferAlert; }}
-
+    public TransferAlert TransferAlert { get { return _transferAlert; } }
     private float _rayCastLength = 3f;
     private int _wallLayerMask;
-    private float _directionEqualityThreshold = 0.01f;
     [SerializeField] private int _score = 0;
+    public int Score { get { return _score; } }
     [SerializeField] private List<Food> _foodList = new List<Food>();
     private Food _foodToBeEaten = null;
-    private float _passedTimeDirectionChange = 0;
-    private float _eatingDistanceThreshold = 1f;
-    // Start is called before the first frame update
+    private float _eatingDistanceThreshold = 2f;
+
+    private EasyTimer _easyTimer;
+
+
+    public event ScoreReachedEventHandler OnScoreReached;
 
     void Start()
     {
-        _changeStateTrigger = UnityEngine.Random.Range(2,6);
-        _direction   = transform.forward;
+        _easyTimer = new EasyTimer(1f);
+        _changeStateTrigger = UnityEngine.Random.Range(2, 6);
+        _direction = transform.forward;
         _targetDirection = _direction;
         _wallLayerMask = 1 << LayerMask.NameToLayer("WALLS");
 
@@ -58,21 +61,21 @@ public class Unicorn : MonoBehaviour, IRecievable
     void FixedUpdate()
     {
         Vector3 rayOrigin = transform.position; // Starting from the object's position
-        Vector3 rayDirection = transform.forward;
+        Vector3 rayDirection = _targetDirection - transform.position; // Direction towards the target
+
         RaycastHit hitInfo;
 
-        // Define the radius of the sphere
-        float sphereRadius = 2f; // Adjust the radius as needed
+        // Perform the raycast
+        if (Physics.Raycast(rayOrigin, rayDirection, out hitInfo, _rayCastLength, _wallLayerMask))
+        {
+            // Get the direction to the hit point
+            Vector3 targetDirection = hitInfo.point - transform.position;
 
-        // Perform the sphere cast
-        if (Physics.SphereCast(rayOrigin, sphereRadius, rayDirection, out hitInfo, _rayCastLength, _wallLayerMask))
-        {
-            Vector3 hitNormal = hitInfo.normal;
-            _targetDirection = Vector3.Reflect(_direction, hitNormal);
-        }
-        else
-        {
-            // Handle case when sphere cast doesn't hit anything
+            // Calculate the rotation towards the hit point
+            Quaternion targetRotation = Quaternion.LookRotation(targetDirection);
+
+            // Smoothly rotate towards the hit point
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * _rotationSpeed);
         }
     }
 
@@ -84,17 +87,17 @@ public class Unicorn : MonoBehaviour, IRecievable
         if (_state == UnicornState.walking)
         {
             Walk();
-        } 
+        }
         else if (_state == UnicornState.eating)
         {
             Eat();
         }
-        
+
     }
 
     void Eat()
     {
-        if (_foodToBeEaten == null)
+        if (_foodToBeEaten == null && _foodList.Count > 0)
         {
             _foodToBeEaten = FindClosestFood();
         }
@@ -110,20 +113,19 @@ public class Unicorn : MonoBehaviour, IRecievable
             transform.position += transform.forward * _speed * Time.deltaTime;
 
             // If close enough to the food, eat it
-            //float distanceToFood = Vector3.Distance(transform.position, _foodToBeEaten.transform.position);
-            //if (distanceToFood < _eatingDistanceThreshold)
-            //{
-            //    EatFood();
-            //}
+            float distanceToFood = Vector3.Distance(transform.position, _foodToBeEaten.transform.position);
+            if (distanceToFood < _eatingDistanceThreshold && _easyTimer.Done)
+            {
+                EatFood();
+            }
         }
     }
 
     private void EatFood()
     {
         _foodList.Remove(_foodToBeEaten);
+        _foodToBeEaten.Hide();
         _foodToBeEaten = null;
-
-
     }
 
     public void Walk()
@@ -133,7 +135,7 @@ public class Unicorn : MonoBehaviour, IRecievable
         if (dotProduct > 0.95)
         {
             _direction = _targetDirection;
-            _passedTimeDirectionChange = 0f;
+
         }
         else
         {
@@ -178,31 +180,36 @@ public class Unicorn : MonoBehaviour, IRecievable
         for (int i = 0; i < foodArray.Length; i++)
         {
             _score += foodArray[i].GetPoints();
-            foodArray[i].Detach();
+            foodArray[i].Detach(0.25f);
             _foodList.Add(foodArray[i]);
 
             foreach (var collider in foodArray[i].Colliders)
             {
                 collider.excludeLayers = LayerUtil.Include(11, 12, 13, 14);
             }
-
         }
+
+        if (_score >= GlobalValues.WINNING_POINTS_FORCE_FEEDER)
+        {
+            OnScoreReached?.Invoke();
+        }
+
         return 0;
     }
 
-    //void OnDrawGizmos()
-    //{
-    //    Gizmos.color = Color.yellow; // Set the color of the wire sphere
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.yellow; // Set the color of the ray
 
-    //    Vector3 rayOrigin = transform.position; // Starting from the object's position
-    //    Vector3 rayDirection = transform.forward;
+        Vector3 rayOrigin = transform.position; // Starting from the object's position
+        Vector3 rayDirection = transform.forward;
 
-    //    // Define the radius of the sphere
-    //    float sphereRadius = 2f; // Adjust the radius as needed
+        // Define the maximum distance for the raycast
+        float maxRaycastDistance = 2f; // Adjust as needed
 
-    //    // Draw the wire sphere representing the sphere cast
-    //    Gizmos.DrawWireSphere(rayOrigin + rayDirection * _rayCastLength, sphereRadius);
-    //}
+        // Draw the ray
+        Gizmos.DrawRay(rayOrigin, rayDirection * maxRaycastDistance);
+    }
 
 
     void UpdateState()
@@ -242,13 +249,15 @@ public class Unicorn : MonoBehaviour, IRecievable
     }
 
 
+
     public Food FindClosestFood()
     {
         float closestDistance = float.MaxValue;
         Food closestFood = null;
-        if( _foodList.Count == 0)  return null;
+        if (_foodList.Count == 0) return null;
 
-        for(int i = 0;i < _foodList.Count; i++)
+        _easyTimer.Reset();
+        for (int i = 0; i < _foodList.Count; i++)
         {
             if (_foodList[i] != null)
             {
@@ -266,4 +275,10 @@ public class Unicorn : MonoBehaviour, IRecievable
         return closestFood;
     }
 
+
+
+
+    public delegate int[] ScoreReachedEventHandler();
+
 }
+

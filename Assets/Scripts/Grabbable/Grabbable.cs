@@ -1,9 +1,8 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.Mathematics;
-using UnityEditor;
 using UnityEngine;
+using UnitySceneManager = UnityEngine.SceneManagement.SceneManager;
+using Scene = UnityEngine.SceneManagement.Scene;
+using LoadSceneMode = UnityEngine.SceneManagement.LoadSceneMode;
 
 public class Grabbable : MonoBehaviour
 {
@@ -13,6 +12,7 @@ public class Grabbable : MonoBehaviour
     [SerializeField] protected PickupAlert _alert;
     [SerializeField] protected Vector3 _grabbablePointOffset = new Vector3(0, 1f, 1f);
     [SerializeField] protected Vector3[] _handsOffsets = { new Vector3(), new Vector3() };
+    [SerializeField] protected Quaternion _grabbableRotationOffset = Quaternion.identity;
     [SerializeField] protected bool _canBeTuggedWhileGrabbed = false;
     private HeroMovement _grabber;
     private Vector3 _lastVelocity;
@@ -23,9 +23,7 @@ public class Grabbable : MonoBehaviour
     [SerializeField] private Tug _tugOWar = null;
     [SerializeField] private GrabbablePosition _grabPosition = GrabbablePosition.InFrontTwoHands;
 
-    public Tug Tug { get { return _tugOWar; } }
-
-
+    public Tug Tug { get { return _tugOWar; }
     public bool KinematicByDefault
     { get; set; } = false;
     private int _grabberLayer = 0;
@@ -239,7 +237,6 @@ public class Grabbable : MonoBehaviour
 
         return true;
     }
-
     protected void Awake()
     {
         _grabbedTimer = new EasyTimer(TimeToGrab);
@@ -284,11 +281,11 @@ public class Grabbable : MonoBehaviour
                 case GrabbablePosition.AsBackpack:
                 case GrabbablePosition.AboveHeadOneHand:
                 case GrabbablePosition.InFrontOneHand:
-                    transform.rotation = TransformHelpers.FixNegativeZRotation(Vector3.forward, _grabber.FaceDirection);
+                    transform.rotation = TransformHelpers.FixNegativeZRotation(Vector3.forward, _grabber.FaceDirection) * _grabbableRotationOffset;
                     transform.position = _grabber.LeftHand.position + _grabber.LeftHand.rotation * new Vector3(GrabPointOffset.x, GrabPointOffset.y, GrabPointOffset.z);
                     break;
                 case GrabbablePosition.InFrontTwoHands:
-                    transform.rotation = TransformHelpers.FixNegativeZRotation(Vector3.forward, _grabber.FaceDirection);
+                    transform.rotation = TransformHelpers.FixNegativeZRotation(Vector3.forward, _grabber.FaceDirection) * _grabbableRotationOffset;
                     transform.position = _grabber.GameObject.transform.position + (_grabber.FaceDirection * GrabPointOffset.z + new Vector3(0, GrabPointOffset.y, 0) + transform.rotation * new Vector3(GrabPointOffset.x, 0, 0));
                     break;
             }

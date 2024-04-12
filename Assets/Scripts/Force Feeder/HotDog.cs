@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class HotDog : Food
 {
-    public HotDog()
+    void Start()
     {
+        base.Start();
         _points = 5;
     }
 }

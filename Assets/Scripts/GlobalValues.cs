@@ -15,7 +15,8 @@ public static class GlobalValues
     public const float CHAR_BUMPFORCE = 2f;
     public const float CHAR_BUMPDURATION = 0.28f;
 
-    public const int   BASKET_MAX_SIZE = 4;
+    public const int   TRAY_MAX_SIZE = 5;
+    public const int   WINNING_POINTS_FORCE_FEEDER = 6;
     public const float CHAR_GRAB_CHECK_DISTANCE = 1f;
     public const float CHAR_GRAB_POSITION_OFFSET = 0.5f;
     public const float CHAR_GRAB_CYLINDER_COLLIDER_Y_OFFSET = 0f;
