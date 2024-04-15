@@ -1,21 +1,20 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BrawlerMatchManager : MonoBehaviour
 {
     [SerializeField] public float _deathAltitude;
     [SerializeField] private List<GameObject> players = new List<GameObject>();
+    //public GameObject roundWinner;
+    //private string roundWinnerText = new string(string.Empty);
     public List<GameObject> placements = new List<GameObject>();
-    int playerIndex;
     int playersAlive = 4;
 
     void Start()
     {
-        foreach (GameObject player in players)
-        {
-            player.GetComponent<Hero>().Index = playerIndex;
-        }
+        //roundWinner.gameObject.SetActive(false);
     }
 
     void Update()
@@ -53,14 +52,12 @@ public class BrawlerMatchManager : MonoBehaviour
             playerPositionInMatch[index] = position;
             position++;
         }
-        GameManager.Instance.StartNewTournament(); //remove later
-        MatchResult result = new MatchResult(GameType.Brawler, playerPositionInMatch);
-        GameManager.Instance.AddNewMatchResult(result);
-
-        Debug.Log("Player 0: " + playerPositionInMatch[0]);
-        Debug.Log("Player 1: " + playerPositionInMatch[1]);
-        Debug.Log("Player 2: " + playerPositionInMatch[2]);
-        Debug.Log("Player 3: " + playerPositionInMatch[3]);
-
+        GameManager.Instance.TransitToNextScene(GlobalStrings.SCENE_LOBBY);
+        //GameManager.Instance.StartNewTournament(); //remove later
+        //MatchResult result = new MatchResult(GameType.Brawler, playerPositionInMatch);
+        //roundWinner.gameObject.SetActive(true);
+        //roundWinnerText = roundWinner.GetComponent<Text>().text;
+        //roundWinnerText = $"Player {playerPositionInMatch[0]} Won!";
+        //GameManager.Instance.AddNewMatchResult(result);
     }
 }
