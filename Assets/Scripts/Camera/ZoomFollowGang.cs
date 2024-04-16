@@ -18,6 +18,8 @@ public class ZoomFollowGang : MonoBehaviour
     [SerializeField] public bool _stationary = false;
     [SerializeField] public bool _zoomDependentOffset = true;
 
+    public Transform[] Targets { get { return _targets; } set { _targets = value; }}
+
     private Vector3 _curVecVel;
 
     void Update()

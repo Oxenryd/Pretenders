@@ -34,7 +34,7 @@ public class GameManager : MonoBehaviour
 
     private bool _firstStart = true;
 
-    public bool InLoadingScreen { get;set; }
+    public bool InLoadingScreen { get; set; }
 
     private List<int> _lastStandings;
     private List<MatchResult> _currentResults;
@@ -50,6 +50,9 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public static GameManager Instance
     { get { return _instance; } }
+
+    public bool Tournament
+    { get; private set; } = false;
 
     public void SetCurrentSceneManager(SceneManager sceneManager)
     {
@@ -92,7 +95,8 @@ public class GameManager : MonoBehaviour
 
     public void StartNewTournament()
     {
-        _scoreMultiplier = new float[] { 1f, 1f, 1f,1f };
+        Tournament = true;
+        _scoreMultiplier = new float[] { 1f, 1f, 1f, 1f };
         _currentTournamentScene = 0;
         _lastStandings.Clear();
         _currentResults.Clear();
@@ -128,7 +132,7 @@ public class GameManager : MonoBehaviour
     public void SetPlayerMultiplier(int playerIndex, float multiplier)
     { _scoreMultiplier[playerIndex] = multiplier; }
     public void ResetPlayerMultipliers()
-    { _scoreMultiplier = new float[] { 1f, 1f, 1f, 1f};}
+    { _scoreMultiplier = new float[] { 1f, 1f, 1f, 1f }; }
     public string GetTournamentNextScene()
     {
         var sceneString = _tournamentGameList[_currentTournamentScene];
@@ -166,7 +170,7 @@ public class GameManager : MonoBehaviour
     public float DeltaTime { get; private set; }
     public float FixedDeltaTime { get; private set; }
     public int NumOfPlayers
-    { 
+    {
         get { return _numPlayers; }
         set
         {
@@ -174,11 +178,13 @@ public class GameManager : MonoBehaviour
             {
                 Debug.LogError(GlobalStrings.ERR_NUMBER_OF_PLAYERS1);
                 _numPlayers = 0;
-            } else if (value > 4)
+            }
+            else if (value > 4)
             {
                 Debug.LogError(GlobalStrings.ERR_NUMBER_OF_PLAYERS2);
                 _numPlayers = 4;
-            } else
+            }
+            else
                 _numPlayers = value;
 
             OnNumberPlayersChanged();
@@ -202,7 +208,7 @@ public class GameManager : MonoBehaviour
 
     public void UnloadLastScene()
     {
-        StartCoroutine( unloadLoadScreenScene());
+        StartCoroutine(unloadLoadScreenScene());
     }
 
     private IEnumerator unloadLoadScreenScene()
@@ -216,7 +222,7 @@ public class GameManager : MonoBehaviour
     }
 
     private void onSceneLoaded(Scene arg0, LoadSceneMode arg1)
-    {  
+    {
         _camTransform = Camera.main.transform;
         if (!checkThisIsTheOneAndOnly())
         {
@@ -266,13 +272,13 @@ public class GameManager : MonoBehaviour
     {
         _currentResults = new List<MatchResult>();
         _lastStandings = new List<int>();
-        if (!checkThisIsTheOneAndOnly() )
+        if (!checkThisIsTheOneAndOnly())
         {
             Destroy(this.gameObject);
             return;
         }
 
-        _tournamentScore = new float[] { 0f,0f,0f,0f };
+        _tournamentScore = new float[] { 0f, 0f, 0f, 0f };
 
         this.tag = GlobalStrings.NAME_GAMEMANAGER;
         UnitySceneManager.sceneLoaded -= onSceneLoaded;
@@ -300,7 +306,7 @@ public class GameManager : MonoBehaviour
     {
         Cursor.visible = false;
 
-        if (!checkThisIsTheOneAndOnly() )
+        if (!checkThisIsTheOneAndOnly())
         {
             Destroy(this.gameObject);
             return;
@@ -327,7 +333,7 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(this);
     }
 
-   
+
 
     public void ApplyControlScheme()
     { ApplyControlScheme(_curSceneman.ControlScheme); }
