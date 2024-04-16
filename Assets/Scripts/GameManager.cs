@@ -96,7 +96,7 @@ public class GameManager : MonoBehaviour
     public void StartNewTournament()
     {
         Tournament = true;
-        _scoreMultiplier = new float[] { 1f, 1f, 1f, 1f };
+        _scoreMultiplier = new float[] { 1f, 1f, 1f,1f };
         _currentTournamentScene = 0;
         _lastStandings.Clear();
         _currentResults.Clear();
@@ -315,7 +315,7 @@ public class GameManager : MonoBehaviour
         // First, set up for none players.
         NumOfPlayers = 0;
 
-        // Makes sure that the GameManger COULD run without an InputManager if that¨s needed.
+        // Makes sure that the GameManger COULD run without an InputManager if thatÂ¨s needed.
         if (_inputMan != null)
         {
             findAndEnumHeroes(true);
