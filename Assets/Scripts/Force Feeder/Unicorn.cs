@@ -272,7 +272,7 @@ public class Unicorn : MonoBehaviour, IRecievable
 
 
 
-    public delegate int[] ScoreReachedEventHandler();
+    public delegate void ScoreReachedEventHandler();
 
 }
 
