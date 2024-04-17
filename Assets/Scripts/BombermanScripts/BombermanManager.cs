@@ -18,13 +18,12 @@ public class BombermanManager : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
     void Update()
     {
         
     }
 
-    void RandomizeArray<T>(T[] array)
+    private void RandomizeArray<T>(T[] array)
     {
         for (int i = array.Length - 1; i > 0; i--)
         {
@@ -34,4 +33,10 @@ public class BombermanManager : MonoBehaviour
             array[randomIndex] = temp;
         }
     }
+
+    private void PlayerDeath()
+    {
+
+    }
+
 }
