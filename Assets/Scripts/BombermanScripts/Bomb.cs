@@ -59,10 +59,8 @@ public class Bomb : Grabbable
     { get; set; } = false;
 
 
-
     void Awake()
     {
-        //base.Awake();
         KinematicByDefault = true;
         lineRenderer.startColor = Color.white;
         timer = new EasyTimer(delayBeforeExplosion);
