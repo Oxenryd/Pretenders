@@ -9,12 +9,14 @@ public class BombermanManager : MonoBehaviour
     private HeroMovement[] characterList = new HeroMovement[4];
     [SerializeField]
     private Vector3[] startCorners = new Vector3[] { new Vector3(2, 0, 2), new Vector3(42, 0, 2), new Vector3(42, 0, 38), new Vector3(2, 0, 38)};
+    [SerializeField]
+    private Grid _grid;
     void Start()
     {
         RandomizeArray(startCorners);
         for(int i = 0; i < startCorners.Length; i++)
         {
-            characterList[i].transform.position = startCorners[i];
+            characterList[i].transform.position = GridCellMiddlePoint.Get(_grid, startCorners[i]);
         }
     }
 

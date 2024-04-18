@@ -129,7 +129,7 @@ public class Music : MonoBehaviour
         
     }
 
-    private unsafe void swapChannels()
+    private void swapChannels()
     {
         var swap = _mainOut;
         _mainOut = _mixingChannel;
