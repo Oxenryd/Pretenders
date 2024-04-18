@@ -1,5 +1,8 @@
 public static class GlobalStrings
 {
+    // DEBUGS
+    public const string NAME_RESULTSCREEN_DEBUG = "ResultScreenDebug";
+
     //NAMES
     public const string NAME_INPUTMANAGER = "InputManager";
     public const string NAME_GAMEMANAGER = "GameManager";

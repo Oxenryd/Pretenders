@@ -13,6 +13,10 @@ public class LobbySceneScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        var resultScreenTest = GameObject.FindWithTag(GlobalStrings.NAME_RESULTSCREEN_DEBUG).GetComponent<TransitionZoneScript>();
+        resultScreenTest.TriggeredTransition += resultScreenLoadTest;
+
+
         _fadeTimer = new EasyTimer(GlobalValues.SCENE_CIRCLETRANSIT_TIME);
         if (GameManager.Instance.FromSceneLoaded)
             GameManager.Instance.Transitions.Value = 0;
@@ -23,6 +27,38 @@ public class LobbySceneScript : MonoBehaviour
 
         //DEBUG DEBUG DEBUG
         GameManager.Instance.InputManager.Heroes[0].PressedPushButton += testTournamentRando;
+    }
+
+    private void resultScreenLoadTest(object sender, EventArgs e)
+    {
+        GameManager.Instance.StartNewTournament();
+
+        int[] randomStandings()
+        {
+            int[] standings = new int[] { -1, -1, -1, -1 };
+            bool[] taken = new bool[] { false, false, false, false };
+            System.Random random = new System.Random();
+            for (int i = 0; i < 4; i++)
+            {
+                while (true)
+                {
+                    var pos = random.Next(0, 4);
+                    if (!taken[pos])
+                    {
+                        taken[pos] = true;
+                        standings[i] = pos;
+                        break;
+                    }
+                }
+            }
+            return standings;
+        }
+
+
+        GameManager.Instance.DebuggingResultScreen = true;
+        GameManager.Instance.AddNewMatchResult(new MatchResult(GameType.Lobby, randomStandings()));
+        GameManager.Instance.AddNewMatchResult(new MatchResult(GameType.Lobby, randomStandings()));
+
     }
 
     /// <summary>

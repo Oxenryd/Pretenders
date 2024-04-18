@@ -17,6 +17,7 @@ public static class GlobalValues
 
     public const int   TRAY_MAX_SIZE = 5;
     public const int   WINNING_POINTS_FORCE_FEEDER = 30;
+    public const float CHAR_GRAB_DEFAULT_SPEEDPENALTY = 0.03f;
     public const float CHAR_GRAB_CHECK_DISTANCE = 1f;
     public const float CHAR_GRAB_POSITION_OFFSET = 0.5f;
     public const float CHAR_GRAB_CYLINDER_COLLIDER_Y_OFFSET = 0f;

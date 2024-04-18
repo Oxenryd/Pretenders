@@ -798,10 +798,10 @@ public class HeroMovement : MonoBehaviour, IJumpHit
             {
                 CurrentDirection = Vector3.Lerp(CurrentDirection, TargetDirection, turnT);
                 CurrentSpeed = Mathf.Clamp(Mathf.Lerp(CurrentSpeed, MaxMoveSpeed * Effect.CurrentEffects().MoveSpeedMultiplier, accelT), 0f, TargetSpeed);
-            }
-            else
+            } else
             {
                 if (IsAlive)
+
                 {
                     _validMovement();
 
@@ -812,9 +812,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
                     }
                     CurrentSpeed = MaxMoveSpeed * Effect.CurrentEffects().MoveSpeedMultiplier;
                 }
-
             }
-
         }
         else if (!TryingToMove)
         {

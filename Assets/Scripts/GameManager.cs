@@ -62,6 +62,8 @@ public class GameManager : MonoBehaviour
     public Music Music
     { get { return _music; } }
 
+
+    public bool DebuggingResultScreen { get; set; } = false;
     public float UnloadProgress
     { get { return _unloadingPrevious.progress; } }
     public int FpsMaximumSamples { get; set; } = 120;

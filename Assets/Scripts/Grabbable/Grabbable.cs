@@ -84,6 +84,10 @@ public class Grabbable : MonoBehaviour
         }
     }
 
+    public virtual float GetSpeedPenalty()
+    {
+        return GlobalValues.CHAR_GRAB_DEFAULT_SPEEDPENALTY;
+    }
     public void Detach()
     { Detach(1f); }
 
