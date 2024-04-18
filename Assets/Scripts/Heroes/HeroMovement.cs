@@ -85,6 +85,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     private Vector3 _gndNormal = new Vector3(0, 1, 0);
     private Vector3 _gndDampVelocity = Vector3.zero;
     private Vector3 _jumpDirection = Vector3.zero;
+    private Vector3 _targetForceRotation = Vector3.zero;
     private int _dJumpsLeft = 1;
     private int _maxDJumps = 1;
     private Vector3 _gndTargetNormalVel = Vector3.zero;
@@ -94,10 +95,12 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     private bool _tryingToPush = false;
     private bool _signalingGrab = false;
     private float _shovePower = GlobalValues.SHOVE_DEFAULT_SHOVEPOWER;
+    private bool _isForceRotation = false;
 
     public float ZOffset { get; set; } = 31f;
     public Vector2 StickInputVector
     { get; private set; } = Vector2.zero;
+    public bool SnapToGridInBomberMan { get; set; } = true;
     public bool CanThrowBombs
     { get; set; } = false;
     public bool JumpButtonDown
@@ -193,6 +196,11 @@ public class HeroMovement : MonoBehaviour, IJumpHit
 
 
     // ------------------------------------------------------------------------------------- METHODS
+    public void ForceRotation(Vector3 rotation)
+    {
+        _targetForceRotation = rotation;
+        _isForceRotation = true;
+    }
     public void Push()
     {
         IsPushed = true;
@@ -527,7 +535,9 @@ public class HeroMovement : MonoBehaviour, IJumpHit
         _pushTimer = new EasyTimer(GlobalValues.CHAR_PUSH_CHALLENGE_TIME, false, true);
         _pushFailTimer = new EasyTimer(GlobalValues.CHAR_PUSH_FAILED_STUN_TIME, false, true);
         _pushedTimer = new EasyTimer(GlobalValues.CHAR_PUSH_PUSHED_TIME, false, true);
-        TryMoveAi(Vector2.right);
+
+        if (_controlScheme != ControlSchemeType.BomberMan)
+            TryMoveAi(Vector2.right);
         Effect = Effect.DefaultEffect();
     }
 
@@ -538,6 +548,18 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     // the physics engine is syncing.
     void FixedUpdate()
     {
+        if (_isForceRotation)
+        {
+            var dir = Quaternion.Euler(_targetForceRotation) * Vector3.forward;
+            transform.rotation = Quaternion.Euler(_targetForceRotation);
+            FaceDirection = dir.normalized;
+            TargetDirection = FaceDirection;
+            CurrentDirection = FaceDirection;
+            _isForceRotation = false;
+            return;
+        }
+
+
         // Cached external calls
         var fixedDeltaTime = Time.fixedDeltaTime;
 
@@ -771,19 +793,20 @@ public class HeroMovement : MonoBehaviour, IJumpHit
             {
                 CurrentDirection = Vector3.Lerp(CurrentDirection, TargetDirection, turnT);
                 CurrentSpeed = Mathf.Clamp(Mathf.Lerp(CurrentSpeed, MaxMoveSpeed * Effect.CurrentEffects().MoveSpeedMultiplier, accelT), 0f, TargetSpeed);
-            }
-            else
+            } else
             {
-                _validMovement();
-
-                if (_canChangeQuadDirection)
+                if (SnapToGridInBomberMan)
                 {
-                    FaceDirection = TargetDirection;
-                    CurrentDirection = FaceDirection;
-                }
-                CurrentSpeed = MaxMoveSpeed * Effect.CurrentEffects().MoveSpeedMultiplier;
-            }
+                    _validMovement();
 
+                    if (_canChangeQuadDirection)
+                    {
+                        FaceDirection = TargetDirection;
+                        CurrentDirection = FaceDirection;
+                    }
+                    CurrentSpeed = MaxMoveSpeed * Effect.CurrentEffects().MoveSpeedMultiplier;
+                }
+            }
         }
         else if (!TryingToMove)
         {
