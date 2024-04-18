@@ -14169,7 +14169,7 @@ PrefabInstance:
     - target: {fileID: 4305753157418579073, guid: a8e1a0104759cd0478b803574e4cd466,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 2.58
+      value: -14.3
       objectReference: {fileID: 0}
     - target: {fileID: 4305753157418579073, guid: a8e1a0104759cd0478b803574e4cd466,
         type: 3}
@@ -14240,6 +14240,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: GodotMan Player Blue Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 5498440418393780349, guid: a8e1a0104759cd0478b803574e4cd466,
+        type: 3}
+      propertyPath: m_Layer
+      value: 11
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -22857,7 +22862,7 @@ GameObject:
   - component: {fileID: 1793576588}
   m_Layer: 0
   m_Name: BombermanManager
-  m_TagString: Untagged
+  m_TagString: BombManager
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -24745,7 +24750,7 @@ MonoBehaviour:
   _zoomPanOffset: {x: 0, y: 0, z: -0.1}
   _smoothTimeFactor: 0.08
   _bufferFactor: -0.35
-  _stationary: 0
+  _stationary: 1
   _zoomDependentOffset: 1
 --- !u!1001 &1923069813
 PrefabInstance:

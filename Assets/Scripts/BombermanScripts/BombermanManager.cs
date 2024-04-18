@@ -11,18 +11,32 @@ public class BombermanManager : MonoBehaviour
     private Vector3[] startCorners = new Vector3[] { new Vector3(2, 0, 2), new Vector3(42, 0, 2), new Vector3(42, 0, 38), new Vector3(2, 0, 38)};
     [SerializeField]
     private Grid _grid;
+    public Queue deathQueue = new Queue();
     void Start()
     {
         RandomizeArray(startCorners);
-        for(int i = 0; i < startCorners.Length; i++)
+        for (int i = 0; i < startCorners.Length; i++)
         {
-            characterList[i].transform.position = GridCellMiddlePoint.Get(_grid, startCorners[i]);
+            if (startCorners[i] == new Vector3(2, 0, 2) || startCorners[i] == new Vector3(42, 0, 2))
+            {
+                characterList[i].ForceRotation(Vector3.zero);
+                characterList[i].transform.position = GridCellMiddlePoint.Get(_grid, startCorners[i]);
+            }
+            if (startCorners[i] == new Vector3(2, 0, 38) || startCorners[i] == new Vector3(42, 0, 38))
+            {
+                characterList[i].ForceRotation(new Vector3(0, -180, 0));
+                characterList[i].transform.position = GridCellMiddlePoint.Get(_grid, startCorners[i]);
+            }
         }
     }
-
     void Update()
     {
         
+    }
+
+    public void AddPlayerDeathToQueue(int playerId)
+    {
+        deathQueue.Enqueue(playerId);
     }
 
     private void RandomizeArray<T>(T[] array)
