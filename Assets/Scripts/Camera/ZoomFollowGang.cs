@@ -24,6 +24,10 @@ public class ZoomFollowGang : MonoBehaviour
 
     void Update()
     {
+        if(_stationary)
+        {
+            return;
+        }
         // Calculate the rectangle to keep in view
         float left = float.MinValue;
         float right = float.MaxValue;

@@ -934,7 +934,18 @@ public class HeroMovement : MonoBehaviour, IJumpHit
                     if (Vector3.Dot(FaceDirection, CurrentGrab.Grabber.FaceDirection) < GlobalValues.TUG_DIRECTION_DOT_LIMIT)
                         foundGrab.PickupAlert.Ping(this, foundGrab.transform, true);
                 } else if (!CurrentGrab.IsGrabbed && CurrentGrab.CanBeGrabbed)
-                    foundGrab.PickupAlert.Ping(this, foundGrab.transform, false);     
+                {
+                    if (foundGrab == null)
+                    {
+
+                    }
+                    if (foundGrab.PickupAlert == null)
+                    {
+
+                    }
+                    foundGrab.PickupAlert.Ping(this, foundGrab.transform, false);
+                }
+                       
             }
 
         }
