@@ -25,6 +25,8 @@ public class Bomb : Grabbable
     [SerializeField]
     private LineRenderer lineRenderer;
 
+    private BombermanManager bombermanManager;
+
     [SerializeField]
     [Range(0.01f, 0.25f)]
     private float timeBetweenPoints = 0.1f;
@@ -62,9 +64,8 @@ public class Bomb : Grabbable
     private void Start()
     {
         base.Start();
+        bombermanManager = GameObject.FindWithTag("BombManager").GetComponent<BombermanManager>();
     }
-
-
     void Awake()
     {
         base.Awake();
@@ -244,14 +245,30 @@ public class Bomb : Grabbable
         }
         else
         {
-            if (hit.collider.TryGetComponent<CrateExplosion>(out var crate))
+            if(hit.collider.TryGetComponent<CrateExplosion>(out var crate))
             {
                 crate.Explode();
                 directions[direction] = true;
             }
+            var heroCollision = hit.collider.GetComponentInParent<Hero>();
+            if(heroCollision != null)
+            {
+                var heroMovementScript = heroCollision.gameObject.GetComponent<HeroMovement>();
+                if (heroMovementScript.IsAlive)
+                {
+                    heroMovementScript.IsAlive = false;
+                    heroMovementScript.AcceptInput = false;
+                    heroMovementScript.RigidBody.velocity = Vector3.zero;
+                    heroMovementScript.RigidBody.AddForce((-heroMovementScript.FaceDirection + Vector3.up).normalized * 130, ForceMode.Impulse);
+
+                    bombermanManager.AddPlayerDeathToQueue(heroCollision.Index);
+                }
+              
+            }
             else
             {
                 directions[direction] = true;
+                
 
             }
         }
