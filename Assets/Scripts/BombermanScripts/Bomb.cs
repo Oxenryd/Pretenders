@@ -59,13 +59,21 @@ public class Bomb : Grabbable
     { get; set; } = false;
 
 
+    private void Start()
+    {
+        base.Start();
+    }
+
+
     void Awake()
     {
+        base.Awake();
         KinematicByDefault = true;
         lineRenderer.startColor = Color.white;
         timer = new EasyTimer(delayBeforeExplosion);
         detonationTickTimer = new EasyTimer(delayAfterEachExplosion);
     }
+
     public void SetInactive()
     {
         gameObject.SetActive(false);
