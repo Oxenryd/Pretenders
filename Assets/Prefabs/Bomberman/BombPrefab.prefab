@@ -110,6 +110,7 @@ MonoBehaviour:
   _handsOffsets:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
+  _grabbableRotationOffset: {x: 0, y: 0, z: 0, w: 1}
   _canBeTuggedWhileGrabbed: 0
   _tugOWar: {fileID: 1420075866903311425, guid: 94d9b15f380a5cd4c8c335f14d768ef0,
     type: 3}
@@ -117,7 +118,7 @@ MonoBehaviour:
   explosion: {fileID: 52511004266254832, guid: 8a64124c26548e64eb99b4cec00fee68, type: 3}
   levelMask:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 30728
   delayBeforeExplosion: 5
   delayAfterEachExplosion: 0.05
   lineRenderer: {fileID: 8801008883637496842}
@@ -261,7 +262,7 @@ LineRenderer:
       atime6: 0
       atime7: 0
       m_Mode: 0
-      m_ColorSpace: 0
+      m_ColorSpace: -1
       m_NumColorKeys: 2
       m_NumAlphaKeys: 2
     numCornerVertices: 0
