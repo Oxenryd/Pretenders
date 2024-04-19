@@ -199,7 +199,7 @@ public class Unicorn : MonoBehaviour, IRecievable
         Vector3 rayDirection = transform.forward;
 
         // Define the maximum distance for the raycast
-        float maxRaycastDistance = 2f; // Adjust as needed
+        float maxRaycastDistance = 3f; // Adjust as needed
 
         // Draw the ray
         Gizmos.DrawRay(rayOrigin, rayDirection * maxRaycastDistance);
@@ -237,12 +237,7 @@ public class Unicorn : MonoBehaviour, IRecievable
                 _passedTimeSinceLastStateChange = 0f;
             }
         }
-
-
-
     }
-
-
 
     public Food FindClosestFood()
     {
@@ -268,9 +263,6 @@ public class Unicorn : MonoBehaviour, IRecievable
 
         return closestFood;
     }
-
-
-
 
     public delegate void ScoreReachedEventHandler();
 
