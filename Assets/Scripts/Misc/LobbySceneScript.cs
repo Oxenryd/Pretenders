@@ -63,6 +63,7 @@ public class LobbySceneScript : MonoBehaviour
 
 
         GameManager.Instance.DebuggingResultScreen = true;
+
         GameManager.Instance.AddNewMatchResult(new MatchResult(GameType.Lobby, randomStandings()));
         GameManager.Instance.AddNewMatchResult(new MatchResult(GameType.Lobby, randomStandings()));
 

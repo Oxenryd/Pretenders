@@ -541,7 +541,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
         _pushFailTimer = new EasyTimer(GlobalValues.CHAR_PUSH_FAILED_STUN_TIME, false, true);
         _pushedTimer = new EasyTimer(GlobalValues.CHAR_PUSH_PUSHED_TIME, false, true);
 
-        if (_controlScheme != ControlSchemeType.BomberMan)
+        if (_controlScheme == ControlSchemeType.TopDown)
             TryMoveAi(Vector2.right);
         Effect = Effect.DefaultEffect();
     }
@@ -553,6 +553,9 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     // the physics engine is syncing.
     void FixedUpdate()
     {
+        if (_controlScheme == ControlSchemeType.PricePall)
+            return;
+
         if(!IsAlive) return;
         if (_isForceRotation)
         {
