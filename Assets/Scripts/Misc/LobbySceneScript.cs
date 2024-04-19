@@ -17,6 +17,10 @@ public class LobbySceneScript : MonoBehaviour
         var resultScreenTest = GameObject.FindWithTag(GlobalStrings.NAME_RESULTSCREEN_DEBUG).GetComponent<TransitionZoneScript>();
         resultScreenTest.TriggeredTransition += resultScreenLoadTest;
 
+        _readyScript.CountdownComplete += (sender, args) =>
+        {
+            Debug.Log("Done counting in!");
+        };
 
         _fadeTimer = new EasyTimer(GlobalValues.SCENE_CIRCLETRANSIT_TIME);
         if (GameManager.Instance.FromSceneLoaded)
@@ -29,7 +33,7 @@ public class LobbySceneScript : MonoBehaviour
         //DEBUG DEBUG DEBUG
         GameManager.Instance.InputManager.Heroes[0].PressedPushButton += testTournamentRando;
 
-        _readyScript.Activate();
+       _readyScript.Activate();
     }
 
     private void resultScreenLoadTest(object sender, EventArgs e)
