@@ -11,9 +11,20 @@ public class BombermanManager : MonoBehaviour
     private Vector3[] startCorners = new Vector3[] { new Vector3(2, 0, 2), new Vector3(42, 0, 2), new Vector3(42, 0, 38), new Vector3(2, 0, 38)};
     [SerializeField]
     private Grid _grid;
-    public Queue deathQueue = new Queue();
+    private int placementToSet = 3;
+    public int[] deathQueue = new int[4];
+    private EasyTimer timer;
+    [SerializeField]
+    private float timeForTransition = 3;
+    private Transitions transitions;
+    private bool fadingIn = true;
+    private bool fadingOut = false;
     void Start()
     {
+        transitions = GameObject.FindWithTag(GlobalStrings.TRANSITIONS_TAG).GetComponent<Transitions>();
+        transitions.Value = 0;
+        timer.Reset();
+
         RandomizeArray(startCorners);
         for (int i = 0; i < startCorners.Length; i++)
         {
@@ -29,16 +40,61 @@ public class BombermanManager : MonoBehaviour
             }
         }
     }
+
+    void Awake()
+    {
+        timer = new EasyTimer(timeForTransition);
+    }
     void Update()
     {
-        
+        if (fadingIn)
+        {
+            transitions.Value = timer.Ratio;
+            if (timer.Done)
+            {
+                fadingIn = false;
+            }
+
+        }
+        if (fadingOut)
+        {
+            transitions.Value = 1 - timer.Ratio;
+            if (timer.Done)
+            {
+                fadingOut = false;
+                GameManager.Instance.TransitToNextScene("ResultScreen");
+            }
+        }
     }
 
     public void AddPlayerDeathToQueue(int playerId)
     {
-        deathQueue.Enqueue(playerId);
+        deathQueue[playerId] = placementToSet;
+        placementToSet--;
+        if(placementToSet < 1)
+        {
+            MatchResult matchResult = new MatchResult(GameType.Bomberman, deathQueue);
+            if (!GameManager.Instance.Tournament)
+            {
+                GameManager.Instance.StartNewTournament();
+            }
+            GameManager.Instance.AddNewMatchResult(matchResult);
+            fadingOut = true;
+            timer.Reset();
+        }
     }
-
+    public void PlayerDeath(Hero hero)
+    {
+        var heroMovementScript = hero.gameObject.GetComponent<HeroMovement>();
+        if (heroMovementScript.IsAlive)
+        {
+            heroMovementScript.IsAlive = false;
+            heroMovementScript.AcceptInput = false;
+            heroMovementScript.RigidBody.velocity = Vector3.zero;
+            heroMovementScript.RigidBody.AddForce((-heroMovementScript.FaceDirection + Vector3.up).normalized * 30, ForceMode.Impulse);
+            AddPlayerDeathToQueue(hero.Index);
+        }
+    }
     private void RandomizeArray<T>(T[] array)
     {
         for (int i = array.Length - 1; i > 0; i--)
