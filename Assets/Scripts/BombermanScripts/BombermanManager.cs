@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class BombermanManager : MonoBehaviour
@@ -14,11 +15,11 @@ public class BombermanManager : MonoBehaviour
     private int placementToSet = 3;
     public int[] deathQueue = new int[4];
     private EasyTimer timer;
-    [SerializeField]
-    private float timeForTransition = 3;
     private Transitions transitions;
     private bool fadingIn = true;
     private bool fadingOut = false;
+    [SerializeField]
+    private GameObject getReady;
     void Start()
     {
         transitions = GameObject.FindWithTag(GlobalStrings.TRANSITIONS_TAG).GetComponent<Transitions>();
@@ -39,11 +40,12 @@ public class BombermanManager : MonoBehaviour
                 characterList[i].transform.position = GridCellMiddlePoint.Get(_grid, startCorners[i]);
             }
         }
+        getReady.GetComponent<GetReadyScript>().Activate();
     }
 
     void Awake()
     {
-        timer = new EasyTimer(timeForTransition);
+        timer = new EasyTimer(GlobalValues.SCENE_CIRCLETRANSIT_TIME);
     }
     void Update()
     {
@@ -105,10 +107,4 @@ public class BombermanManager : MonoBehaviour
             array[randomIndex] = temp;
         }
     }
-
-    private void PlayerDeath()
-    {
-
-    }
-
 }
