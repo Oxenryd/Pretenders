@@ -35,6 +35,11 @@ public class GetReadyScript : MonoBehaviour
 
     public void Activate()
     {
+        if (!_enabled)
+        {
+            Debug.Log("GetReady is not enabled. Will not activate.");
+            return;
+        }
         _state = State.StartDelay;
         _active = true;
         _startDelayTimer.Reset();
