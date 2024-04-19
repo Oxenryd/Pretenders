@@ -6,6 +6,7 @@ using UnityEngine;
 public class LobbySceneScript : MonoBehaviour
 {
     [SerializeField] Transitions _transition;
+    [SerializeField] GetReadyScript _readyScript;
 
     private EasyTimer _fadeTimer;
     private bool _fadedIn = false;
@@ -27,6 +28,8 @@ public class LobbySceneScript : MonoBehaviour
 
         //DEBUG DEBUG DEBUG
         GameManager.Instance.InputManager.Heroes[0].PressedPushButton += testTournamentRando;
+
+        _readyScript.Activate();
     }
 
     private void resultScreenLoadTest(object sender, EventArgs e)
