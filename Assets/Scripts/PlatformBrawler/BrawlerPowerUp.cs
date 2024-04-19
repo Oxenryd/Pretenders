@@ -99,10 +99,11 @@ namespace Assets.Scripts.Collectibles
             Collected = false;
             gameObject.SetActive(false);
         }
-        private void OnCollisionEnter(Collision collision)
+        
+        public void OnTriggerEnter(Collider other)
         {
-            var hero = collision.collider.gameObject.GetComponent<HeroMovement>();
-            if (hero == null) 
+            var hero = other.gameObject.GetComponent<HeroMovement>();
+            if (hero == null)
             {
                 return;
             }
@@ -116,6 +117,8 @@ namespace Assets.Scripts.Collectibles
                 return;
             }
         }
+
+        
      /*---------------------------------------The Loop ---------------------------------------*/
         //this probably aint true no more tbh
         //CanSpawn is true --> Manager can spawn item

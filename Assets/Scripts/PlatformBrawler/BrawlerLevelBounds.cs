@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Assets.Scripts.PlatformBrawler
 {
@@ -15,19 +14,10 @@ namespace Assets.Scripts.PlatformBrawler
         public Vector3 FrontSpawnPosition { get; private set; }
         public Vector3 BackSpawnPosition { get; private set; }
 
-        private EasyTimer _timeToMove;
-        private float _moveTime = 5f;
-        private Vector3 _endPosition;
-        private float _acceleration;
-
         void Start()
         {
-            _timeToMove = new EasyTimer(_moveTime);
             _spawnArea = BrawlerLevel.GetComponent<BoxCollider>();
             _bounds = _spawnArea.bounds;
-            _endPosition = new Vector3(gameObject.transform.position.x + 30, 
-                gameObject.transform.position.y, gameObject.transform.position.z);
-            _timeToMove.Reset();
         }
 
         private void Update()
