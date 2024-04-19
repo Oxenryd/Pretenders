@@ -553,6 +553,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     // the physics engine is syncing.
     void FixedUpdate()
     {
+        if(!IsAlive) return;
         if (_isForceRotation)
         {
             var dir = Quaternion.Euler(_targetForceRotation) * Vector3.forward;

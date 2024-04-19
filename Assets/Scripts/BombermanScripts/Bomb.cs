@@ -133,7 +133,7 @@ public class Bomb : Grabbable
                 }
                 else if (!canThrow)
                 {
-                    throwForce = 5;
+                    //throwForce = 5;
                     lineRenderer.positionCount = 0;
                 }
             }
@@ -194,6 +194,7 @@ public class Bomb : Grabbable
 
     private void DrawTrajectory()
     {
+        lineRenderer.transform.rotation = Quaternion.Euler(0,0,45);
         Material material = lineRenderer.material;
         Color currentColor = material.GetColor("_TintColor");
 
@@ -208,6 +209,12 @@ public class Bomb : Grabbable
             i++;
             Vector3 point = startPosition + time * startVelocity;
             point.y = startPosition.y + startVelocity.y * time + (Physics.gravity.y / 2f * time * time);
+
+            //float rotationAngle = 10f * time;
+            //Quaternion rotation = Quaternion.Euler(rotationAngle, 0, 0);
+
+            //point = rotation * point;
+
             lineRenderer.SetPosition(i, point);
 
             Vector3 lastPosition = lineRenderer.GetPosition(i - 1);
@@ -256,10 +263,10 @@ public class Bomb : Grabbable
                 var heroMovementScript = heroCollision.gameObject.GetComponent<HeroMovement>();
                 if (heroMovementScript.IsAlive)
                 {
-                    heroMovementScript.IsAlive = false;
-                    heroMovementScript.AcceptInput = false;
+                   // heroMovementScript.IsAlive = false;
+                   // heroMovementScript.AcceptInput = false;
                     heroMovementScript.RigidBody.velocity = Vector3.zero;
-                    heroMovementScript.RigidBody.AddForce((-heroMovementScript.FaceDirection + Vector3.up).normalized * 130, ForceMode.Impulse);
+                    heroMovementScript.RigidBody.AddForce((-heroMovementScript.FaceDirection + Vector3.up).normalized * 30, ForceMode.Impulse);
 
                     bombermanManager.AddPlayerDeathToQueue(heroCollision.Index);
                 }
