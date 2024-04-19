@@ -57,12 +57,11 @@ public class BombSack : MonoBehaviour
             if (bombs[i].IsActive)
                 activeBombs++;
         }
-        if (activeBombs < _maxCurrentBombs) //Yes, if lesser, we can spawn new bombs!!!
+        if (activeBombs < _maxCurrentBombs) 
         {
-            //Stuck on this work with later
             Vector3 middlePoint = GridCellMiddlePoint.Get(grid, character.GameObject.transform.position);
             RaycastHit hit;
-            Physics.Raycast(middlePoint + new Vector3(0, .5f, 0), character.FaceDirection, out hit, grid.cellSize.x, bombLayerMask);
+            Physics.Raycast(middlePoint + new Vector3(0, 0, 0), character.FaceDirection, out hit, grid.cellSize.x, bombLayerMask);
             if (!hit.collider)
             {
                 for (int i = 0; i < directions.Count; i++)
@@ -77,6 +76,10 @@ public class BombSack : MonoBehaviour
                             _currentBombIndex = 0;
                     }
                 }
+            }
+            else
+            {
+                Debug.Log("Cant place");
             }
         }
     }
