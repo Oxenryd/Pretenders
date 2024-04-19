@@ -14442,6 +14442,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: UiOverlay
       objectReference: {fileID: 0}
+    - target: {fileID: 8092675353872465595, guid: 3c89ac95c67b9574eb56e2238cc9db0f,
+        type: 3}
+      propertyPath: _cam
+      value: 
+      objectReference: {fileID: 1922888531}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
