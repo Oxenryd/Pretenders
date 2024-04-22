@@ -17,6 +17,7 @@ public class Music : MonoBehaviour
     private EasyTimer _crossFadeTimer;
     private EasyTimer _overhangTimer;
     private EasyTimer _fadeOutTimer;
+    private EasyTimer _fadeInTimer;
 
     private int _currentSongindex = -1;
     private AudioSource _mixingChannel;
@@ -24,6 +25,7 @@ public class Music : MonoBehaviour
     private bool _crossfading = false;
     private bool _overhanging = false;
     private bool _fadeOut = false;
+    private bool _fadeingIn = false;
 
     public float Volume
     { get; set; } = 1f;
@@ -37,6 +39,7 @@ public class Music : MonoBehaviour
         _crossFadeTimer = new EasyTimer(1f);
         _overhangTimer = new EasyTimer(LoopOverhangTime);
         _fadeOutTimer = new EasyTimer(1f);
+        _fadeInTimer = new EasyTimer(1f);
         _mainOut = _channel0;
         _mixingChannel = _channel1;
         _songs = new PtSong[]
@@ -63,14 +66,24 @@ public class Music : MonoBehaviour
         _mixingChannel.Play();
     }
 
-    public void PlayNow(int songIndex)
+    public void PlayNow(int toSongIndex)
+    { PlayNow(toSongIndex, _songs[toSongIndex].Beginning, 0f); }
+    public void PlayNow(int songIndex, float startAt, float fadeInTime)
     {
         _currentSongindex = songIndex;
         _stopAndReset();
         var song = _songs[songIndex];
         _mainOut.clip = song.Clip;
-        _mainOut.time = song.Beginning;
-        _mainOut.volume = Volume;
+        _mainOut.time = startAt;
+        if (fadeInTime == 0f)
+            _mainOut.volume = Volume;
+        else
+        {
+            _fadeingIn = true;
+            _fadeInTimer.Time = fadeInTime;
+            _fadeInTimer.Reset();
+            _mainOut.volume = 0;
+        }
         _mainOut.Play();
     }
 
@@ -84,6 +97,12 @@ public class Music : MonoBehaviour
     {
         if (_currentSongindex < 0) return;
 
+        if (_fadeingIn)
+        {
+            _mainOut.volume = (Volume * _fadeInTimer.Ratio);
+            if (_fadeInTimer.Done)
+                _fadeingIn = false;
+        }
 
         if (!_crossfading && _songs[_currentSongindex].Looping)
         {

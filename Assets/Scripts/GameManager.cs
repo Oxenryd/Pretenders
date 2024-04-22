@@ -222,9 +222,9 @@ public class GameManager : MonoBehaviour
             yield return null;
         }
     }
-
+    
     private void onSceneLoaded(Scene arg0, LoadSceneMode arg1)
-    {
+    { 
         _camTransform = Camera.main.transform;
         if (!checkThisIsTheOneAndOnly())
         {
