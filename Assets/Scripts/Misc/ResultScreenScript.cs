@@ -182,6 +182,7 @@ public class ResultScreenScript : MonoBehaviour
             _transitions.Value = 1 - _fadeTimer.Ratio;
             if ( _fadeTimer.Done)
             {
+                GameManager.Instance.InputManager.HeroPressedButton -= transit;
                 if (GameManager.Instance.DebuggingResultScreen)
                     GameManager.Instance.TransitToNextScene(GlobalStrings.SCENE_LOBBY);
                 else

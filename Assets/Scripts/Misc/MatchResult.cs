@@ -66,4 +66,25 @@ public class MatchResult
 
         return actualPositions;
     }
+
+    public static int[] GenerateRandomStandings()
+    {
+        int[] standings = new int[] { -1, -1, -1, -1 };
+        bool[] taken = new bool[] { false, false, false, false };
+        System.Random random = new System.Random();
+        for (int i = 0; i < 4; i++)
+        {
+            while (true)
+            {
+                var pos = random.Next(0, 4);
+                if (!taken[pos])
+                {
+                    taken[pos] = true;
+                    standings[i] = pos;
+                    break;
+                }
+            }
+        }
+        return standings;
+    }
 }

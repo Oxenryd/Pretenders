@@ -31,7 +31,7 @@ public class LobbySceneScript : MonoBehaviour
         GameManager.Instance.Music.Fadeout(3f);
 
         //DEBUG DEBUG DEBUG
-        GameManager.Instance.InputManager.Heroes[0].PressedPushButton += testTournamentRando;
+        //GameManager.Instance.InputManager.Heroes[0].PressedPushButton += testTournamentRando;
 
        _readyScript.Activate();
     }
@@ -40,32 +40,10 @@ public class LobbySceneScript : MonoBehaviour
     {
         GameManager.Instance.StartNewTournament();
 
-        int[] randomStandings()
-        {
-            int[] standings = new int[] { -1, -1, -1, -1 };
-            bool[] taken = new bool[] { false, false, false, false };
-            System.Random random = new System.Random();
-            for (int i = 0; i < 4; i++)
-            {
-                while (true)
-                {
-                    var pos = random.Next(0, 4);
-                    if (!taken[pos])
-                    {
-                        taken[pos] = true;
-                        standings[i] = pos;
-                        break;
-                    }
-                }
-            }
-            return standings;
-        }
-
-
         GameManager.Instance.DebuggingResultScreen = true;
 
-        GameManager.Instance.AddNewMatchResult(new MatchResult(GameType.Lobby, randomStandings()));
-        GameManager.Instance.AddNewMatchResult(new MatchResult(GameType.Lobby, randomStandings()));
+        GameManager.Instance.AddNewMatchResult(new MatchResult(GameType.Lobby, MatchResult.GenerateRandomStandings()));
+        GameManager.Instance.AddNewMatchResult(new MatchResult(GameType.Lobby, MatchResult.GenerateRandomStandings()));
 
     }
 
