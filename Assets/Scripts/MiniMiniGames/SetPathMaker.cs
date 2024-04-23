@@ -82,6 +82,9 @@ public class SetPathMaker : MonoBehaviour
                 if (IsCollidingWithGoal(heroObjects[heroIndex].transform.position))
                 {
                     Debug.Log("Winner! Player: " + heroIndex);
+
+                    // Update the _scoreMultiplier of the hero's index in the GameManager
+
                     winnerFound = true;
                 }
             }
