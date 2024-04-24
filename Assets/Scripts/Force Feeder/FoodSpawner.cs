@@ -12,6 +12,8 @@ public class FoodSpawner : MonoBehaviour
     private float _spawnSpeed = 5f;
     private float _timeSinceLastFoodSpawn = 0f;
 
+    public bool Running = false;
+
     [SerializeField] private Banana _bananaPrefab;
     [SerializeField] private Watermelon _waterMelonPrefab;
     [SerializeField] private HotDog _hotDogPrefab;
@@ -44,6 +46,7 @@ public class FoodSpawner : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!Running) return;
 
         MoveFoodManager();
 
