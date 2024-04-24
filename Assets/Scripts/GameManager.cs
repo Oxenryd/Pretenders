@@ -160,6 +160,7 @@ public class GameManager : MonoBehaviour
     { _tournamentScore[playerIndex] += score; }
     public void ResetTournamentScore()
     {
+
         for (int i = 0; i < _tournamentScore.Length; i++)
         {
             _tournamentScore[i] = 0f;
