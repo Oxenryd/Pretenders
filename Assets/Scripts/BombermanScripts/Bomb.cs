@@ -53,7 +53,6 @@ public class Bomb : Grabbable
     private GameObject crossDrawing;
     private SpriteRenderer spriteRenderer;
 
-    //Fixa stackoverflow exception när man klickar på J
     //Vänta med explosion när man kastat
     //Nolla när man släppt bomb trajectory på ett ställe man inte får kasta
 
