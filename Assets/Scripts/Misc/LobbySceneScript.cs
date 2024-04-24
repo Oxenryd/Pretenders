@@ -8,6 +8,8 @@ public class LobbySceneScript : MonoBehaviour
     [SerializeField] Transitions _transition;
     [SerializeField] GetReadyScript _readyScript;
 
+    public bool IncludeMiniMiniGames = false;
+
     private EasyTimer _fadeTimer;
     private bool _fadedIn = false;
 
