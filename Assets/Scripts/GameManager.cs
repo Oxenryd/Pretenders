@@ -27,6 +27,7 @@ public class GameManager : MonoBehaviour
     private string[] _digitStrings;
     private string[] _numberStrings;
     //private float[] _tournamentScore;
+    private bool _tournamentComplete = false;
     private float[] _scoreMultiplier;
     private bool _includingMiniGames = false;
     private string[] _tournamentGameList;
@@ -100,6 +101,7 @@ public class GameManager : MonoBehaviour
     public void StartNewTournament() { StartNewTournament(false); }
     public void StartNewTournament(bool includeMiniGames)
     {
+        _tournamentComplete = false;
         _includingMiniGames = includeMiniGames;
         Tournament = true;
         _scoreMultiplier = new float[] { 1f, 1f, 1f,1f };
@@ -141,8 +143,12 @@ public class GameManager : MonoBehaviour
     { _scoreMultiplier = new float[] { 1f, 1f, 1f, 1f }; }
     public string GetTournamentNextScene()
     {
+        if (_tournamentComplete) return GlobalStrings.SCENE_PRAJSPAL;
         if (_currentTournamentScene == _tournamentGameList.Length - 1)
-            return GlobalStrings.SCENE_PRAJSPAL;
+        {
+            _tournamentComplete = true;
+            return GlobalStrings.SCENE_RESULTS;
+        }
 
         if (_includingMiniGames)
         {
@@ -173,8 +179,8 @@ public class GameManager : MonoBehaviour
             if (_resultsNextCall)
             {
                 _resultsNextCall = false;
-                var sceneString = _tournamentGameList[_currentTournamentScene];
                 _currentTournamentScene++;
+                var sceneString = _tournamentGameList[_currentTournamentScene];                
                 return sceneString;
             }
             else
@@ -182,7 +188,7 @@ public class GameManager : MonoBehaviour
                 if (_currentTournamentScene < 0)
                 {
                     _currentTournamentScene++;
-                    _resultsNextCall = true;
+                    _resultsNextCall = false;
                     return _tournamentGameList[_currentTournamentScene];
                 }
                 _resultsNextCall = true;

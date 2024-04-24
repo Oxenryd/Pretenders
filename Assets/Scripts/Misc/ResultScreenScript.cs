@@ -105,6 +105,7 @@ public class ResultScreenScript : MonoBehaviour
 
     private void transit(object sender, HeroMovement e)
     {
+        if (_leaving) return;
         _fadeTimer.Reset();
         _leaving = true;
     }
@@ -186,7 +187,12 @@ public class ResultScreenScript : MonoBehaviour
                 if (GameManager.Instance.DebuggingResultScreen)
                     GameManager.Instance.TransitToNextScene(GlobalStrings.SCENE_LOBBY);
                 else
-                    GameManager.Instance.TransitToNextScene(GameManager.Instance.NextScene);
+                {
+                    if (GameManager.Instance.Tournament)
+                        GameManager.Instance.TransitToNextScene(GameManager.Instance.GetTournamentNextScene());
+                    else
+                        GameManager.Instance.TransitToNextScene(GlobalStrings.SCENE_LOBBY);
+                }                
             }
         }
     }

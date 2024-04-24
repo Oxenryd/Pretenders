@@ -5,22 +5,43 @@ using UnityEngine.UI;
 
 public class BrawlerMatchManager : MonoBehaviour
 {
+    [SerializeField] private Transitions _transitions;
     [SerializeField] public float _deathAltitude;
     [SerializeField] private List<GameObject> players = new List<GameObject>();
     [SerializeField] private GetReadyScript _getReady = new GetReadyScript();
+
+    private bool _fadingIn = true;
+    private bool _fadingOut = false;
+    private EasyTimer _fadeTimer;
+
     //public GameObject roundWinner;
     //private string roundWinnerText = new string(string.Empty);
     public List<GameObject> placements = new List<GameObject>();
     int playersAlive = 4;
 
+    void Awake()
+    {
+        _fadeTimer = new EasyTimer(GlobalValues.SCENE_CIRCLETRANSIT_TIME);
+    }
+
     void Start()
     {
         //roundWinner.gameObject.SetActive(false);
         _getReady.Activate();
+        _fadeTimer.Reset();
     }
 
     void Update()
     {
+        if (_fadingIn)
+        {
+            _transitions.Value = _fadeTimer.Ratio;
+            if (_fadeTimer.Done)
+            {
+                _fadingIn = false;
+            }
+        }
+
         for (int i = 0; i < players.Count; i++)
         {
             if (players[i].transform.position.y <= _deathAltitude
@@ -30,7 +51,7 @@ public class BrawlerMatchManager : MonoBehaviour
                 playersAlive--;
             }
         }
-        if (playersAlive == 1)
+        if (playersAlive == 1 && !_fadingOut)
         {
             for (int i = 0;i < players.Count; i++)
             {
@@ -41,20 +62,38 @@ public class BrawlerMatchManager : MonoBehaviour
             }
             CalculateResults();
         }
+
+        if (_fadingOut)
+        {
+            _transitions.Value = 1 - _fadeTimer.Ratio;
+            if (_fadeTimer.Done)
+            {
+                if (GameManager.Instance.Tournament)
+                    GameManager.Instance.TransitToNextScene(GameManager.Instance.GetTournamentNextScene());
+                else
+                    GameManager.Instance.TransitToNextScene(GlobalStrings.SCENE_LOBBY);
+            }
+        }
     }
 
     void CalculateResults()
     {
-        int[] playerPositionInMatch = new int[players.Count];
-
-        int position = 1;
-        for (int i = placements.Count - 1; i >= 0; i--)
+        if (GameManager.Instance.Tournament)
         {
-            int index = placements[i].GetComponent<Hero>().Index;
-            playerPositionInMatch[index] = position;
-            position++;
+            int[] playerPositionInMatch = new int[players.Count];
+
+            int position = 1;
+            for (int i = placements.Count - 1; i >= 0; i--)
+            {
+                int index = placements[i].GetComponent<Hero>().Index;
+                playerPositionInMatch[index] = position - 1;
+                position++;
+            }
+            GameManager.Instance.AddNewMatchResult(new MatchResult(GameType.Brawler, playerPositionInMatch));           
         }
-        GameManager.Instance.TransitToNextScene(GlobalStrings.SCENE_LOBBY);
+
+        _fadingOut = true;
+        _fadeTimer.Reset();
         //GameManager.Instance.StartNewTournament(); //remove later
         //MatchResult result = new MatchResult(GameType.Brawler, playerPositionInMatch);
         //roundWinner.gameObject.SetActive(true);
