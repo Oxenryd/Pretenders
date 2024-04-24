@@ -18,6 +18,7 @@ namespace Assets.Scripts.PlatformBrawler
         float _distance = 50;
         void Start()
         {
+            _moveTime = UnityEngine.Random.Range(20, 30);
             _timeToMove = new EasyTimer(_moveTime);
             _currentPosition = gameObject.transform.position;
             _originalPosition = _currentPosition;
@@ -38,7 +39,7 @@ namespace Assets.Scripts.PlatformBrawler
             {
                 _acceleration += 0.0001f;
                 gameObject.transform.position =
-                    Vector3.Lerp(_targetPosition, _originalPosition, Time.deltaTime * _acceleration);
+                    Vector3.Lerp(_currentPosition, _originalPosition, Time.deltaTime * _acceleration);
             }
         }
     }

@@ -9,12 +9,12 @@ namespace Assets.Scripts.PlatformBrawler
     public class PowerUpManager : MonoBehaviour
     {
         public BrawlerLevelBounds BrawlerLevelBounds;
-        public GameObject[] powerUpObjects;
-        private IPowerUp[] _powerUps;
-        private IPowerUp _currentPowerUp;
+        public PowerUp[] powerUpObjects;
+        private PowerUp[] _powerUps;
+        private PowerUp _currentPowerUp;
         [SerializeField] Collider[] PlatformColliders;
-        public GameType CurrentGameType { get; set; }
-        public BrawlerPowerType CurrentPowerUpInRotation { get; set; }
+        [SerializeField] private GameType CurrentGameType;
+        public PowerUp.PowerUpTypes CurrentPowerUpInRotation { get; set; }
         private float _respawnTime = 2f;
         private float _activeTime  = 15f;
         private float _minRespawnBuffer = 0f;
@@ -34,11 +34,6 @@ namespace Assets.Scripts.PlatformBrawler
 
         public void Update()
         {
-            BrawlerUpdate();      
-        }
-
-        public void BrawlerUpdate()
-        {
             if (_currentPowerUp == null && _timeToRespawn.Done)
             {
                 SpawnPowerUp();
@@ -51,48 +46,51 @@ namespace Assets.Scripts.PlatformBrawler
             {
                 DespawnPowerUp();
             }
-        }
+        }       
         private void LoadPowerUps()
         {      
-            _powerUps = new IPowerUp[powerUpObjects.Length];
+            _powerUps = new PowerUp[powerUpObjects.Length];
 
             for (int i = 0; i < powerUpObjects.Length; i++)
             {
                 if (powerUpObjects[i] != null)
                 {
-                    _powerUps[i] = powerUpObjects[i].GetComponent<IPowerUp>();
+                    _powerUps[i] = powerUpObjects[i].GetComponent<PowerUp>();
                 }
             }          
         }
         private void SpawnPowerUp()
         {
-            RandomiseBrawlerPowerUp();
-            BrawlerPowerType type = CurrentPowerUpInRotation;
-            _currentPowerUp = _powerUps[(int)type];
-            _currentPowerUp.SetPosition(RandomiseBrawlerSpawn());
-            Collider powerUpCollider = _currentPowerUp.GetCollider();
-            while (true)
+            if (CurrentGameType == GameType.Brawler)
             {
-                bool overlapping = false;
-                foreach (Collider collider in PlatformColliders)
+                RandomisePowerUp();
+                PowerUp.PowerUpTypes type = CurrentPowerUpInRotation;
+                _currentPowerUp = _powerUps[(int)type];
+                _currentPowerUp.SetPosition(RandomiseBrawlerSpawn());
+                Collider powerUpCollider = _currentPowerUp.GetCollider();
+                while (true)
                 {
-
-                    if (powerUpCollider.bounds.Intersects(collider.bounds))                       
+                    bool overlapping = false;
+                    foreach (Collider collider in PlatformColliders)
                     {
-                        overlapping = true;
-                    }                
+
+                        if (powerUpCollider.bounds.Intersects(collider.bounds))
+                        {
+                            overlapping = true;
+                        }
+                    }
+                    if (!overlapping)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        _currentPowerUp.SetPosition(RandomiseBrawlerSpawn());
+                    }
                 }
-                if (!overlapping)
-                {
-                    break;
-                }
-                else
-                {
-                    _currentPowerUp.SetPosition(RandomiseBrawlerSpawn()); 
-                }
-            }
-            _currentPowerUp.Spawn();
-            _timeActive.Reset();
+                _currentPowerUp.Spawn();
+                _timeActive.Reset();
+            }          
         }
         private void DespawnPowerUp()
         {
@@ -113,9 +111,9 @@ namespace Assets.Scripts.PlatformBrawler
                 UnityEngine.Random.Range(bottomSpawn.y, topSpawn.y), UnityEngine.Random.Range(backSpawn.z, frontSpawn.z));
             return _randomPosition;
         }
-        private void RandomiseBrawlerPowerUp()
+        private void RandomisePowerUp()
         {
-            CurrentPowerUpInRotation = (BrawlerPowerType)Enum.ToObject(typeof(BrawlerPowerType), UnityEngine.Random.Range(0, 400) / 100);
+            CurrentPowerUpInRotation = (PowerUp.PowerUpTypes)Enum.ToObject(typeof(PowerUp.PowerUpTypes), UnityEngine.Random.Range(0, 400) / 100);
         }
 
     
