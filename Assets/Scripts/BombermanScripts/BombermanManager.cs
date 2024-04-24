@@ -20,6 +20,8 @@ public class BombermanManager : MonoBehaviour
     private bool fadingOut = false;
     [SerializeField]
     private GameObject getReady;
+    [SerializeField]
+    private bool killAll = true;
     void Start()
     {
         transitions = GameObject.FindWithTag(GlobalStrings.TRANSITIONS_TAG).GetComponent<Transitions>();
@@ -40,7 +42,21 @@ public class BombermanManager : MonoBehaviour
                 characterList[i].transform.position = GridCellMiddlePoint.Get(_grid, startCorners[i]);
             }
         }
-        getReady.GetComponent<GetReadyScript>().Activate();
+        var getReadyScript = getReady.GetComponent<GetReadyScript>();
+        getReadyScript.Activate();
+
+        if(killAll)
+        {
+            GameManager.Instance.StartNewTournament();
+
+            getReadyScript.CountdownComplete += OnKillAll;
+
+        }
+    }
+
+    private void OnKillAll(object sender, System.EventArgs e)
+    {
+        KillAllElse();
     }
 
     void Awake()
@@ -63,10 +79,11 @@ public class BombermanManager : MonoBehaviour
             transitions.Value = 1 - timer.Ratio;
             if (timer.Done)
             {
-                fadingOut = false;
-                GameManager.Instance.TransitToNextScene("ResultScreen");
+                GameManager.Instance.TransitToNextScene(GlobalStrings.SCENE_LOBBY);
+
             }
         }
+
     }
 
     public void AddPlayerDeathToQueue(int playerId)
@@ -75,14 +92,26 @@ public class BombermanManager : MonoBehaviour
         placementToSet--;
         if(placementToSet < 1)
         {
-            MatchResult matchResult = new MatchResult(GameType.Bomberman, deathQueue);
             if (!GameManager.Instance.Tournament)
             {
+                //debug
                 GameManager.Instance.StartNewTournament();
+                MatchResult matchResult = new MatchResult(GameType.Bomberman, deathQueue);
+                GameManager.Instance.AddNewMatchResult(matchResult);
+
             }
-            GameManager.Instance.AddNewMatchResult(matchResult);
             fadingOut = true;
             timer.Reset();
+           
+        }
+    }
+
+    void KillAllElse()
+    {
+        for(int i = 1; i < 4;  i++)
+        {
+            var hero = characterList[i].GetComponent<Hero>();
+            PlayerDeath(hero);
         }
     }
     public void PlayerDeath(Hero hero)
