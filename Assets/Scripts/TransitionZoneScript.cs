@@ -18,6 +18,10 @@ public class TransitionZoneScript : MonoBehaviour
     private bool _fadingIn = false;
     private bool _transitioning = false;
 
+    public event EventHandler TriggeredTransition;
+    protected void OnTriggeredTransition()
+    { TriggeredTransition?.Invoke(this, EventArgs.Empty); }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -41,6 +45,7 @@ public class TransitionZoneScript : MonoBehaviour
             _transitions.Value = 1 - _fadeTimer.Ratio;
             if (_fadeTimer.Done)
             {
+                OnTriggeredTransition();
                 GameManager.Instance.TransitToNextScene(_nextScene);
             }
         }

@@ -1,0 +1,65 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1442911931040747949
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 953916043639807501}
+  - component: {fileID: 5229835107119627732}
+  m_Layer: 0
+  m_Name: PrajsPallScript
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &953916043639807501
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1442911931040747949}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -7.0215297, y: -181.64853, z: 134.55356}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5229835107119627732
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1442911931040747949}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d16ce514a52ef194bb06e1a9902211c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _colors:
+  - {r: 0.07058824, g: 0.039215688, b: 0.94509804, a: 0}
+  - {r: 0.105882354, g: 0.7176471, b: 0, a: 0}
+  - {r: 1, g: 0, b: 0.047058824, a: 0}
+  - {r: 1, g: 1, b: 0, a: 0}
+  _positions:
+  - {x: 19.47, y: 2.54, z: 10.71}
+  - {x: 17.36, y: 1.613, z: 11.43}
+  - {x: 21.67, y: 0.8809999, z: 9.73}
+  - {x: 31.97, y: 0.04099995, z: 19.36}
+  _rotations:
+  - {x: 0, y: -160.024, z: 0}
+  - {x: 0, y: -165.213, z: 0}
+  - {x: 0, y: -151.878, z: 0}
+  - {x: 0, y: -145.963, z: 0}
+  _transitions: {fileID: 0}
+  _firstLight: {fileID: 0}
+  _secondLight: {fileID: 0}
+  _thirdLight: {fileID: 0}

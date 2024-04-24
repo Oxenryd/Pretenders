@@ -25,6 +25,8 @@ public class Bomb : Grabbable
     [SerializeField]
     private LineRenderer lineRenderer;
 
+    private BombermanManager bombermanManager;
+
     [SerializeField]
     [Range(0.01f, 0.25f)]
     private float timeBetweenPoints = 0.1f;
@@ -47,7 +49,10 @@ public class Bomb : Grabbable
 
     private bool threwBomb = false;
 
-    //Fixa stackoverflow exception när man klickar på J
+    [SerializeField]
+    private GameObject crossDrawing;
+    private SpriteRenderer spriteRenderer;
+
     //Vänta med explosion när man kastat
     //Nolla när man släppt bomb trajectory på ett ställe man inte får kasta
 
@@ -59,15 +64,22 @@ public class Bomb : Grabbable
     { get; set; } = false;
 
 
-
+    private void Start()
+    {
+        base.Start();
+        bombermanManager = GameObject.FindWithTag("BombManager").GetComponent<BombermanManager>();
+        spriteRenderer = crossDrawing.GetComponent<SpriteRenderer>();
+    }
     void Awake()
     {
-        //base.Awake();
+        base.Awake();
+        crossDrawing.SetActive(false);
         KinematicByDefault = true;
         lineRenderer.startColor = Color.white;
         timer = new EasyTimer(delayBeforeExplosion);
         detonationTickTimer = new EasyTimer(delayAfterEachExplosion);
     }
+
     public void SetInactive()
     {
         gameObject.SetActive(false);
@@ -117,6 +129,7 @@ public class Bomb : Grabbable
             if (startedThrowProcess && !Grabber.TriggerButtonDown)
             {
                 threwBomb = true;
+                crossDrawing.SetActive(false);
                 startedThrowProcess = false;
                 if (canThrow)
                 {
@@ -187,6 +200,7 @@ public class Bomb : Grabbable
 
     private void DrawTrajectory()
     {
+        lineRenderer.transform.rotation = Quaternion.Euler(0,0,45);
         Material material = lineRenderer.material;
         Color currentColor = material.GetColor("_TintColor");
 
@@ -201,12 +215,17 @@ public class Bomb : Grabbable
             i++;
             Vector3 point = startPosition + time * startVelocity;
             point.y = startPosition.y + startVelocity.y * time + (Physics.gravity.y / 2f * time * time);
+
             lineRenderer.SetPosition(i, point);
 
             Vector3 lastPosition = lineRenderer.GetPosition(i - 1);
+            crossDrawing.transform.position = lastPosition;
+            
+            crossDrawing.SetActive(true);
+            
             if (Physics.Raycast(lastPosition, (point - lastPosition).normalized, out RaycastHit hit, (point - lastPosition).magnitude, levelMask))
             {
-
+                spriteRenderer.color = new Color(1, 0, 0, 0.25f);
                 currentColor.a = 0.2f;
                 material.SetColor("_TintColor", currentColor);
                 canThrow = false;
@@ -214,6 +233,7 @@ public class Bomb : Grabbable
             }
             else
             {
+                spriteRenderer.color = new Color(0, 1, 0, 0.25f);
                 currentColor.a = 1;
                 material.SetColor("_TintColor", currentColor);
                 canThrow = true;
@@ -225,6 +245,7 @@ public class Bomb : Grabbable
                 break;
             }
         }
+
     }
 
     private void ExplosionCheckNearby(Vector3 direction, int tick)
@@ -238,15 +259,19 @@ public class Bomb : Grabbable
         }
         else
         {
-            if (hit.collider.TryGetComponent<CrateExplosion>(out var crate))
+            if(hit.collider.TryGetComponent<CrateExplosion>(out var crate))
             {
                 crate.Explode();
                 directions[direction] = true;
             }
+            var heroCollision = hit.collider.GetComponentInParent<Hero>();
+            if(heroCollision != null)
+            {
+                bombermanManager.PlayerDeath(heroCollision);
+            }
             else
             {
                 directions[direction] = true;
-
             }
         }
     }

@@ -62,6 +62,8 @@ public class GameManager : MonoBehaviour
     public Music Music
     { get { return _music; } }
 
+
+    public bool DebuggingResultScreen { get; set; } = false;
     public float UnloadProgress
     { get { return _unloadingPrevious.progress; } }
     public int FpsMaximumSamples { get; set; } = 120;
@@ -158,6 +160,7 @@ public class GameManager : MonoBehaviour
     { _tournamentScore[playerIndex] += score; }
     public void ResetTournamentScore()
     {
+
         for (int i = 0; i < _tournamentScore.Length; i++)
         {
             _tournamentScore[i] = 0f;
@@ -220,9 +223,9 @@ public class GameManager : MonoBehaviour
             yield return null;
         }
     }
-
+    
     private void onSceneLoaded(Scene arg0, LoadSceneMode arg1)
-    {
+    { 
         _camTransform = Camera.main.transform;
         if (!checkThisIsTheOneAndOnly())
         {
