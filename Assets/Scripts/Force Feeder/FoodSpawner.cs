@@ -53,7 +53,7 @@ public class FoodSpawner : MonoBehaviour
         if (_timeSinceLastFoodSpawn > _spawnSpeed)
         {
             SpawnFood();
-            _spawnSpeed = Random.Range(5f, 10f);
+            _spawnSpeed = Random.Range(1f, 2f);
         }
 
     }

@@ -16,6 +16,7 @@ public static class GlobalValues
     public const float CHAR_BUMPDURATION = 0.28f;
 
     public const int   TRAY_MAX_SIZE = 5;
+
     public const int   WINNING_POINTS_FORCE_FEEDER = 30;
     public const float CHAR_GRAB_DEFAULT_SPEEDPENALTY = 0.03f;
     public const float CHAR_GRAB_CHECK_DISTANCE = 1f;
