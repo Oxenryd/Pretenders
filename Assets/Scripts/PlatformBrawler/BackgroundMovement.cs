@@ -12,20 +12,33 @@ namespace Assets.Scripts.PlatformBrawler
         private EasyTimer _timeToMove;
         float _moveTime;
         float _acceleration;
-        Vector3 _endPosition;
+        Vector3 _targetPosition;
+        Vector3 _originalPosition;
+        Vector3 _currentPosition;
+        float _distance = 50;
         void Start()
         {
             _timeToMove = new EasyTimer(_moveTime);
-            _endPosition = new Vector3
-                (gameObject.transform.position.x + 30, gameObject.transform.position.y, gameObject.transform.position.z);
+            _currentPosition = gameObject.transform.position;
+            _originalPosition = _currentPosition;
+            _targetPosition = new Vector3
+                (gameObject.transform.position.x + _distance, gameObject.transform.position.y, gameObject.transform.position.z);
+            Debug.Log(_currentPosition);
         }
         void Update()
         {
-            if (_timeToMove.Done && gameObject.transform.position != _endPosition)
+            _currentPosition = gameObject.transform.position;
+            if (_timeToMove.Done && _currentPosition != _targetPosition)
             {
-                _acceleration += 0.001f;
+                _acceleration += 0.0001f;
                 gameObject.transform.position =
-                    Vector3.Lerp(gameObject.transform.position, _endPosition, Time.deltaTime * _acceleration);
+                    Vector3.Lerp(gameObject.transform.position, _targetPosition, Time.deltaTime * _acceleration);
+            }    
+            if (_timeToMove.Done && _currentPosition == _targetPosition)
+            {
+                _acceleration += 0.0001f;
+                gameObject.transform.position =
+                    Vector3.Lerp(_targetPosition, _originalPosition, Time.deltaTime * _acceleration);
             }
         }
     }

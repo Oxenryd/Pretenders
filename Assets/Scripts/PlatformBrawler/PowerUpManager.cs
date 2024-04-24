@@ -6,13 +6,14 @@ using UnityEngine;
 
 namespace Assets.Scripts.PlatformBrawler
 {
-    public class BrawlPowerUpManager : MonoBehaviour
+    public class PowerUpManager : MonoBehaviour
     {
         public BrawlerLevelBounds BrawlerLevelBounds;
         public GameObject[] powerUpObjects;
-        private BrawlerPowerUp[] powerUps;
-        private BrawlerPowerUp _currentPowerUp;
+        private IPowerUp[] _powerUps;
+        private IPowerUp _currentPowerUp;
         [SerializeField] Collider[] PlatformColliders;
+        public GameType CurrentGameType { get; set; }
         public BrawlerPowerType CurrentPowerUpInRotation { get; set; }
         private float _respawnTime = 2f;
         private float _activeTime  = 15f;
@@ -33,6 +34,11 @@ namespace Assets.Scripts.PlatformBrawler
 
         public void Update()
         {
+            BrawlerUpdate();      
+        }
+
+        public void BrawlerUpdate()
+        {
             if (_currentPowerUp == null && _timeToRespawn.Done)
             {
                 SpawnPowerUp();
@@ -44,31 +50,28 @@ namespace Assets.Scripts.PlatformBrawler
             if (_currentPowerUp != null && _timeActive.Done)
             {
                 DespawnPowerUp();
-            }           
+            }
         }
         private void LoadPowerUps()
-        {
-            powerUps = new BrawlerPowerUp[powerUpObjects.Length];
+        {      
+            _powerUps = new IPowerUp[powerUpObjects.Length];
 
             for (int i = 0; i < powerUpObjects.Length; i++)
             {
                 if (powerUpObjects[i] != null)
                 {
-                    powerUps[i] = powerUpObjects[i].GetComponent<BrawlerPowerUp>();
+                    _powerUps[i] = powerUpObjects[i].GetComponent<IPowerUp>();
                 }
-            }
+            }          
         }
         private void SpawnPowerUp()
         {
-            RandomisePowerUp();
+            RandomiseBrawlerPowerUp();
             BrawlerPowerType type = CurrentPowerUpInRotation;
-            _currentPowerUp = powerUps[(int)type];
-      
-            _currentPowerUp.transform.position = RandomiseSpawnPoint();
-            Collider powerUpCollider = _currentPowerUp.GetComponent<Collider>();
-
+            _currentPowerUp = _powerUps[(int)type];
+            _currentPowerUp.SetPosition(RandomiseBrawlerSpawn());
+            Collider powerUpCollider = _currentPowerUp.GetCollider();
             while (true)
-
             {
                 bool overlapping = false;
                 foreach (Collider collider in PlatformColliders)
@@ -85,11 +88,11 @@ namespace Assets.Scripts.PlatformBrawler
                 }
                 else
                 {
-                    _currentPowerUp.transform.position = RandomiseSpawnPoint();
+                    _currentPowerUp.SetPosition(RandomiseBrawlerSpawn()); 
                 }
-            }               
-                _currentPowerUp.Spawn();
-                _timeActive.Reset();
+            }
+            _currentPowerUp.Spawn();
+            _timeActive.Reset();
         }
         private void DespawnPowerUp()
         {
@@ -98,7 +101,7 @@ namespace Assets.Scripts.PlatformBrawler
             _respawnTime = _respawnTime + UnityEngine.Random.Range(_minRespawnBuffer, _maxRespawnBuffer);
             _timeToRespawn.Reset();
         }
-        private Vector3 RandomiseSpawnPoint()
+        private Vector3 RandomiseBrawlerSpawn()
         {
             Vector3 topSpawn = BrawlerLevelBounds.TopSpawnPosition;
             Vector3 bottomSpawn = BrawlerLevelBounds.BottomSpawnPosition;
@@ -110,7 +113,7 @@ namespace Assets.Scripts.PlatformBrawler
                 UnityEngine.Random.Range(bottomSpawn.y, topSpawn.y), UnityEngine.Random.Range(backSpawn.z, frontSpawn.z));
             return _randomPosition;
         }
-        private void RandomisePowerUp()
+        private void RandomiseBrawlerPowerUp()
         {
             CurrentPowerUpInRotation = (BrawlerPowerType)Enum.ToObject(typeof(BrawlerPowerType), UnityEngine.Random.Range(0, 400) / 100);
         }

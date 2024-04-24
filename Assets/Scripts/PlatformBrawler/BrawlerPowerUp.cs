@@ -18,7 +18,18 @@ namespace Assets.Scripts.Collectibles
         public bool IsCollectable { get; set; } = false;
         public bool Expired { get; set; } = false;
         private EasyTimer _timeToActivate;
-
+        public Vector3 GetPosition()
+        {
+            return transform.position;
+        }
+        public void SetPosition(Vector3 position)
+        {
+            transform.position = position;
+        }
+        public Collider GetCollider()
+        {
+            return transform.GetComponent<Collider>();
+        }
         void Start()
         {
             _timeToActivate = new EasyTimer(ActivateTime);
@@ -118,8 +129,8 @@ namespace Assets.Scripts.Collectibles
             }
         }
 
-        
-     /*---------------------------------------The Loop ---------------------------------------*/
+
+        /*---------------------------------------The Loop ---------------------------------------*/
         //this probably aint true no more tbh
         //CanSpawn is true --> Manager can spawn item
         //Manager spawns item --> OnSpawn called
