@@ -7,6 +7,7 @@ public class BrawlerMatchManager : MonoBehaviour
 {
     [SerializeField] public float _deathAltitude;
     [SerializeField] private List<GameObject> players = new List<GameObject>();
+    [SerializeField] private GetReadyScript _getReady = new GetReadyScript();
     //public GameObject roundWinner;
     //private string roundWinnerText = new string(string.Empty);
     public List<GameObject> placements = new List<GameObject>();
@@ -15,6 +16,7 @@ public class BrawlerMatchManager : MonoBehaviour
     void Start()
     {
         //roundWinner.gameObject.SetActive(false);
+        _getReady.Activate();
     }
 
     void Update()

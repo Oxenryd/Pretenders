@@ -53,9 +53,9 @@ public static class GlobalStrings
     public const string SCENE_LOBBY = "Lobby";
 
     // Start menu
-    public const string START_MSG0 = "In a world of chaos, a daring few rise to the occasion.";
-    public const string START_MSG1 = "But only one can become the new media pet, a new Instagram phenomena and an eager reality show celebrity..";
-    public const string START_MSG2 = "But until this one has been chosen\nall of our \"heroes\" are still just...";
+    public const string START_MSG0 = "From the within the grand laboratories of Department-63";
+    public const string START_MSG1 = "SynthMed Solutions presents entertainment like no other\n where particpants think they are heroes,";
+    public const string START_MSG2 = "but the rest of us know that in reality,\nthey are nothing but....";
 
     // GAMES
     public static string[] MATCHES_NAMES =
