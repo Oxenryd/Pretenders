@@ -6,8 +6,10 @@ using UnityEngine;
 
 public class MatchManager : MonoBehaviour
 {
+    [SerializeField] private GetReadyScript _getReady;
     [SerializeField] private Camera _cam;
     [SerializeField] private Unicorn[] unicorns;
+    [SerializeField] private FoodSpawner _foodSpawner;
     ZoomFollowGang zoomFollowScript;
 
     [SerializeField] private Transitions _transitions;
@@ -25,6 +27,17 @@ public class MatchManager : MonoBehaviour
             unicorn.OnScoreReached += HandleScoreReached;
         }
         zoomFollowScript = _cam.GetComponent<ZoomFollowGang>();
+    }
+
+    void Start()
+    {
+        _getReady.Activate();
+        _getReady.CountdownComplete += onGetReadyCountedDown;
+    }
+
+    private void onGetReadyCountedDown(object sender, EventArgs e)
+    {
+        _foodSpawner.Running = true;
     }
 
     private void HandleScoreReached()
