@@ -47,10 +47,7 @@ public class BombermanManager : MonoBehaviour
 
         if(killAll)
         {
-            GameManager.Instance.StartNewTournament();
-
             getReadyScript.CountdownComplete += OnKillAll;
-
         }
     }
 
@@ -79,7 +76,10 @@ public class BombermanManager : MonoBehaviour
             transitions.Value = 1 - timer.Ratio;
             if (timer.Done)
             {
-                GameManager.Instance.TransitToNextScene(GlobalStrings.SCENE_LOBBY);
+                if (GameManager.Instance.Tournament)
+                    GameManager.Instance.TransitToNextScene(GameManager.Instance.GetTournamentNextScene());
+                else
+                    GameManager.Instance.TransitToNextScene(GlobalStrings.SCENE_LOBBY);
 
             }
         }
@@ -92,13 +92,10 @@ public class BombermanManager : MonoBehaviour
         placementToSet--;
         if(placementToSet < 1)
         {
-            if (!GameManager.Instance.Tournament)
+            if (GameManager.Instance.Tournament)
             {
-                //debug
-                GameManager.Instance.StartNewTournament();
                 MatchResult matchResult = new MatchResult(GameType.Bomberman, deathQueue);
                 GameManager.Instance.AddNewMatchResult(matchResult);
-
             }
             fadingOut = true;
             timer.Reset();
