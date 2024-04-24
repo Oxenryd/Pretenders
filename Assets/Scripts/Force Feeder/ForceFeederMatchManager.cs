@@ -12,12 +12,13 @@ public class MatchManager : MonoBehaviour
 
     [SerializeField] private Transitions _transitions;
     private EasyTimer _transTimer;
-    private bool _isFadeing = false;
+    private bool _isFadingIn = true;
+    private bool _isFadingOut = false;
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         _transTimer = new EasyTimer(GlobalValues.SCENE_CIRCLETRANSIT_TIME);
-
+        _transTimer.Reset();
         // Subscribe to the event for each unicorn
         foreach (var unicorn in unicorns)
         {
@@ -50,8 +51,13 @@ public class MatchManager : MonoBehaviour
             }  
         }
         //Debug
-        GameManager.Instance.StartNewTournament();
-        MatchResult newResult = new MatchResult(GameType.ForceFeeder, matchResult);
+       // GameManager.Instance.StartNewTournament();
+       if (GameManager.Instance.Tournament)
+       {
+            MatchResult newResult = new MatchResult(GameType.ForceFeeder, matchResult);
+            GameManager.Instance.AddNewMatchResult(newResult);
+        }
+        
 
         int index = -1; // Indexet för det största talet (som du vet redan är 3)
 
@@ -66,25 +72,32 @@ public class MatchManager : MonoBehaviour
         Transform winner = zoomFollowScript.Targets[index];
         zoomFollowScript.Targets = new Transform[] { winner };
 
-        _isFadeing = true;
+        _isFadingOut = true;
         _transTimer.Reset();
-
-        if (GameManager.Instance.Tournament)
-        {
-            GameManager.Instance.AddNewMatchResult(newResult);
-        }
 
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (_isFadeing)
+        if (_isFadingIn)
         {
-            _transitions.Value = 1 - _transTimer.Ratio;
+            _transitions.Value = _transTimer.Ratio;
             if (_transTimer.Done)
             {
-                GameManager.Instance.TransitToNextScene(GlobalStrings.SCENE_LOBBY);
+                _isFadingIn = false;
+            }
+        }
+
+        if (_isFadingOut)
+        {
+            _transitions.Value = 1 - _transTimer.Ratio;
+            if ( _transTimer.Done)
+            {
+                if (GameManager.Instance.Tournament)
+                    GameManager.Instance.TransitToNextScene(GameManager.Instance.GetTournamentNextScene());
+                else
+                    GameManager.Instance.TransitToNextScene(GlobalStrings.SCENE_LOBBY);
             }
         }
     }
