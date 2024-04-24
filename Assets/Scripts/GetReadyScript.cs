@@ -52,7 +52,7 @@ public class GetReadyScript : MonoBehaviour
     }
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         _startDelayTimer = new EasyTimer(1.6f);
         _countdown = new EasyTimer(1f);

@@ -6,6 +6,7 @@ using Scene = UnityEngine.SceneManagement.Scene;
 
 public class TransitionZoneScript : MonoBehaviour
 {
+    [SerializeField] private LobbySceneScript _script;
     [SerializeField] private Transitions _transitions;
     [SerializeField] private TextMeshPro _text;
     [SerializeField] private TextMeshPro _alert;
@@ -46,7 +47,12 @@ public class TransitionZoneScript : MonoBehaviour
             if (_fadeTimer.Done)
             {
                 OnTriggeredTransition();
-                GameManager.Instance.TransitToNextScene(_nextScene);
+                if (_nextScene == GlobalStrings.TOUR_IDENTIFIER)
+                {
+                    GameManager.Instance.StartNewTournament();
+                    GameManager.Instance.TransitToNextScene(GameManager.Instance.GetTournamentNextScene());
+                } else
+                    GameManager.Instance.TransitToNextScene(_nextScene);
             }
         }
 

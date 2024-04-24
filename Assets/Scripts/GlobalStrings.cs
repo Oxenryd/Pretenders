@@ -51,20 +51,24 @@ public static class GlobalStrings
     //Scenes
     public const string SCENE_LOADINGSCREEN = "LoadingScreen";
     public const string SCENE_LOBBY = "Lobby";
+    public const string SCENE_RESULTS = "ResultScreen";
+    public const string SCENE_PRAJSPAL = "PricePall";
 
     // Start menu
     public const string START_MSG0 = "From the within the grand laboratories of Department-63";
     public const string START_MSG1 = "SynthMed Solutions presents entertainment like no other\n where particpants think they are heroes,";
     public const string START_MSG2 = "but the rest of us know that in reality,\nthey are nothing but....";
 
+
+
     // GAMES
     public static string[] MATCHES_NAMES =
     { 
-        "ForceFeeder", "Bomberman", "Brawler"
+        "HenriksForceFeeder", "BomberManV1", "HecticTestScene"
     };
     public static string[] MINIGAMES_NAMES =
     {
         "SetPath", "FallingBlocks"
     };
-
+    public const string TOUR_IDENTIFIER = "TOUR";
 }
