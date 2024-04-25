@@ -13,6 +13,8 @@ public class SetPathManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        GameManager.Instance.ResetPlayerMultipliers();
+
         Vector3 lightOneStartPos = new Vector3 (0, 0, 0);
         Vector3 lightTwoStartPos = new Vector3 (0, 0, 0);
         Vector3 lightThreeStartPos = new Vector3 (0, 0, 0);
@@ -20,7 +22,7 @@ public class SetPathManager : MonoBehaviour
         // Spawn in one/multiple light prefabs
 
         // Initiate default values
-        groundLvl = 0.1F;
+        groundLvl = -2F;
         startPosition = new Vector3(20, 3, 3);
 
         // Add all heroes to the hero list

@@ -84,6 +84,12 @@ public class SetPathMaker : MonoBehaviour
                     Debug.Log("Winner! Player: " + heroIndex);
 
                     // Update the _scoreMultiplier of the hero's index in the GameManager
+                    GameManager.Instance.SetPlayerMultiplier(heroIndex, 1.5F);
+
+                    Debug.Log("Player 0: " + GameManager.Instance.GetPlayerMultiplier(0));
+                    Debug.Log("Player 1: " + GameManager.Instance.GetPlayerMultiplier(1));
+                    Debug.Log("Player 2: " + GameManager.Instance.GetPlayerMultiplier(2));
+                    Debug.Log("Player 3: " + GameManager.Instance.GetPlayerMultiplier(3));
 
                     winnerFound = true;
                 }
