@@ -4,15 +4,29 @@ using UnityEngine;
 
 public class SetPathManager : MonoBehaviour
 {
+    [SerializeField] private GetReadyScript _getReady;
+    [SerializeField] private Transitions _transitions;
     public GameObject headlightPrefab;
     public GameObject[] spHeroes;
 
     private float groundLvl;
     private Vector3 startPosition;
+    private bool _isFadingIn = true;
+    private bool _isFadingOut = false;
+    private EasyTimer _fadeTimer;
 
+    public void InformWinnerFound()
+    {
+        _isFadingOut = true;
+        _fadeTimer.Reset();
+    }
     // Start is called before the first frame update
     void Start()
     {
+        _transitions.TransitionType = TransitionType.CircleFade;
+        _fadeTimer = new EasyTimer(GlobalValues.SCENE_CIRCLETRANSIT_TIME);
+        _fadeTimer.Reset();
+        _getReady.Activate();
         GameManager.Instance.ResetPlayerMultipliers();
 
         Vector3 lightOneStartPos = new Vector3 (0, 0, 0);
@@ -41,6 +55,27 @@ public class SetPathManager : MonoBehaviour
             if (heroObj.transform.position.y < groundLvl)
             {
                 heroObj.transform.position = startPosition;
+            }
+        }
+
+        if (_isFadingIn)
+        {
+            _transitions.Value = _fadeTimer.Ratio;
+            if (_fadeTimer.Done)
+            {
+                _isFadingIn = false;
+            }
+        }
+
+        if (_isFadingOut)
+        {
+            _transitions.Value = 1 - _fadeTimer.Ratio;
+            if ( _fadeTimer.Done)
+            {
+                if (GameManager.Instance.Tournament)
+                    GameManager.Instance.TransitToNextScene(GameManager.Instance.GetTournamentNextScene());
+                else
+                    GameManager.Instance.TransitToNextScene(GlobalStrings.SCENE_LOBBY);
             }
         }
     }
