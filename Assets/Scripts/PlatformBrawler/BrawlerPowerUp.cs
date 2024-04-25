@@ -88,22 +88,20 @@ namespace Assets.Scripts.Collectibles
                 case BrawlerPowerType.SpeedUp:
                     {
                         powerUpEffect.MoveSpeedMultiplier = 2f;
-                        powerUpEffect.Activate();
                     }
                     break;
                 case BrawlerPowerType.UltraShove:
                     {
                         powerUpEffect.ShoveMultiplier = 2f;
-                        powerUpEffect.Activate();
                     }
                     break;
                 case BrawlerPowerType.MegaJump:
                     {
                         powerUpEffect.JumpPowerMultiplier = 2f;
-                        powerUpEffect.Activate();
                     }
                     break;
-            }        
+            }
+            powerUpEffect.Activate();
         }
         public void OnExpire()
         {
