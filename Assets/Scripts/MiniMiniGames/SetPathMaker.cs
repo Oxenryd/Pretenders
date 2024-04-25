@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class SetPathMaker : MonoBehaviour
 {
+    [SerializeField] private SetPathManager _manager;
     public GameObject pathStartPrefab;
     public GameObject pathEndPrefab;
     public GameObject pathPlatformPrefab;
@@ -92,6 +93,7 @@ public class SetPathMaker : MonoBehaviour
                     Debug.Log("Player 3: " + GameManager.Instance.GetPlayerMultiplier(3));
 
                     winnerFound = true;
+                    _manager.InformWinnerFound();
                 }
             }
         }
