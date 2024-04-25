@@ -14,7 +14,7 @@ namespace Assets.Scripts.PlatformBrawler
         private PowerUp _currentPowerUp;
         [SerializeField] Collider[] PlatformColliders;
         [SerializeField] private GameType CurrentGameType;
-        public PowerUp.PowerUpTypes CurrentPowerUpInRotation { get; set; }
+       // public PowerUp.PowerUpTypes CurrentPowerUpInRotation { get; set; }
         private float _respawnTime = 2f;
         private float _activeTime  = 15f;
         private float _minRespawnBuffer = 0f;
@@ -64,8 +64,8 @@ namespace Assets.Scripts.PlatformBrawler
             if (CurrentGameType == GameType.Brawler)
             {
                 RandomisePowerUp();
-                PowerUp.PowerUpTypes type = CurrentPowerUpInRotation;
-                _currentPowerUp = _powerUps[(int)type];
+              //  PowerUp.PowerUpTypes type = CurrentPowerUpInRotation;
+              //  _currentPowerUp = _powerUps[(int)type];
                 _currentPowerUp.SetPosition(RandomiseBrawlerSpawn());
                 Collider powerUpCollider = _currentPowerUp.GetCollider();
                 while (true)
@@ -113,7 +113,7 @@ namespace Assets.Scripts.PlatformBrawler
         }
         private void RandomisePowerUp()
         {
-            CurrentPowerUpInRotation = (PowerUp.PowerUpTypes)Enum.ToObject(typeof(PowerUp.PowerUpTypes), UnityEngine.Random.Range(0, 400) / 100);
+          //  CurrentPowerUpInRotation = (PowerUp.PowerUpTypes)Enum.ToObject(typeof(PowerUp.PowerUpTypes), UnityEngine.Random.Range(0, 400) / 100);
         }
 
     

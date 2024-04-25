@@ -4,18 +4,14 @@ namespace Assets.Scripts
 {
     public class PowerUp : MonoBehaviour
     {
-        [SerializeField] private GameType CurrentGameType;
-        private Effect powerUpEffect;
-        public float ActivateTime { get; set; } = 5f;
+        [SerializeField] private GameObject _preFab;
+        [SerializeField] private GameType[] CurrentGameTypes;
+        private Effect _effect;
+        [SerializeField] private float _timeToCollectible = 5f;
         public bool Collected { get; set; } = false;
         public bool IsCollectable { get; set; } = false;
-        private EasyTimer _timeToActivate;
-        public enum PowerUpTypes { WeightGain, SpeedUp, UltraShove, MegaJump }
-        public PowerUpTypes _powerUpType;
-        private Effect weightGainEffect = new Effect();
-        private Effect speedUpEffect = new Effect() { MoveSpeedMultiplier = 2f };
-        private Effect ultraShoveEffect = new Effect() { ShoveMultiplier = 2f };
-        private Effect megaJumpEffect = new Effect() { JumpPowerMultiplier = 2f };
+        private EasyTimer _timeToCollectibleTimer;
+
         public Vector3 GetPosition()
         {
             return transform.position;
@@ -28,14 +24,14 @@ namespace Assets.Scripts
         {
             return transform.GetComponent<Collider>();
         }
-        void Start()
+        void Awake()
         {
-            _timeToActivate = new EasyTimer(ActivateTime);
+            _timeToCollectibleTimer = new EasyTimer(_timeToCollectible);
             gameObject.SetActive(false);
         }
         private void Update()
         {
-            if (_timeToActivate.Done)
+            if (_timeToCollectibleTimer.Done)
             {
                 OnActivation();
             }
@@ -43,7 +39,7 @@ namespace Assets.Scripts
         public void Spawn()
         {
             gameObject.SetActive(true);
-            _timeToActivate.Reset();
+            _timeToCollectibleTimer.Reset();
         }
         public void OnActivation()
         {
@@ -57,24 +53,7 @@ namespace Assets.Scripts
         }
         public void ApplyEffect()
         {
-            switch (_powerUpType)
-            {
-                case PowerUpTypes.WeightGain:
-                    powerUpEffect = new Effect();
-                    break;
-                case PowerUpTypes.SpeedUp:
-                    powerUpEffect = new Effect() { MoveSpeedMultiplier = 2f };
-                    break;
-                case PowerUpTypes.UltraShove:
-                    powerUpEffect = new Effect() { ShoveMultiplier = 2f };
-                    break;
-                case PowerUpTypes.MegaJump:
-                    powerUpEffect = new Effect() { JumpPowerMultiplier = 2f };
-                    break;
-                default:
-                    break;
-            }
-            powerUpEffect.Activate();
+            _effect.Activate();
         }
         public void OnExpire()
         {
@@ -91,7 +70,7 @@ namespace Assets.Scripts
             if (IsCollectable)
             {
                 OnPickup();
-                hero.Effect = powerUpEffect;
+                hero.Effect = _effect;
             }
             else
             {

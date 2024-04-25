@@ -36894,6 +36894,11 @@ PrefabInstance:
       propertyPath: _curSceneman
       value: 
       objectReference: {fileID: 1003636551}
+    - target: {fileID: 3290007767619051340, guid: ec0d970c1685595448339c641651f152,
+        type: 3}
+      propertyPath: _powerupPrefabs.Array.size
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 9011927387623968526, guid: ec0d970c1685595448339c641651f152,
         type: 3}
       propertyPath: m_LocalPosition.x

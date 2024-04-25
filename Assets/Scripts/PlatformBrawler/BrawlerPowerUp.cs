@@ -11,7 +11,7 @@ namespace Assets.Scripts.Collectibles
         private Effect powerUpEffect;
         private float duration = 1.0f;
         private Renderer rend;
-        [SerializeField] BrawlerPowerType type;
+       // [SerializeField] BrawlerPowerType type;
         public float LifeTime { get; set; } = 10f;
         public float ActivateTime { get; set; } = 5f;
         public bool Collected { get; set; } = false;
@@ -78,29 +78,29 @@ namespace Assets.Scripts.Collectibles
         }
         public void ApplyEffect()
         {
-            switch (type) 
-            {
-                case BrawlerPowerType.WeightGain:
-                    {
+            //switch (type) 
+            //{
+            //    case BrawlerPowerType.WeightGain:
+            //        {
                         
-                    }
-                    break;
-                case BrawlerPowerType.SpeedUp:
-                    {
-                        powerUpEffect.MoveSpeedMultiplier = 2f;
-                    }
-                    break;
-                case BrawlerPowerType.UltraShove:
-                    {
-                        powerUpEffect.ShoveMultiplier = 2f;
-                    }
-                    break;
-                case BrawlerPowerType.MegaJump:
-                    {
-                        powerUpEffect.JumpPowerMultiplier = 2f;
-                    }
-                    break;
-            }
+            //        }
+            //        break;
+            //    case BrawlerPowerType.SpeedUp:
+            //        {
+            //            powerUpEffect.MoveSpeedMultiplier = 2f;
+            //        }
+            //        break;
+            //    case BrawlerPowerType.UltraShove:
+            //        {
+            //            powerUpEffect.ShoveMultiplier = 2f;
+            //        }
+            //        break;
+            //    case BrawlerPowerType.MegaJump:
+            //        {
+            //            powerUpEffect.JumpPowerMultiplier = 2f;
+            //        }
+            //        break;
+            //}
             powerUpEffect.Activate();
         }
         public void OnExpire()

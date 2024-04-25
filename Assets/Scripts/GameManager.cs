@@ -22,6 +22,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Music _music;
     [SerializeField] private Transitions _transitions;
 
+    [SerializeField] private GameObject[] _powerupPrefabs;
+
     private float[] _fpsBuffer;
     private int _fpsCounter = 0;
     private string[] _digitStrings;
@@ -34,7 +36,8 @@ public class GameManager : MonoBehaviour
     private int _currentTournamentScene = 0;
 
     private bool _firstStart = true;
-
+    public GameObject[] PowerUpPrefabs
+    { get { return _powerupPrefabs; } }
     public bool InLoadingScreen { get; set; }
 
     private List<int> _lastStandings;
