@@ -28,6 +28,7 @@ public class GameManager : MonoBehaviour
     private int _fpsCounter = 0;
     private string[] _digitStrings;
     private string[] _numberStrings;
+
     //private float[] _tournamentScore;
     private bool _tournamentComplete = false;
     private float[] _scoreMultiplier;
@@ -340,6 +341,7 @@ public class GameManager : MonoBehaviour
             Destroy(this.gameObject);
             return;
         }
+
 
         //_tournamentScore = new float[] { 0f, 0f, 0f, 0f };
 
