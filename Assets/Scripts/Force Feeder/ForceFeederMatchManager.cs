@@ -2,7 +2,9 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.InputSystem.Android;
 
 public class MatchManager : MonoBehaviour
 {
@@ -43,46 +45,43 @@ public class MatchManager : MonoBehaviour
     private void HandleScoreReached()
     {
         int[] scores = new int[unicorns.Length];
+        int[] matchResult = new int[unicorns.Length];
 
-        foreach(var unicorn in unicorns) scores[unicorn.Index] = unicorn.Score;
+        foreach (var unicorn in unicorns) scores[unicorn.Index] = unicorn.Score;
 
-        int[] scoresSorted = new int[scores.Length];
-        Array.Copy(scores, scoresSorted, scores.Length);
-        Array.Sort(scoresSorted, (x, y) => y.CompareTo(x));
-
-        int[] matchResult = new int[scores.Length];
-
-        for (int i = 0; i < scores.Length; i++)
+        int matchPosition = 0;
+        int winnersIndex = -1;
+        while (scores.Any(item => item != -1))
         {
-            for (int j = 0; j < scoresSorted.Length; j++)
+            int maxIndex = 0;
+            for (int i = 0; i < scores.Length; i++)
             {
-                if (scores[i] == scoresSorted[j])
+                if (scores[i] > scores[maxIndex])
                 {
-                    matchResult[i] = j;
-                    break;
+                    maxIndex = i;
                 }
-            }  
+            }
+
+            // Setting the winners index
+            if (matchPosition == 0) winnersIndex = maxIndex;
+
+
+            scores[maxIndex] = -1;
+            matchResult[maxIndex] = matchPosition;
+            matchPosition++;
         }
+
+
         //Debug
-       // GameManager.Instance.StartNewTournament();
-       if (GameManager.Instance.Tournament)
-       {
+        // GameManager.Instance.StartNewTournament();
+        if (GameManager.Instance.Tournament)
+        {
             MatchResult newResult = new MatchResult(GameType.ForceFeeder, matchResult);
             GameManager.Instance.AddNewMatchResult(newResult);
         }
         
 
-        int index = -1; // Indexet för det största talet (som du vet redan är 3)
-
-        for (int i = 0; i < 4; i++)
-        {
-            if (matchResult[i] == 0)
-            {
-                index = i;
-                break; // Du behöver inte fortsätta söka efter fler 3:or om du har hittat en
-            }
-        }
-        Transform winner = zoomFollowScript.Targets[index];
+        Transform winner = zoomFollowScript.Targets[winnersIndex];
         zoomFollowScript.Targets = new Transform[] { winner };
 
         _isFadingOut = true;
