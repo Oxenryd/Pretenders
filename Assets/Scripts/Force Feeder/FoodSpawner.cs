@@ -9,7 +9,7 @@ public class FoodSpawner : MonoBehaviour
     private Vector3 _direction;
     private float _radius = 10f;
     private float _speed = 1f;
-    private float _spawnSpeed = 5f;
+    private float _spawnSpeed = 2f;
     private float _timeSinceLastFoodSpawn = 0f;
 
     public bool Running = false;
