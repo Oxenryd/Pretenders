@@ -1,7 +1,6 @@
 ﻿public enum GameType
 {
     Lobby, Menu,
-    MiniGame0, MiniGame1, MiniGame2,
+    SetPath, FallingBlocks,
     Brawler, Bomberman, ForceFeeder
 }
-

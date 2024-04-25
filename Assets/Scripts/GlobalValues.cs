@@ -16,7 +16,9 @@ public static class GlobalValues
     public const float CHAR_BUMPDURATION = 0.28f;
 
     public const int   TRAY_MAX_SIZE = 5;
-    public const int   WINNING_POINTS_FORCE_FEEDER = 6;
+
+    public const int   WINNING_POINTS_FORCE_FEEDER = 30;
+    public const float CHAR_GRAB_DEFAULT_SPEEDPENALTY = 0.03f;
     public const float CHAR_GRAB_CHECK_DISTANCE = 1f;
     public const float CHAR_GRAB_POSITION_OFFSET = 0.5f;
     public const float CHAR_GRAB_CYLINDER_COLLIDER_Y_OFFSET = 0f;
@@ -63,6 +65,7 @@ public static class GlobalValues
 
     public const float SCENE_CIRCLETRANSIT_TIME = 1f;
 
+    public static float[] TOURNAMENT_SCORES = new float[] { 6f, 4f, 2f, 1f };
 
 
 }

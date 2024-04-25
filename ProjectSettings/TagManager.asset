@@ -23,6 +23,8 @@ TagManager:
   - TugPrefab
   - Transitions
   - FlyingHeadlight
+  - ResultScreenDebug
+  - BombManager
   layers:
   - Default
   - TransparentFX

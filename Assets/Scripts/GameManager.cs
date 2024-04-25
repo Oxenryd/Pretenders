@@ -22,23 +22,30 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Music _music;
     [SerializeField] private Transitions _transitions;
 
+    [SerializeField] private GameObject[] _powerupPrefabs;
+
     private float[] _fpsBuffer;
     private int _fpsCounter = 0;
     private string[] _digitStrings;
     private string[] _numberStrings;
-    private float[] _tournamentScore;
-    private float[] _scoreMultiplier;
 
+    //private float[] _tournamentScore;
+    private bool _tournamentComplete = false;
+    private float[] _scoreMultiplier;
+    private bool _includingMiniGames = false;
     private string[] _tournamentGameList;
     private int _currentTournamentScene = 0;
 
     private bool _firstStart = true;
-
+    public GameObject[] PowerUpPrefabs
+    { get { return _powerupPrefabs; } }
     public bool InLoadingScreen { get; set; }
 
+    private List<int> _lastStandings;
     private List<MatchResult> _currentResults;
 
     private AsyncOperation _unloadingPrevious;
+    private bool _resultsNextCall = false;
 
     private ICharacter[] _playableCharacters;
     private int _numPlayers = 1;
@@ -49,6 +56,10 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public static GameManager Instance
     { get { return _instance; } }
+    public int CurrentTournamentSceneIndex
+    { get { return _currentTournamentScene; } }
+    public bool Tournament
+    { get; private set; } = false;
 
     public void SetCurrentSceneManager(SceneManager sceneManager)
     {
@@ -58,6 +69,8 @@ public class GameManager : MonoBehaviour
     public Music Music
     { get { return _music; } }
 
+
+    public bool DebuggingResultScreen { get; set; } = false;
     public float UnloadProgress
     { get { return _unloadingPrevious.progress; } }
     public int FpsMaximumSamples { get; set; } = 120;
@@ -89,10 +102,15 @@ public class GameManager : MonoBehaviour
         NumOfPlayersChanged.Invoke(this, NumOfPlayers);
     }
 
-    public void StartNewTournament()
+    public void StartNewTournament() { StartNewTournament(false); }
+    public void StartNewTournament(bool includeMiniGames)
     {
-        _scoreMultiplier = new float[] { 1f, 1f, 1f, 1f };
-        _currentTournamentScene = 0;
+        _tournamentComplete = false;
+        _includingMiniGames = includeMiniGames;
+        Tournament = true;
+        _scoreMultiplier = new float[] { 1f, 1f, 1f,1f };
+        _currentTournamentScene = -1;
+        _lastStandings.Clear();
         _currentResults.Clear();
         List<int> matchOrder = new();
         List<int> minigameOrder = new();
@@ -100,13 +118,13 @@ public class GameManager : MonoBehaviour
 
         while (matchOrder.Count < GlobalStrings.MATCHES_NAMES.Length)
         {
-            var index = rand.Next(0, 3);
+            var index = rand.Next(0, GlobalStrings.MATCHES_NAMES.Length);
             if (!matchOrder.Contains(index))
                 matchOrder.Add(index);
         }
-        while (minigameOrder.Count < GlobalStrings.MINIGAMES_NAMES.Length)
+        while (minigameOrder.Count < GlobalStrings.MATCHES_NAMES.Length - 1)
         {
-            var index = rand.Next(0, 2);
+            var index = rand.Next(0, GlobalStrings.MINIGAMES_NAMES.Length);
             if (!minigameOrder.Contains(index))
                 minigameOrder.Add(index);
         }
@@ -115,7 +133,7 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < matchOrder.Count; i++)
         {
             stringList.Add(GlobalStrings.MATCHES_NAMES[matchOrder[i]]);
-            if (i < matchOrder.Count - 1)
+            if (i < matchOrder.Count - 1 && includeMiniGames)
                 stringList.Add(GlobalStrings.MINIGAMES_NAMES[minigameOrder[i]]);
         }
         _tournamentGameList = stringList.ToArray();
@@ -129,9 +147,60 @@ public class GameManager : MonoBehaviour
     { _scoreMultiplier = new float[] { 1f, 1f, 1f, 1f }; }
     public string GetTournamentNextScene()
     {
-        var sceneString = _tournamentGameList[_currentTournamentScene];
-        _currentTournamentScene++;
-        return sceneString;
+        if (_tournamentComplete) return GlobalStrings.SCENE_PRAJSPAL;
+        if (_currentTournamentScene == _tournamentGameList.Length - 1)
+        {
+            _tournamentComplete = true;
+            return GlobalStrings.SCENE_RESULTS;
+        }
+
+        if (_includingMiniGames)
+        {
+            if (_resultsNextCall)
+            {
+                _resultsNextCall = false;
+                var sceneString = _tournamentGameList[_currentTournamentScene];
+                _currentTournamentScene++;
+                return sceneString;
+            } else
+            {
+                var modulo = _currentTournamentScene % 2;
+                if (_currentTournamentScene < 0)
+                {
+                    _currentTournamentScene = 0;
+                    _resultsNextCall = true;
+                    return _tournamentGameList[_currentTournamentScene];
+                } else if (modulo > 0)
+                {
+                    _resultsNextCall = false;
+                } else
+                {
+                    _resultsNextCall = true;
+                }
+            }
+        } else
+        {
+            if (_resultsNextCall)
+            {
+                _resultsNextCall = false;
+                _currentTournamentScene++;
+                var sceneString = _tournamentGameList[_currentTournamentScene];                
+                return sceneString;
+            }
+            else
+            {
+                if (_currentTournamentScene < 0)
+                {
+                    _currentTournamentScene++;
+                    _resultsNextCall = false;
+                    return _tournamentGameList[_currentTournamentScene];
+                }
+                _resultsNextCall = true;
+                return GlobalStrings.SCENE_RESULTS;
+            }
+        }
+
+        return _tournamentGameList[++_currentTournamentScene];
     }
 
     public string[] TournamentGameList
@@ -142,19 +211,22 @@ public class GameManager : MonoBehaviour
         _currentResults.Add(result);
     }
 
+    public int[] GetLastStandings()
+    { return _lastStandings.ToArray(); }
     public MatchResult[] GetMatchResults()
     { return _currentResults.ToArray(); }
-    public float GetTournamentScore(int playerIndex)
-    { return _tournamentScore[playerIndex]; }
-    public void IncreaseTournamentScore(int playerIndex, float score)
-    { _tournamentScore[playerIndex] += score; }
-    public void ResetTournamentScore()
-    {
-        for (int i = 0; i < _tournamentScore.Length; i++)
-        {
-            _tournamentScore[i] = 0f;
-        }
-    }
+    //public float GetTournamentScore(int playerIndex)
+    //{ return _tournamentScore[playerIndex]; }
+    //public void IncreaseTournamentScore(int playerIndex, float score)
+    //{ _tournamentScore[playerIndex] += score; }
+    //public void ResetTournamentScore()
+    //{
+
+    //    for (int i = 0; i < _tournamentScore.Length; i++)
+    //    {
+    //        _tournamentScore[i] = 0f;
+    //    }
+    //}
     public SceneManager SceneManager
     { get { return _curSceneman; } }
     public InputManager InputManager
@@ -212,9 +284,9 @@ public class GameManager : MonoBehaviour
             yield return null;
         }
     }
-
+    
     private void onSceneLoaded(Scene arg0, LoadSceneMode arg1)
-    {
+    { 
         _camTransform = Camera.main.transform;
         if (!checkThisIsTheOneAndOnly())
         {
@@ -263,13 +335,15 @@ public class GameManager : MonoBehaviour
     void Awake()
     {
         _currentResults = new List<MatchResult>();
+        _lastStandings = new List<int>();
         if (!checkThisIsTheOneAndOnly())
         {
             Destroy(this.gameObject);
             return;
         }
 
-        _tournamentScore = new float[] { 0f, 0f, 0f, 0f };
+
+        //_tournamentScore = new float[] { 0f, 0f, 0f, 0f };
 
         this.tag = GlobalStrings.NAME_GAMEMANAGER;
         UnitySceneManager.sceneLoaded -= onSceneLoaded;
@@ -306,7 +380,7 @@ public class GameManager : MonoBehaviour
         // First, set up for none players.
         NumOfPlayers = 0;
 
-        // Makes sure that the GameManger COULD run without an InputManager if that¨s needed.
+        // Makes sure that the GameManger COULD run without an InputManager if thatÂ¨s needed.
         if (_inputMan != null)
         {
             findAndEnumHeroes(true);

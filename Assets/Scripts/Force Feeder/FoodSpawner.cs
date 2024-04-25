@@ -5,12 +5,14 @@ using UnityEngine;
 public class FoodSpawner : MonoBehaviour
 {
 
-    private Vector3 _origin = new Vector3(0, 6, 0);
+    private Vector3 _origin = new Vector3(0, 9, 0);
     private Vector3 _direction;
-    private float _radius = 5f;
+    private float _radius = 10f;
     private float _speed = 1f;
-    private float _spawnSpeed = 2f;
+    private float _spawnSpeed = 5f;
     private float _timeSinceLastFoodSpawn = 0f;
+
+    public bool Running = false;
 
     [SerializeField] private Banana _bananaPrefab;
     [SerializeField] private Watermelon _waterMelonPrefab;
@@ -44,6 +46,7 @@ public class FoodSpawner : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!Running) return;
 
         MoveFoodManager();
 
@@ -53,6 +56,7 @@ public class FoodSpawner : MonoBehaviour
         if (_timeSinceLastFoodSpawn > _spawnSpeed)
         {
             SpawnFood();
+            _spawnSpeed = Random.Range(1f, 2f);
         }
 
     }
@@ -60,7 +64,6 @@ public class FoodSpawner : MonoBehaviour
     void MoveFoodManager()
     {
         transform.position += _direction * _speed * Time.deltaTime;
-
         float distance = Vector3.Distance(_origin, transform.position);
 
         if (distance > _radius)

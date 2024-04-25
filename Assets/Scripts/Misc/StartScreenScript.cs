@@ -41,6 +41,7 @@ public class StartScreenScript : MonoBehaviour
     private Color _textColor = new Color(84, 0, 60, 0);
 
     private bool _done = false;
+    private int _pressed = 0;
 
     private enum Phase
     {
@@ -75,6 +76,9 @@ public class StartScreenScript : MonoBehaviour
 
     private void StartProceed(object sender, HeroMovement e)
     {
+        if (_pressed >= 2) return;
+
+        _pressed++;
         if (_phase == Phase.ShowingScreen)
         {
             _phase = Phase.FadeOut;

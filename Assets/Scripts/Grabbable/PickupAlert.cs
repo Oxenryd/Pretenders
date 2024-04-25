@@ -54,7 +54,6 @@ public class PickupAlert : MonoBehaviour
             var color = hero.PrimaryColor;
             Activate(grabbableTransform, color);
         }
-
         _keepAliveTimer.Reset();
     }
 

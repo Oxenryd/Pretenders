@@ -11,14 +11,25 @@ namespace Assets.Scripts.Collectibles
         private Effect powerUpEffect;
         private float duration = 1.0f;
         private Renderer rend;
-        [SerializeField] BrawlerPowerType type;
+       // [SerializeField] BrawlerPowerType type;
         public float LifeTime { get; set; } = 10f;
         public float ActivateTime { get; set; } = 5f;
         public bool Collected { get; set; } = false;
         public bool IsCollectable { get; set; } = false;
         public bool Expired { get; set; } = false;
         private EasyTimer _timeToActivate;
-
+        public Vector3 GetPosition()
+        {
+            return transform.position;
+        }
+        public void SetPosition(Vector3 position)
+        {
+            transform.position = position;
+        }
+        public Collider GetCollider()
+        {
+            return transform.GetComponent<Collider>();
+        }
         void Start()
         {
             _timeToActivate = new EasyTimer(ActivateTime);
@@ -67,42 +78,41 @@ namespace Assets.Scripts.Collectibles
         }
         public void ApplyEffect()
         {
-            switch (type) 
-            {
-                case BrawlerPowerType.WeightGain:
-                    {
+            //switch (type) 
+            //{
+            //    case BrawlerPowerType.WeightGain:
+            //        {
                         
-                    }
-                    break;
-                case BrawlerPowerType.SpeedUp:
-                    {
-                        powerUpEffect.MoveSpeedMultiplier = 2f;
-                        powerUpEffect.Activate();
-                    }
-                    break;
-                case BrawlerPowerType.UltraShove:
-                    {
-                        powerUpEffect.ShoveMultiplier = 2f;
-                        powerUpEffect.Activate();
-                    }
-                    break;
-                case BrawlerPowerType.MegaJump:
-                    {
-                        powerUpEffect.JumpPowerMultiplier = 2f;
-                        powerUpEffect.Activate();
-                    }
-                    break;
-            }        
+            //        }
+            //        break;
+            //    case BrawlerPowerType.SpeedUp:
+            //        {
+            //            powerUpEffect.MoveSpeedMultiplier = 2f;
+            //        }
+            //        break;
+            //    case BrawlerPowerType.UltraShove:
+            //        {
+            //            powerUpEffect.ShoveMultiplier = 2f;
+            //        }
+            //        break;
+            //    case BrawlerPowerType.MegaJump:
+            //        {
+            //            powerUpEffect.JumpPowerMultiplier = 2f;
+            //        }
+            //        break;
+            //}
+            powerUpEffect.Activate();
         }
         public void OnExpire()
         {
             Collected = false;
             gameObject.SetActive(false);
         }
-        private void OnCollisionEnter(Collision collision)
+        
+        public void OnTriggerEnter(Collider other)
         {
-            var hero = collision.collider.gameObject.GetComponent<HeroMovement>();
-            if (hero == null) 
+            var hero = other.gameObject.GetComponent<HeroMovement>();
+            if (hero == null)
             {
                 return;
             }
@@ -116,7 +126,9 @@ namespace Assets.Scripts.Collectibles
                 return;
             }
         }
-     /*---------------------------------------The Loop ---------------------------------------*/
+
+
+        /*---------------------------------------The Loop ---------------------------------------*/
         //this probably aint true no more tbh
         //CanSpawn is true --> Manager can spawn item
         //Manager spawns item --> OnSpawn called

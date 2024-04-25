@@ -65,6 +65,9 @@ public class InputManager : MonoBehaviour
         DontDestroyOnLoad(this);
     }
 
+    public HeroMovement[] Heroes
+    { get { return _characters; } }
+
     /// <summary>
     /// Needs to be run before anything else on the manager to assign controllable characters and such.
     /// </summary>
