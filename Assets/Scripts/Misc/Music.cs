@@ -6,6 +6,7 @@ public class Music : MonoBehaviour
 {
     public static readonly int SILENCE = 0;
     public static readonly int OPENINGTHEME = 1;
+    public static readonly int LOBBY = 2;
     public static readonly float DEFAULT_OVERHANG_TIME = 1.5f;
 
 
@@ -17,13 +18,16 @@ public class Music : MonoBehaviour
     private EasyTimer _crossFadeTimer;
     private EasyTimer _overhangTimer;
     private EasyTimer _fadeOutTimer;
+    private EasyTimer _fadeInTimer;
 
+    private int _pendingSongindex = -1;
     private int _currentSongindex = -1;
     private AudioSource _mixingChannel;
     private AudioSource _mainOut;   
     private bool _crossfading = false;
     private bool _overhanging = false;
     private bool _fadeOut = false;
+    private bool _fadeingIn = false;
 
     public float Volume
     { get; set; } = 1f;
@@ -37,12 +41,14 @@ public class Music : MonoBehaviour
         _crossFadeTimer = new EasyTimer(1f);
         _overhangTimer = new EasyTimer(LoopOverhangTime);
         _fadeOutTimer = new EasyTimer(1f);
+        _fadeInTimer = new EasyTimer(1f);
         _mainOut = _channel0;
         _mixingChannel = _channel1;
         _songs = new PtSong[]
         {
             new PtSong( (AudioClip)Resources.Load("Sounds/BGM/silence", typeof(AudioClip)), 0, 9f, false, false),
-            new PtSong( (AudioClip)Resources.Load("Sounds/BGM/pretendersTheme", typeof(AudioClip)), 1.98f, 71.520f, true, true)
+            new PtSong( (AudioClip)Resources.Load("Sounds/BGM/pretendersTheme", typeof(AudioClip)), 1.98f, 71.520f, true, true),
+            new PtSong( (AudioClip)Resources.Load("Sounds/BGM/lobby", typeof(AudioClip)), 2.105f, 31.553f, false, true)
         };
         _currentSongindex = -1;
     }
@@ -54,6 +60,11 @@ public class Music : MonoBehaviour
 
     public void Crossfade(int toSongIndex, float toTime, float fadeTime)
     {
+        if (_mainOut.clip == null)
+        {
+            _mainOut.clip = _songs[SILENCE].Clip;
+            _currentSongindex = SILENCE;
+        }
         _crossfading = true;
         _crossFadeTimer.Time = fadeTime;
         _crossFadeTimer.Reset();
@@ -61,16 +72,27 @@ public class Music : MonoBehaviour
         _mixingChannel.time = toTime;
         _mixingChannel.volume = 0;
         _mixingChannel.Play();
+        _pendingSongindex = toSongIndex;
     }
 
-    public void PlayNow(int songIndex)
+    public void PlayNow(int toSongIndex)
+    { PlayNow(toSongIndex, _songs[toSongIndex].Beginning, 0f); }
+    public void PlayNow(int songIndex, float startAt, float fadeInTime)
     {
         _currentSongindex = songIndex;
         _stopAndReset();
         var song = _songs[songIndex];
         _mainOut.clip = song.Clip;
-        _mainOut.time = song.Beginning;
-        _mainOut.volume = Volume;
+        _mainOut.time = startAt;
+        if (fadeInTime == 0f)
+            _mainOut.volume = Volume;
+        else
+        {
+            _fadeingIn = true;
+            _fadeInTimer.Time = fadeInTime;
+            _fadeInTimer.Reset();
+            _mainOut.volume = 0;
+        }
         _mainOut.Play();
     }
 
@@ -84,6 +106,12 @@ public class Music : MonoBehaviour
     {
         if (_currentSongindex < 0) return;
 
+        if (_fadeingIn)
+        {
+            _mainOut.volume = (Volume * _fadeInTimer.Ratio);
+            if (_fadeInTimer.Done)
+                _fadeingIn = false;
+        }
 
         if (!_crossfading && _songs[_currentSongindex].Looping)
         {
@@ -121,6 +149,7 @@ public class Music : MonoBehaviour
             _mainOut.volume = Volume - (Volume * _crossFadeTimer.Ratio);
             if (_crossFadeTimer.Done)
             {
+                _currentSongindex = _pendingSongindex;
                 _crossfading = false;
                 _mainOut.Stop();
                 swapChannels();
@@ -129,7 +158,7 @@ public class Music : MonoBehaviour
         
     }
 
-    private unsafe void swapChannels()
+    private void swapChannels()
     {
         var swap = _mainOut;
         _mainOut = _mixingChannel;

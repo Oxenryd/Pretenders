@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 namespace Assets.Scripts.PlatformBrawler
 {
@@ -19,8 +18,7 @@ namespace Assets.Scripts.PlatformBrawler
         }
 
         private void OnCollisionEnter(Collision collision)
-        {
-            
+        {        
             GameObject _theBouncedOne = collision.gameObject;
             if(_theBouncedOne.layer == GrabberLayer && ColliderEnabledWhileGrabbed)
             {

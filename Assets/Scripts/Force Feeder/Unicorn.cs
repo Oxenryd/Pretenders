@@ -4,7 +4,7 @@ using UnityEngine;
 public class Unicorn : MonoBehaviour, IRecievable
 {
 
-    private float _speed = 1f;
+    private float _speed = 2f;
     private float _rotationSpeed = 2f;
     private Vector3 _direction;
     private Vector3 _targetDirection;
@@ -15,22 +15,26 @@ public class Unicorn : MonoBehaviour, IRecievable
     private float _passedTimeSinceLastStateChange = 0f;
     [SerializeField] private TransferAlert _transferAlert;
     public TransferAlert TransferAlert { get { return _transferAlert; } }
-    private float _rayCastLength = 3f;
-    private int _wallLayerMask;
+    private float _rayCastLength = 4f;
+    [SerializeField] private LayerMask _wallLayerMask;
     [SerializeField] private int _score = 0;
     public int Score { get { return _score; } }
     [SerializeField] private List<Food> _foodList = new List<Food>();
     private Food _foodToBeEaten = null;
-    private float _eatingDistanceThreshold = 2f;
+    private float _eatingDistanceThreshold = 3f;
 
-    private EasyTimer _easyTimer;
-
+    private EasyTimer _eatTimer;
+    private EasyTimer _eatTimerII;
+    private EasyTimer _collissionTimer;
+    private RaycastHit _previousCollider = new RaycastHit();
 
     public event ScoreReachedEventHandler OnScoreReached;
 
     void Start()
     {
-        _easyTimer = new EasyTimer(1f);
+        _eatTimer = new EasyTimer(0.5f);
+        _eatTimerII = new EasyTimer(5f);
+
         _changeStateTrigger = UnityEngine.Random.Range(2, 6);
         _direction = transform.forward;
         _targetDirection = _direction;
@@ -39,37 +43,39 @@ public class Unicorn : MonoBehaviour, IRecievable
         var container = GameObject.FindWithTag(GlobalStrings.NAME_UIOVERLAY);
         _transferAlert = GameObject.Instantiate(_transferAlert, container.transform);
         _transferAlert.gameObject.SetActive(false);
-
     }
 
-    void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.layer == GlobalValues.WALL_LAYER)
-        {
-            Vector3 collisionNormal = collision.contacts[0].normal;
-            _targetDirection = Vector3.Reflect(_direction, collisionNormal);
-            _passedTimeSinceLastStateChange = 0f;
-        }
-    }
+    //void OnCollisionEnter(Collision collision)
+    //{
+    //    if (collision.gameObject.layer == GlobalValues.WALL_LAYER)
+    //    {
+    //        Vector3 collisionNormal = collision.contacts[0].normal;
+    //        _targetDirection = Vector3.Reflect(_direction, collisionNormal);
+    //        _passedTimeSinceLastStateChange = 0f;
+    //    }
+    //}
 
     void FixedUpdate()
     {
-        Vector3 rayOrigin = transform.position; // Starting from the object's position
-        Vector3 rayDirection = _targetDirection - transform.position; // Direction towards the target
+        //Vector3 rayOrigin =  new Vector3(transform.position.x, transform.position.y- 2.0f,transform.position.z); // Starting from the object's position
+        //Vector3 rayDirection = _targetDirection - transform.position; // Direction towards the target
 
+        Vector3 rayOrigin = new Vector3(transform.position.x, transform.position.y - 1.0f, transform.position.z);
+        Vector3 rayDirection = transform.forward;
         RaycastHit hitInfo;
+        rayDirection.Normalize();
 
         // Perform the raycast
-        if (Physics.Raycast(rayOrigin, rayDirection, out hitInfo, _rayCastLength, _wallLayerMask))
+
+        if (Physics.Raycast(rayOrigin, rayDirection, out hitInfo, _rayCastLength) && _state != UnicornState.eating)
         {
-            // Get the direction to the hit point
-            Vector3 targetDirection = hitInfo.point - transform.position;
+            if(hitInfo.collider != _previousCollider.collider)
+            {
+                _previousCollider = hitInfo;
+                // Calculate the reflection direction
+                _targetDirection = Vector3.Reflect(rayDirection, hitInfo.normal);
 
-            // Calculate the rotation towards the hit point
-            Quaternion targetRotation = Quaternion.LookRotation(targetDirection);
-
-            // Smoothly rotate towards the hit point
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * _rotationSpeed);
+            }
         }
     }
 
@@ -77,7 +83,6 @@ public class Unicorn : MonoBehaviour, IRecievable
     {
         UpdateState();
 
-        //Actions performed during a state
         if (_state == UnicornState.walking)
         {
             Walk();
@@ -91,28 +96,34 @@ public class Unicorn : MonoBehaviour, IRecievable
 
     void Eat()
     {
-        if (_foodToBeEaten == null && _foodList.Count > 0)
-        {
-            _foodToBeEaten = FindClosestFood();
-        }
-
-        if (_foodToBeEaten != null)
+        if (_foodToBeEaten == null && _foodList.Count > 0) _foodToBeEaten = FindClosestFood();
+        else
         {
             // Rotate towards the food
+
             Vector3 directionToFood = (_foodToBeEaten.transform.position - transform.position).normalized;
             Quaternion targetRotation = Quaternion.LookRotation(directionToFood);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * _rotationSpeed);
-
-            // Move towards the food
-            transform.position += transform.forward * _speed * Time.deltaTime;
+            Quaternion rotationY = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * _rotationSpeed);
+            transform.rotation = Quaternion.Euler(0f, rotationY.eulerAngles.y, 0f);
 
             // If close enough to the food, eat it
             float distanceToFood = Vector3.Distance(transform.position, _foodToBeEaten.transform.position);
-            if (distanceToFood < _eatingDistanceThreshold && _easyTimer.Done)
+
+            // Move towards the food
+            if (_eatTimerII.Done)
+            {
+                EatFood();
+            }
+            if (distanceToFood > _eatingDistanceThreshold)
+            {
+                transform.position += transform.forward * _speed * Time.deltaTime;
+            }
+            else if (_eatTimer.Done)
             {
                 EatFood();
             }
         }
+
     }
 
     private void EatFood()
@@ -124,9 +135,12 @@ public class Unicorn : MonoBehaviour, IRecievable
 
     public void Walk()
     {
+        Vector3 currentRotation = transform.rotation.eulerAngles;
+        transform.rotation = Quaternion.Euler(0f, currentRotation.y, 0f);
+
         float dotProduct = Vector3.Dot(_direction, _targetDirection);
 
-        if (dotProduct > 0.95)
+        if (dotProduct > 0.97)
         {
             _direction = _targetDirection;
 
@@ -193,16 +207,13 @@ public class Unicorn : MonoBehaviour, IRecievable
 
     void OnDrawGizmos()
     {
-        Gizmos.color = Color.yellow; // Set the color of the ray
+        Gizmos.color = Color.yellow;
 
-        Vector3 rayOrigin = transform.position; // Starting from the object's position
+        Vector3 rayOrigin = new Vector3(transform.position.x, transform.position.y - 1.0f, transform.position.z);
         Vector3 rayDirection = transform.forward;
 
-        // Define the maximum distance for the raycast
-        float maxRaycastDistance = 2f; // Adjust as needed
-
         // Draw the ray
-        Gizmos.DrawRay(rayOrigin, rayDirection * maxRaycastDistance);
+        Gizmos.DrawRay(rayOrigin, rayDirection * _rayCastLength);
     }
 
 
@@ -237,12 +248,7 @@ public class Unicorn : MonoBehaviour, IRecievable
                 _passedTimeSinceLastStateChange = 0f;
             }
         }
-
-
-
     }
-
-
 
     public Food FindClosestFood()
     {
@@ -250,7 +256,6 @@ public class Unicorn : MonoBehaviour, IRecievable
         Food closestFood = null;
         if (_foodList.Count == 0) return null;
 
-        _easyTimer.Reset();
         for (int i = 0; i < _foodList.Count; i++)
         {
             if (_foodList[i] != null)
@@ -264,15 +269,14 @@ public class Unicorn : MonoBehaviour, IRecievable
             }
         }
 
+        _eatTimer.Reset();
+        _eatTimerII.Reset();
         _targetDirection = closestFood.transform.position - transform.position;
 
         return closestFood;
     }
 
-
-
-
-    public delegate int[] ScoreReachedEventHandler();
+    public delegate void ScoreReachedEventHandler();
 
 }
 

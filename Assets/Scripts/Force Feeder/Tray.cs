@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using TMPro;
 using UnityEngine;
 
 public class Tray : Grabbable, IRecievable
@@ -32,13 +34,22 @@ public class Tray : Grabbable, IRecievable
     void Update()
     {
         base.Update();
-        for(int i =0; i< _heldObjects.Count; i++)
+
+        float angle = Vector3.Angle(transform.up, Vector3.up);
+
+        if (angle > 1f)
+        {
+            Quaternion targetRotation = Quaternion.FromToRotation(transform.up, Vector3.up) * transform.rotation;
+            transform.rotation = targetRotation;
+        }
+        
+
+        for (int i =0; i< _heldObjects.Count; i++)
         {
             _heldObjects[i].transform.position = transform.position + this.transform.rotation * _anchorPoints[i];
-
             _heldObjects[i].transform.rotation =  this.transform.rotation * Quaternion.Euler(_rotationPoints[i]);
-            
         }
+
 
     }
 
@@ -69,6 +80,11 @@ public class Tray : Grabbable, IRecievable
     }
 
     public override object[] GetTransferables() { return _heldObjects.ToArray(); }
+
+    public override float SpeedPenalty()
+    {
+        return _heldObjects.Count * GlobalValues.CHAR_GRAB_DEFAULT_SPEEDPENALTY;
+    }
 
     public override bool ProcessTransferResponse(int response)
     {

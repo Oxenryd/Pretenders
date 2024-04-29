@@ -4,11 +4,14 @@ using UnityEngine;
 
 public class SetPathMaker : MonoBehaviour
 {
+    [SerializeField] private SetPathManager _manager;
     public GameObject pathStartPrefab;
     public GameObject pathEndPrefab;
     public GameObject pathPlatformPrefab;
 
     public int platformSize = 4;
+
+    public bool winnerFound = false;
 
     void AddPlatformToPath(int rowNr, int colNr, Vector3 pathTopLeftPos)
     {
@@ -52,9 +55,53 @@ public class SetPathMaker : MonoBehaviour
         }
     }
 
+    bool IsCollidingWithGoal(Vector3 posToCheck)
+    {
+        Vector3 goalPos = pathEndPrefab.transform.position;
+
+        if (posToCheck.x > goalPos.x)
+        {
+            if (posToCheck.z > 40) // Goalpaths Z value == 40 (FIX LATER HARDCODE)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     // Update is called once per frame
     void Update()
     {
-        
+
+        if (winnerFound == false)
+        {
+            GameObject[] heroObjects = GameObject.FindGameObjectsWithTag("Character");
+            List<Hero> heroes = new();
+            foreach (var obj in heroObjects)
+            {
+                var hero = obj.GetComponent<Hero>();
+                heroes.Add(hero);
+            }
+
+            for (global::System.Int32 heroIndex = 0; heroIndex < 4; heroIndex++)
+            {
+                if (IsCollidingWithGoal(heroes[heroIndex].transform.position))
+                 {
+                    Debug.Log("Winner! Player: " + heroIndex);
+
+                    // Update the _scoreMultiplier of the hero's index in the GameManager
+                    GameManager.Instance.SetPlayerMultiplier(heroes[heroIndex].Index, 1.5F);
+
+                    Debug.Log("Player 0: " + GameManager.Instance.GetPlayerMultiplier(0));
+                    Debug.Log("Player 1: " + GameManager.Instance.GetPlayerMultiplier(1));
+                    Debug.Log("Player 2: " + GameManager.Instance.GetPlayerMultiplier(2));
+                    Debug.Log("Player 3: " + GameManager.Instance.GetPlayerMultiplier(3));
+
+                    winnerFound = true;
+                    _manager.InformWinnerFound(heroes[heroIndex].transform);
+                }
+            }
+        }
     }
 }

@@ -4,5 +4,5 @@ using UnityEngine;
 
 public enum ControlSchemeType
 {
-    Platform, TopDown, BomberMan
+    Platform, TopDown, BomberMan, PricePall
 }

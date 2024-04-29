@@ -84,6 +84,10 @@ public class Grabbable : MonoBehaviour
         }
     }
 
+    public virtual float GetSpeedPenalty()
+    {
+        return GlobalValues.CHAR_GRAB_DEFAULT_SPEEDPENALTY;
+    }
     public void Detach()
     { Detach(1f); }
 
@@ -319,6 +323,10 @@ public class Grabbable : MonoBehaviour
     }
     public virtual void KnockOff() { Drop(); }
     public virtual bool InjectDropAbort() { return false; }
+    public virtual float SpeedPenalty()
+    {
+        return GlobalValues.CHAR_GRAB_DEFAULT_SPEEDPENALTY;
+    }
     public virtual void OnDropThrow()
     {
         Rigidbody.AddForce(_rBody.mass * GlobalValues.CHAR_GRAB_DROPFORCE * (_grabber.FaceDirection + Vector3.up).normalized, ForceMode.Impulse);
