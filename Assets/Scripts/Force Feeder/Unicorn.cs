@@ -21,9 +21,10 @@ public class Unicorn : MonoBehaviour, IRecievable
     public int Score { get { return _score; } }
     [SerializeField] private List<Food> _foodList = new List<Food>();
     private Food _foodToBeEaten = null;
-    private float _eatingDistanceThreshold = 2f;
+    private float _eatingDistanceThreshold = 3f;
 
     private EasyTimer _eatTimer;
+    private EasyTimer _eatTimerII;
     private EasyTimer _collissionTimer;
     private RaycastHit _previousCollider = new RaycastHit();
 
@@ -32,6 +33,7 @@ public class Unicorn : MonoBehaviour, IRecievable
     void Start()
     {
         _eatTimer = new EasyTimer(0.5f);
+        _eatTimerII = new EasyTimer(5f);
 
         _changeStateTrigger = UnityEngine.Random.Range(2, 6);
         _direction = transform.forward;
@@ -108,6 +110,10 @@ public class Unicorn : MonoBehaviour, IRecievable
             float distanceToFood = Vector3.Distance(transform.position, _foodToBeEaten.transform.position);
 
             // Move towards the food
+            if (_eatTimerII.Done)
+            {
+                EatFood();
+            }
             if (distanceToFood > _eatingDistanceThreshold)
             {
                 transform.position += transform.forward * _speed * Time.deltaTime;
@@ -116,8 +122,6 @@ public class Unicorn : MonoBehaviour, IRecievable
             {
                 EatFood();
             }
-
-
         }
 
     }
@@ -252,7 +256,6 @@ public class Unicorn : MonoBehaviour, IRecievable
         Food closestFood = null;
         if (_foodList.Count == 0) return null;
 
-        _eatTimer.Reset();
         for (int i = 0; i < _foodList.Count; i++)
         {
             if (_foodList[i] != null)
@@ -266,6 +269,8 @@ public class Unicorn : MonoBehaviour, IRecievable
             }
         }
 
+        _eatTimer.Reset();
+        _eatTimerII.Reset();
         _targetDirection = closestFood.transform.position - transform.position;
 
         return closestFood;

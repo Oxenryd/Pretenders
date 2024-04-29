@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 
@@ -79,6 +80,11 @@ public class Tray : Grabbable, IRecievable
     }
 
     public override object[] GetTransferables() { return _heldObjects.ToArray(); }
+
+    public override float SpeedPenalty()
+    {
+        return _heldObjects.Count * GlobalValues.CHAR_GRAB_DEFAULT_SPEEDPENALTY;
+    }
 
     public override bool ProcessTransferResponse(int response)
     {
