@@ -45,7 +45,8 @@ public class Music : MonoBehaviour
         _songs = new PtSong[]
         {
             new PtSong( (AudioClip)Resources.Load("Sounds/BGM/silence", typeof(AudioClip)), 0, 9f, false, false),
-            new PtSong( (AudioClip)Resources.Load("Sounds/BGM/pretendersTheme", typeof(AudioClip)), 1.98f, 71.520f, true, true)
+            new PtSong( (AudioClip)Resources.Load("Sounds/BGM/pretendersTheme", typeof(AudioClip)), 1.98f, 71.520f, true, true),
+            new PtSong( (AudioClip)Resources.Load("Sounds/BGM/lobby.mp3", typeof(AudioClip)), 2.105f, 31.603f, false, true)
         };
         _currentSongindex = -1;
     }
