@@ -8,8 +8,8 @@ public class FoodSpawner : MonoBehaviour
     private Vector3 _origin = new Vector3(0, 9, 0);
     private Vector3 _direction;
     private float _radius = 10f;
-    private float _speed = 1f;
-    private float _spawnSpeed = 2f;
+    private float _speed = 4f;
+    private float _spawnSpeed = 4f;
     private float _timeSinceLastFoodSpawn = 0f;
 
     public bool Running = false;
