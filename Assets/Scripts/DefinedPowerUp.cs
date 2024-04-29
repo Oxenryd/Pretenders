@@ -21,6 +21,12 @@ public class DefinedPowerUp
             {
                 case DefinedPowerupType.WeightGain:
                     return GameManager.Instance.PowerUpPrefabs[0];
+                case DefinedPowerupType.Movespeed_33:
+                    return GameManager.Instance.PowerUpPrefabs[1];
+                case DefinedPowerupType.MegaShove:
+                    return GameManager.Instance.PowerUpPrefabs[2];
+                case DefinedPowerupType.Jump_50:
+                    return GameManager.Instance.PowerUpPrefabs[3];
                 default: return null;
             }
         }
