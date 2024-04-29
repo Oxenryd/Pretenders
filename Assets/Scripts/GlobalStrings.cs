@@ -68,7 +68,7 @@ public static class GlobalStrings
     };
     public static string[] MINIGAMES_NAMES =
     {
-        "SetPath", "FallingBlocks"
+        "JonteSetPathScene", "JonteSetPathScene"
     };
     public const string TOUR_IDENTIFIER = "TOUR";
 }

@@ -17,14 +17,35 @@ public class ZoomFollowGang : MonoBehaviour
     [SerializeField] public float _bufferFactor = -0.35f;
     [SerializeField] public bool _stationary = false;
     [SerializeField] public bool _zoomDependentOffset = true;
+    [SerializeField] private float _winnerZoomTime = 0.7f;
+    [SerializeField] private float _winnerZoom = 12f;
+
 
     public Transform[] Targets { get { return _targets; } set { _targets = value; }}
-
+    public bool FollowingWinner { get; set; } = false;
+    public Transform WinnerTransform { get; set; }
     private Vector3 _curVecVel;
+    private float _t = 0;
+    private Vector3 _startPosWinner;
 
+    public void SetWinner(Transform winner)
+    {
+        _startPosWinner = transform.position;
+        FollowingWinner = true;
+        WinnerTransform = winner;
+        _t = 0;
+    }
     void Update()
     {
-        if (_stationary) return;
+        if (_stationary && !FollowingWinner) return;
+
+        if (FollowingWinner)
+        {
+            var target = WinnerTransform.position + -transform.forward * _winnerZoom;
+            _t += GameManager.Instance.DeltaTime;
+            transform.position = Vector3.Lerp(_startPosWinner, target, Mathf.Clamp01(_t / _winnerZoomTime));
+            return;
+        }
         // Calculate the rectangle to keep in view
         float left = float.MinValue;
         float right = float.MaxValue;

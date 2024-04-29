@@ -49,7 +49,7 @@ public class TransitionZoneScript : MonoBehaviour
                 OnTriggeredTransition();
                 if (_nextScene == GlobalStrings.TOUR_IDENTIFIER)
                 {
-                    GameManager.Instance.StartNewTournament();
+                    GameManager.Instance.StartNewTournament(GameManager.Instance.IncludeMiniGames);
                     GameManager.Instance.TransitToNextScene(GameManager.Instance.GetTournamentNextScene());
                 } else
                     GameManager.Instance.TransitToNextScene(_nextScene);
