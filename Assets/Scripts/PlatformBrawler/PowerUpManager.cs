@@ -63,33 +63,33 @@ namespace Assets.Scripts.PlatformBrawler
         {
             if (CurrentGameType == GameType.Brawler)
             {
-                RandomisePowerUp();
-              //  PowerUp.PowerUpTypes type = CurrentPowerUpInRotation;
-              //  _currentPowerUp = _powerUps[(int)type];
-                _currentPowerUp.SetPosition(RandomiseBrawlerSpawn());
-                Collider powerUpCollider = _currentPowerUp.GetCollider();
-                while (true)
-                {
-                    bool overlapping = false;
-                    foreach (Collider collider in PlatformColliders)
-                    {
+              //  RandomisePowerUp();
+              ////  PowerUp.PowerUpTypes type = CurrentPowerUpInRotation;
+              ////  _currentPowerUp = _powerUps[(int)type];
+              // // _currentPowerUp.SetPosition(RandomiseBrawlerSpawn());
+              //  Collider powerUpCollider = _currentPowerUp.GetCollider();
+              //  while (true)
+              //  {
+              //      bool overlapping = false;
+              //      foreach (Collider collider in PlatformColliders)
+              //      {
 
-                        if (powerUpCollider.bounds.Intersects(collider.bounds))
-                        {
-                            overlapping = true;
-                        }
-                    }
-                    if (!overlapping)
-                    {
-                        break;
-                    }
-                    else
-                    {
-                        _currentPowerUp.SetPosition(RandomiseBrawlerSpawn());
-                    }
-                }
-                _currentPowerUp.Spawn();
-                _timeActive.Reset();
+              //          if (powerUpCollider.bounds.Intersects(collider.bounds))
+              //          {
+              //              overlapping = true;
+              //          }
+              //      }
+              //      if (!overlapping)
+              //      {
+              //          break;
+              //      }
+              //      else
+              //      {
+              //          _currentPowerUp.SetPosition(RandomiseBrawlerSpawn());
+              //      }
+              //  }
+              //  _currentPowerUp.Spawn();
+              //  _timeActive.Reset();
             }          
         }
         private void DespawnPowerUp()

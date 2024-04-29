@@ -4353,6 +4353,46 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6048844600851253152, guid: 3c89ac95c67b9574eb56e2238cc9db0f,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6048844600851253152, guid: 3c89ac95c67b9574eb56e2238cc9db0f,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6048844600851253152, guid: 3c89ac95c67b9574eb56e2238cc9db0f,
+        type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6048844600851253152, guid: 3c89ac95c67b9574eb56e2238cc9db0f,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6048844600851253152, guid: 3c89ac95c67b9574eb56e2238cc9db0f,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6048844600851253152, guid: 3c89ac95c67b9574eb56e2238cc9db0f,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6048844600851253152, guid: 3c89ac95c67b9574eb56e2238cc9db0f,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6048844600851253152, guid: 3c89ac95c67b9574eb56e2238cc9db0f,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6963313213773311729, guid: 3c89ac95c67b9574eb56e2238cc9db0f,
         type: 3}
       propertyPath: m_Name
@@ -20700,6 +20740,7 @@ MonoBehaviour:
   _curSceneman: {fileID: 2135803671}
   _music: {fileID: 0}
   _transitions: {fileID: 2095213703}
+  _powerupPrefabs: []
 --- !u!1001 &533074903
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -83036,6 +83077,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bce9ddd924752a245be6c7c6b9073709, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _transitions: {fileID: 2095213703}
   _deathAltitude: 15
   players:
   - {fileID: 1887727488}

@@ -77,6 +77,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     private bool _doDrop = false;
     private bool _canChangeQuadDirection = true;
     private bool _colShoveDisabled = false;
+    private bool _tryingToGrab = false;
     private Vector3 _targetGridCenter;
     private float _distanceToGridTarget = 0f;
     private Vector3 _pendingQuadDirection = Vector3.zero;
@@ -147,7 +148,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     public bool TryingToTrigger
     { get { return _triedToTrigger; } set { _triedToTrigger = value; } }
     public bool TryingToGrab
-    { get; set; } = false;
+    { get { return _tryingToGrab; } set { _tryingToGrab= value; } }
     public bool IsDoubleJumping
     { get; set; } = false;
     public int NumberOfDoubleJumps
@@ -286,7 +287,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     {
         CurrentGrab = grabbable;
         IsGrabbing = true;
-        TryingToGrab = false;
+        _tryingToGrab = false;
         IsGrabInProgress = false;
     }
     public void Drop(Grabbable grabbable)
@@ -299,7 +300,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
         CurrentSpeed = CurrentSpeed * 0.15f;
         Halt();
         _tryingToDrop = false;
-        TryingToGrab = false;
+        _tryingToGrab = false;
         IsGrabInProgress = false;
         IsGrabbing = true;
         CanBeDragged = true;
@@ -383,7 +384,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
             {
                 if (!IsGrabbing && !IsGrabInProgress && !IsTugging)
                 {
-                    TryingToGrab = true;
+                    _tryingToGrab = true;
                 }
                 else if (!IsTugging)
                 {
@@ -662,14 +663,14 @@ public class HeroMovement : MonoBehaviour, IJumpHit
         // ---------------------------------------------------------    GRABBING / DRAGGING / TRANSFERRING
         if (IsBumped || IsShoved)
         {
-            TryingToGrab = false;
+            _tryingToGrab = false;
             _tryingToDrop = false;
         }
         if (_grabTimout.Done && !IsTugging)
         {
             grabDragStuffs();
         }
-        TryingToGrab = false;
+        _tryingToGrab = false;
 
 
         // ---------------------------------------------------------    TRIGGERING
@@ -820,7 +821,10 @@ public class HeroMovement : MonoBehaviour, IJumpHit
         }
         else if (!TryingToMove)
         {
-            if (_controlScheme != ControlSchemeType.BomberMan)
+            if  (_controlScheme == ControlSchemeType.Platform)
+            {
+                CurrentSpeed = 0;
+            } else if (_controlScheme == ControlSchemeType.TopDown)
             {
                 // Take some time to slow down.
                 CurrentSpeed = Mathf.Lerp(_stopSpeed, 0f, haltT);
@@ -856,7 +860,6 @@ public class HeroMovement : MonoBehaviour, IJumpHit
 
             Vector3 velocity = Vector3.zero;
             switch (CurrentControlScheme)
-
             {
                 case ControlSchemeType.BomberMan:
                     velocity = FaceDirection.normalized * CurrentSpeed;
@@ -886,14 +889,22 @@ public class HeroMovement : MonoBehaviour, IJumpHit
 
                 case ControlSchemeType.TopDown:
                     if (!IsDraggedByOther)
-                        velocity = new Vector3(CurrentDirection.x * CurrentSpeed, _body.velocity.y, CurrentDirection.z * CurrentSpeed);
-                    else
+                    {
+                        float grabSpeedFactor = IsGrabbing ? 1f - CurrentGrab.SpeedPenalty() : 1f;
+                        velocity = new Vector3(CurrentDirection.x * CurrentSpeed * grabSpeedFactor, _body.velocity.y, CurrentDirection.z * CurrentSpeed * grabSpeedFactor);
+                    } else
                     {
                         transform.position = Dragger.transform.position + Dragger.FaceDirection * 1.2f;
                         FaceDirection = Dragger.FaceDirection;
                     }
                     break;
+
                 case ControlSchemeType.Platform:
+                    var hero = GetComponent<Hero>();
+                    if (hero.Index == 0)
+                        Debug.Log($"CurrentDir: {CurrentDirection}");
+
+
                     if (!IsDraggedByOther)
                         velocity = new Vector3(CurrentDirection.x * CurrentSpeed, _body.velocity.y, 0);
                     else
@@ -969,19 +980,9 @@ public class HeroMovement : MonoBehaviour, IJumpHit
                 }
                 else if (!CurrentGrab.IsGrabbed && CurrentGrab.CanBeGrabbed)
                 {
-                    if (foundGrab == null)
-                    {
-
-                    }
-                    if (foundGrab.PickupAlert == null)
-                    {
-
-                    }
                     foundGrab.PickupAlert.Ping(this, foundGrab.transform, false);
                 }
-
             }
-
         }
         else if (IsGrabInProgress && (foundObject as Grabbable) != CurrentGrab)
         {
@@ -1008,7 +1009,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
         }
 
         // Trying to grab?
-        if (CanMove && TryingToGrab && hitSomething)
+        if (CanMove && _tryingToGrab && hitSomething)
         {
             doGrabbingDragging(foundObject);
             Halt();
