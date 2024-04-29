@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class Tray : Grabbable, IRecievable
@@ -32,13 +33,22 @@ public class Tray : Grabbable, IRecievable
     void Update()
     {
         base.Update();
-        for(int i =0; i< _heldObjects.Count; i++)
+
+        float angle = Vector3.Angle(transform.up, Vector3.up);
+
+        if (angle > 1f)
+        {
+            Quaternion targetRotation = Quaternion.FromToRotation(transform.up, Vector3.up) * transform.rotation;
+            transform.rotation = targetRotation;
+        }
+        
+
+        for (int i =0; i< _heldObjects.Count; i++)
         {
             _heldObjects[i].transform.position = transform.position + this.transform.rotation * _anchorPoints[i];
-
             _heldObjects[i].transform.rotation =  this.transform.rotation * Quaternion.Euler(_rotationPoints[i]);
-            
         }
+
 
     }
 

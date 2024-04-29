@@ -15,7 +15,7 @@ public class Unicorn : MonoBehaviour, IRecievable
     private float _passedTimeSinceLastStateChange = 0f;
     [SerializeField] private TransferAlert _transferAlert;
     public TransferAlert TransferAlert { get { return _transferAlert; } }
-    private float _rayCastLength = 2f;
+    private float _rayCastLength = 4f;
     [SerializeField] private LayerMask _wallLayerMask;
     [SerializeField] private int _score = 0;
     public int Score { get { return _score; } }
@@ -41,42 +41,38 @@ public class Unicorn : MonoBehaviour, IRecievable
         var container = GameObject.FindWithTag(GlobalStrings.NAME_UIOVERLAY);
         _transferAlert = GameObject.Instantiate(_transferAlert, container.transform);
         _transferAlert.gameObject.SetActive(false);
-
     }
 
-    void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.layer == GlobalValues.WALL_LAYER)
-        {
-            Vector3 collisionNormal = collision.contacts[0].normal;
-            _targetDirection = Vector3.Reflect(_direction, collisionNormal);
-            _passedTimeSinceLastStateChange = 0f;
-        }
-    }
+    //void OnCollisionEnter(Collision collision)
+    //{
+    //    if (collision.gameObject.layer == GlobalValues.WALL_LAYER)
+    //    {
+    //        Vector3 collisionNormal = collision.contacts[0].normal;
+    //        _targetDirection = Vector3.Reflect(_direction, collisionNormal);
+    //        _passedTimeSinceLastStateChange = 0f;
+    //    }
+    //}
 
     void FixedUpdate()
     {
-        Vector3 rayOrigin =  new Vector3(transform.position.x, transform.position.y- 2.0f,transform.position.z); // Starting from the object's position
-        Vector3 rayDirection = _targetDirection - transform.position; // Direction towards the target
+        //Vector3 rayOrigin =  new Vector3(transform.position.x, transform.position.y- 2.0f,transform.position.z); // Starting from the object's position
+        //Vector3 rayDirection = _targetDirection - transform.position; // Direction towards the target
+
+        Vector3 rayOrigin = new Vector3(transform.position.x, transform.position.y - 1.0f, transform.position.z);
+        Vector3 rayDirection = transform.forward;
         RaycastHit hitInfo;
+        rayDirection.Normalize();
 
         // Perform the raycast
+
         if (Physics.Raycast(rayOrigin, rayDirection, out hitInfo, _rayCastLength) && _state != UnicornState.eating)
         {
             if(hitInfo.collider != _previousCollider.collider)
             {
                 _previousCollider = hitInfo;
-                // Get the direction to the hit point
-                Vector3 targetDirection = hitInfo.point - transform.position;
-
                 // Calculate the reflection direction
-                Vector3 reflectedDirection = Vector3.Reflect(rayDirection, hitInfo.normal);
+                _targetDirection = Vector3.Reflect(rayDirection, hitInfo.normal);
 
-                // Calculate the rotation towards the reflected direction
-                Quaternion targetRotation = Quaternion.LookRotation(reflectedDirection);
-
-                // Smoothly rotate towards the hit point
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * _rotationSpeed);
             }
         }
     }
@@ -140,7 +136,7 @@ public class Unicorn : MonoBehaviour, IRecievable
 
         float dotProduct = Vector3.Dot(_direction, _targetDirection);
 
-        if (dotProduct > 0.95)
+        if (dotProduct > 0.97)
         {
             _direction = _targetDirection;
 
