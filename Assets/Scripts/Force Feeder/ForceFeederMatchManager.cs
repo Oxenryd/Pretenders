@@ -8,6 +8,7 @@ using UnityEngine.InputSystem.Android;
 
 public class MatchManager : MonoBehaviour
 {
+    [SerializeField] private WinnerTextScript _winnerText;
     [SerializeField] private GetReadyScript _getReady;
     [SerializeField] private Camera _cam;
     [SerializeField] private Unicorn[] unicorns;
@@ -18,6 +19,7 @@ public class MatchManager : MonoBehaviour
     private EasyTimer _transTimer;
     private bool _isFadingIn = true;
     private bool _isFadingOut = false;
+    private bool _zoomingToWinner = false;
     // Start is called before the first frame update
     void Awake()
     {
@@ -73,7 +75,6 @@ public class MatchManager : MonoBehaviour
 
 
         //Debug
-        // GameManager.Instance.StartNewTournament();
         if (GameManager.Instance.Tournament)
         {
             MatchResult newResult = new MatchResult(GameType.ForceFeeder, matchResult);
@@ -82,9 +83,12 @@ public class MatchManager : MonoBehaviour
         
 
         Transform winner = zoomFollowScript.Targets[winnersIndex];
-        zoomFollowScript.Targets = new Transform[] { winner };
+        //zoomFollowScript.Targets = new Transform[] { winner };
 
-        _isFadingOut = true;
+        zoomFollowScript.SetWinner(winner, false);
+        _zoomingToWinner = true;
+        _transTimer.Time = _transTimer.Time * 3;
+        _winnerText.Activate();
         _transTimer.Reset();
 
     }
@@ -110,6 +114,16 @@ public class MatchManager : MonoBehaviour
                     GameManager.Instance.TransitToNextScene(GameManager.Instance.GetTournamentNextScene());
                 else
                     GameManager.Instance.TransitToNextScene(GlobalStrings.SCENE_LOBBY);
+            }
+        }
+
+        if (_zoomingToWinner && !_isFadingOut)
+        {
+            if (_transTimer.Done)
+            {
+                _isFadingOut = true;
+                _transTimer.Time = _transTimer.Time / 3f;
+                _transTimer.Reset();
             }
         }
     }

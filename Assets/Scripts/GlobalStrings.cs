@@ -64,7 +64,7 @@ public static class GlobalStrings
     // GAMES
     public static string[] MATCHES_NAMES =
     { 
-        "HenriksForceFeeder", "BomberManV1", "HecticTestScene"
+        "HenriksForceFeeder", "BomberManV1", "BrawlerNewTest"
     };
     public static string[] MINIGAMES_NAMES =
     {

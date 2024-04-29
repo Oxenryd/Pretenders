@@ -1,10 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class BrawlerMatchManager : MonoBehaviour
 {
+    [SerializeField] private ZoomFollowGang _cam;
+    [SerializeField] private WinnerTextScript _winnerText;
     [SerializeField] private Transitions _transitions;
     [SerializeField] public float _deathAltitude;
     [SerializeField] private List<GameObject> players = new List<GameObject>();
@@ -12,6 +15,7 @@ public class BrawlerMatchManager : MonoBehaviour
 
     private bool _fadingIn = true;
     private bool _fadingOut = false;
+    private bool _zoomingToWinner = false;
     private EasyTimer _fadeTimer;
 
     //public GameObject roundWinner;
@@ -74,26 +78,57 @@ public class BrawlerMatchManager : MonoBehaviour
                     GameManager.Instance.TransitToNextScene(GlobalStrings.SCENE_LOBBY);
             }
         }
+        if (_zoomingToWinner && !_fadingOut)
+        {
+            if (_fadeTimer.Done)
+            {
+                _fadingOut = true;
+                _fadeTimer.Time = _fadeTimer.Time / 3f;
+                _fadeTimer.Reset();
+            }
+        }
+
     }
 
     void CalculateResults()
     {
+        if (_zoomingToWinner || _fadingOut) return;
+
+       int[] playerPositionInMatch = new int[players.Count];
+
+       int position = 1;
+        for (int i = placements.Count - 1; i >= 0; i--)
+        {
+            int index = placements[i].GetComponent<Hero>().Index;
+            playerPositionInMatch[index] = position - 1;
+            position++;
+        }
+
         if (GameManager.Instance.Tournament)
         {
-            int[] playerPositionInMatch = new int[players.Count];
-
-            int position = 1;
-            for (int i = placements.Count - 1; i >= 0; i--)
-            {
-                int index = placements[i].GetComponent<Hero>().Index;
-                playerPositionInMatch[index] = position - 1;
-                position++;
-            }
             GameManager.Instance.AddNewMatchResult(new MatchResult(GameType.Brawler, playerPositionInMatch));           
         }
 
-        _fadingOut = true;
+        _zoomingToWinner = true;
+        _fadeTimer.Time = _fadeTimer.Time * 3;
         _fadeTimer.Reset();
+        _winnerText.Activate();
+        var winnerIndex = -1;
+        for (int i = 0; i < 4; i++)
+        {
+            if (playerPositionInMatch[i] == 0)
+            {
+                winnerIndex = i;
+                break;
+            }
+        }
+        var heroes = new List<Hero>();
+        foreach (var obj in players)
+        {
+            heroes.Add(obj.GetComponent<Hero>());
+        }
+        var winnerTransform = heroes.Where(hero => hero.Index == winnerIndex).SingleOrDefault().transform;
+        _cam.SetWinner(winnerTransform, true);
         //GameManager.Instance.StartNewTournament(); //remove later
         //MatchResult result = new MatchResult(GameType.Brawler, playerPositionInMatch);
         //roundWinner.gameObject.SetActive(true);

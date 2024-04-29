@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class SetPathManager : MonoBehaviour
 {
+    [SerializeField] private ZoomFollowGang _cam;
     [SerializeField] private GetReadyScript _getReady;
+    [SerializeField] private WinnerTextScript _winnerText;
     [SerializeField] private Transitions _transitions;
     public GameObject headlightPrefab;
     public GameObject[] spHeroes;
@@ -13,11 +15,15 @@ public class SetPathManager : MonoBehaviour
     private Vector3 startPosition;
     private bool _isFadingIn = true;
     private bool _isFadingOut = false;
+    private bool _zoomingToWinner = false;
     private EasyTimer _fadeTimer;
 
-    public void InformWinnerFound()
+    public void InformWinnerFound(Transform winnerTransform)
     {
-        _isFadingOut = true;
+        _cam.SetWinner(winnerTransform, false);
+        _winnerText.Activate();
+        _zoomingToWinner = true;
+        _fadeTimer.Time = _fadeTimer.Time * 3;
         _fadeTimer.Reset();
     }
     // Start is called before the first frame update
@@ -76,6 +82,16 @@ public class SetPathManager : MonoBehaviour
                     GameManager.Instance.TransitToNextScene(GameManager.Instance.GetTournamentNextScene());
                 else
                     GameManager.Instance.TransitToNextScene(GlobalStrings.SCENE_LOBBY);
+            }
+        }
+
+        if (_zoomingToWinner && !_isFadingOut)
+        {
+            if (_fadeTimer.Done)
+            {
+                _isFadingOut = true;
+                _fadeTimer.Time = _fadeTimer.Time / 3f;
+                _fadeTimer.Reset();
             }
         }
     }

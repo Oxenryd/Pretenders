@@ -99,7 +99,7 @@ public class SetPathMaker : MonoBehaviour
                     Debug.Log("Player 3: " + GameManager.Instance.GetPlayerMultiplier(3));
 
                     winnerFound = true;
-                    _manager.InformWinnerFound();
+                    _manager.InformWinnerFound(heroes[heroIndex].transform);
                 }
             }
         }
