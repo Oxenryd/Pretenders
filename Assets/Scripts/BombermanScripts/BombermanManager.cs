@@ -1,11 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 
 public class BombermanManager : MonoBehaviour
 {
-
+    [SerializeField]
+    private ZoomFollowGang _cam;
+    [SerializeField]
+    private WinnerTextScript _winnerText;
     [SerializeField]
     private HeroMovement[] characterList = new HeroMovement[4];
     [SerializeField]
@@ -18,6 +23,7 @@ public class BombermanManager : MonoBehaviour
     private Transitions transitions;
     private bool fadingIn = true;
     private bool fadingOut = false;
+    private bool zoomingToWinner = false;
     [SerializeField]
     private GameObject getReady;
     [SerializeField]
@@ -83,6 +89,15 @@ public class BombermanManager : MonoBehaviour
 
             }
         }
+        if (zoomingToWinner && !fadingOut)
+        {
+            if (timer.Done)
+            {
+                fadingOut = true;
+                timer.Time = timer.Time / 3f;
+                timer.Reset();
+            }
+        }
 
     }
 
@@ -97,9 +112,20 @@ public class BombermanManager : MonoBehaviour
                 MatchResult matchResult = new MatchResult(GameType.Bomberman, deathQueue);
                 GameManager.Instance.AddNewMatchResult(matchResult);
             }
-            fadingOut = true;
+            var winnerIndex = -1;
+            for(int i =0; i < 4; i++)
+            {
+                if (deathQueue[i] == 0)
+                {
+                    winnerIndex = i;
+                    break;
+                }
+            }
+            zoomingToWinner = true;
+            timer.Time = timer.Time * 3;
             timer.Reset();
-           
+            _cam.SetWinner(characterList[winnerIndex].transform, true);
+            _winnerText.Activate();
         }
     }
 

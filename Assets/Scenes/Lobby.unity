@@ -31820,6 +31820,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0656a01cf7b64b740b058a9a8ab6b670, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _mode: 0
   _cam: {fileID: 1922888531}
   _targets:
   - {fileID: 624496945440138967}
@@ -31828,11 +31829,19 @@ MonoBehaviour:
   - {fileID: 1317599372}
   _maxZoomIn: 30
   _startPos: {x: 0, y: 12, z: -24}
+  _posOffset: {x: 0, y: 0, z: 0}
   _zoomPanOffset: {x: 0, y: 0.03, z: -0.1}
   _smoothTimeFactor: 0.08
   _bufferFactor: -0.35
   _stationary: 0
   _zoomDependentOffset: 1
+  _winnerZoomTime: 0.7
+  _winnerZoom: 2.2
+  _distance: 10
+  _orthoZoomOffset: 0
+  _orthoZoomFactor: 1
+  _deathAltitude: 0
+  _orthoMaxZoom: 6
 --- !u!1001 &1925929099
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -36555,6 +36564,11 @@ PrefabInstance:
       propertyPath: _script
       value: 
       objectReference: {fileID: 2043121122}
+    - target: {fileID: 199063070847637841, guid: 712eeb443d99d204e999e59ef59f8515,
+        type: 3}
+      propertyPath: _nextScene
+      value: BrawlerNewTest
+      objectReference: {fileID: 0}
     - target: {fileID: 199063070847637841, guid: 712eeb443d99d204e999e59ef59f8515,
         type: 3}
       propertyPath: _transitions

@@ -60,6 +60,11 @@ public class Music : MonoBehaviour
 
     public void Crossfade(int toSongIndex, float toTime, float fadeTime)
     {
+        if (_mainOut.clip == null)
+        {
+            _mainOut.clip = _songs[SILENCE].Clip;
+            _currentSongindex = SILENCE;
+        }
         _crossfading = true;
         _crossFadeTimer.Time = fadeTime;
         _crossFadeTimer.Reset();

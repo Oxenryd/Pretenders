@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.17640606, g: 0.22079276, b: 0.30310926, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -543,7 +543,7 @@ Light:
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
   m_BounceIntensity: 1
-  m_ColorTemperature: 2870
+  m_ColorTemperature: 4538
   m_UseColorTemperature: 1
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
@@ -979,11 +979,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1555419242}
     m_Modifications:
-    - target: {fileID: 4395366710480892456, guid: 96d160df10115da46ae5c220ad682011,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 480943667475551254, guid: 8e9fd27858b22fa488080eb8c8e4e5fe,
         type: 3}
       propertyPath: m_Enabled
@@ -1053,6 +1048,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: GodotMan Player Green Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 4395366710480892456, guid: 96d160df10115da46ae5c220ad682011,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3316,6 +3316,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5593759a74921f7449f70abe003a5ced, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _winnerText: {fileID: 2105243848}
   _getReady: {fileID: 600035615}
   _cam: {fileID: 1922888531}
   unicorns:
@@ -22670,6 +22671,10 @@ PrefabInstance:
         type: 3}
       insertIndex: 0
       addedObject: {fileID: 600035614}
+    - targetCorrespondingSourceObject: {fileID: 4494009603288910172, guid: 3c89ac95c67b9574eb56e2238cc9db0f,
+        type: 3}
+      insertIndex: 1
+      addedObject: {fileID: 2105243847}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3c89ac95c67b9574eb56e2238cc9db0f, type: 3}
 --- !u!224 &782436572 stripped
@@ -39760,11 +39765,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1555419242}
     m_Modifications:
-    - target: {fileID: 4395366710480892456, guid: 96d160df10115da46ae5c220ad682011,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 1112029419966825498, guid: 3b9c53b460636d34290d21b7aaa30ef5,
         type: 3}
       propertyPath: m_Enabled
@@ -39834,6 +39834,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: GodotMan Player Yellow Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 4395366710480892456, guid: 96d160df10115da46ae5c220ad682011,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -47254,11 +47259,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1555419242}
     m_Modifications:
-    - target: {fileID: 4395366710480892456, guid: 96d160df10115da46ae5c220ad682011,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 881726355696472855, guid: b9b098aa14a828444998748b4d77461a,
         type: 3}
       propertyPath: m_Enabled
@@ -47328,6 +47328,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: GodotMan Player Red Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 4395366710480892456, guid: 96d160df10115da46ae5c220ad682011,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -58132,6 +58137,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0656a01cf7b64b740b058a9a8ab6b670, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _mode: 0
   _cam: {fileID: 1922888531}
   _targets:
   - {fileID: 710431421}
@@ -58140,11 +58146,19 @@ MonoBehaviour:
   - {fileID: 1317599372}
   _maxZoomIn: 30
   _startPos: {x: 0, y: 12, z: -24}
+  _posOffset: {x: 0, y: 0, z: 0}
   _zoomPanOffset: {x: 0, y: 0.15, z: -0.1}
   _smoothTimeFactor: 0.08
   _bufferFactor: -0.35
   _stationary: 0
   _zoomDependentOffset: 1
+  _winnerZoomTime: 0.7
+  _winnerZoom: 15.83
+  _distance: 10
+  _orthoZoomOffset: 0
+  _orthoZoomFactor: 1
+  _deathAltitude: 0
+  _orthoMaxZoom: 6
 --- !u!1001 &1927299433
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -62966,6 +62980,142 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 2029363044}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &2105243846
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 782436572}
+    m_Modifications:
+    - target: {fileID: 3903279565180169844, guid: c5c7957420dbd5540afd55bd78b21673,
+        type: 3}
+      propertyPath: m_Name
+      value: Winner
+      objectReference: {fileID: 0}
+    - target: {fileID: 5329033103431713768, guid: c5c7957420dbd5540afd55bd78b21673,
+        type: 3}
+      propertyPath: m_Pivot.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5329033103431713768, guid: c5c7957420dbd5540afd55bd78b21673,
+        type: 3}
+      propertyPath: m_Pivot.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5329033103431713768, guid: c5c7957420dbd5540afd55bd78b21673,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5329033103431713768, guid: c5c7957420dbd5540afd55bd78b21673,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5329033103431713768, guid: c5c7957420dbd5540afd55bd78b21673,
+        type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5329033103431713768, guid: c5c7957420dbd5540afd55bd78b21673,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5329033103431713768, guid: c5c7957420dbd5540afd55bd78b21673,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 5329033103431713768, guid: c5c7957420dbd5540afd55bd78b21673,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 5329033103431713768, guid: c5c7957420dbd5540afd55bd78b21673,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5329033103431713768, guid: c5c7957420dbd5540afd55bd78b21673,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5329033103431713768, guid: c5c7957420dbd5540afd55bd78b21673,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5329033103431713768, guid: c5c7957420dbd5540afd55bd78b21673,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5329033103431713768, guid: c5c7957420dbd5540afd55bd78b21673,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5329033103431713768, guid: c5c7957420dbd5540afd55bd78b21673,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5329033103431713768, guid: c5c7957420dbd5540afd55bd78b21673,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5329033103431713768, guid: c5c7957420dbd5540afd55bd78b21673,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5329033103431713768, guid: c5c7957420dbd5540afd55bd78b21673,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 106
+      objectReference: {fileID: 0}
+    - target: {fileID: 5329033103431713768, guid: c5c7957420dbd5540afd55bd78b21673,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5329033103431713768, guid: c5c7957420dbd5540afd55bd78b21673,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5329033103431713768, guid: c5c7957420dbd5540afd55bd78b21673,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: c5c7957420dbd5540afd55bd78b21673, type: 3}
+--- !u!224 &2105243847 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 5329033103431713768, guid: c5c7957420dbd5540afd55bd78b21673,
+    type: 3}
+  m_PrefabInstance: {fileID: 2105243846}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2105243848 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2015177466548823789, guid: c5c7957420dbd5540afd55bd78b21673,
+    type: 3}
+  m_PrefabInstance: {fileID: 2105243846}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84ac18608c6d94b4097578ba6b7fe0f5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2107035298
 PrefabInstance:
   m_ObjectHideFlags: 0
