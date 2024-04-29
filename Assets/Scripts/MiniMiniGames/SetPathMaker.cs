@@ -77,15 +77,21 @@ public class SetPathMaker : MonoBehaviour
         if (winnerFound == false)
         {
             GameObject[] heroObjects = GameObject.FindGameObjectsWithTag("Character");
+            List<Hero> heroes = new();
+            foreach (var obj in heroObjects)
+            {
+                var hero = obj.GetComponent<Hero>();
+                heroes.Add(hero);
+            }
 
             for (global::System.Int32 heroIndex = 0; heroIndex < 4; heroIndex++)
             {
-                if (IsCollidingWithGoal(heroObjects[heroIndex].transform.position))
-                {
+                if (IsCollidingWithGoal(heroes[heroIndex].transform.position))
+                 {
                     Debug.Log("Winner! Player: " + heroIndex);
 
                     // Update the _scoreMultiplier of the hero's index in the GameManager
-                    GameManager.Instance.SetPlayerMultiplier(heroIndex, 1.5F);
+                    GameManager.Instance.SetPlayerMultiplier(heroes[heroIndex].Index, 1.5F);
 
                     Debug.Log("Player 0: " + GameManager.Instance.GetPlayerMultiplier(0));
                     Debug.Log("Player 1: " + GameManager.Instance.GetPlayerMultiplier(1));

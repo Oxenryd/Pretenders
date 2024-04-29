@@ -36842,6 +36842,8 @@ MonoBehaviour:
   _bufferFactor: -0.35
   _stationary: 1
   _zoomDependentOffset: 1
+  _winnerZoomTime: 0.7
+  _winnerZoom: 12
 --- !u!1 &1923941588
 GameObject:
   m_ObjectHideFlags: 0
@@ -41428,7 +41430,7 @@ PrefabInstance:
     - target: {fileID: 5229835107119627732, guid: 5b33b672b6b856e42806c29d7de0ab99,
         type: 3}
       propertyPath: _debug
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5229835107119627732, guid: 5b33b672b6b856e42806c29d7de0ab99,
         type: 3}

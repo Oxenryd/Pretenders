@@ -21,7 +21,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private SceneManager _curSceneman;
     [SerializeField] private Music _music;
     [SerializeField] private Transitions _transitions;
-
+    [SerializeField] private bool _useMiniGames = true;
     [SerializeField] private GameObject[] _powerupPrefabs;
 
     private float[] _fpsBuffer;
@@ -35,7 +35,10 @@ public class GameManager : MonoBehaviour
     private bool _includingMiniGames = false;
     private string[] _tournamentGameList;
     private int _currentTournamentScene = 0;
+    
 
+    public bool IncludeMiniGames
+    { get { return _useMiniGames; } set {  _useMiniGames = value; } }
     private bool _firstStart = true;
     public GameObject[] PowerUpPrefabs
     { get { return _powerupPrefabs; } }
@@ -46,6 +49,7 @@ public class GameManager : MonoBehaviour
 
     private AsyncOperation _unloadingPrevious;
     private bool _resultsNextCall = false;
+    private bool _minigameNextCall = false;
 
     private ICharacter[] _playableCharacters;
     private int _numPlayers = 1;
@@ -159,23 +163,25 @@ public class GameManager : MonoBehaviour
             if (_resultsNextCall)
             {
                 _resultsNextCall = false;
-                var sceneString = _tournamentGameList[_currentTournamentScene];
+                _minigameNextCall = true;
+                return GlobalStrings.SCENE_RESULTS;
+            } else if (_minigameNextCall)
+            {
+                _minigameNextCall = false;
                 _currentTournamentScene++;
-                return sceneString;
+                return _tournamentGameList[_currentTournamentScene];
             } else
             {
-                var modulo = _currentTournamentScene % 2;
                 if (_currentTournamentScene < 0)
                 {
                     _currentTournamentScene = 0;
                     _resultsNextCall = true;
                     return _tournamentGameList[_currentTournamentScene];
-                } else if (modulo > 0)
-                {
-                    _resultsNextCall = false;
                 } else
                 {
+                    _currentTournamentScene++;
                     _resultsNextCall = true;
+                    return _tournamentGameList[_currentTournamentScene];
                 }
             }
         } else
