@@ -169,6 +169,12 @@ public class Bomb : Grabbable
         IsActive = true;
         gameObject.SetActive(true);
         gameObject.transform.position = new Vector3(charPosition.x, 0, charPosition.z);
+
+        for(int i = 0; i < directions.Count; i++)
+        {
+            var directionKey = directions.Keys.ElementAt(i);
+            directions[directionKey] = false;
+        }
     }
     public override bool InjectDropAbort()
     {
