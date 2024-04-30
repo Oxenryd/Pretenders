@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 0.17754927, g: 0.22228552, b: 0.3044853, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -23613,7 +23613,7 @@ MonoBehaviour:
   _grid: {fileID: 647735485}
   deathQueue: 00000000000000000000000000000000
   getReady: {fileID: 769114274}
-  killAll: 1
+  killAll: 0
 --- !u!1001 &1799275644
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -25448,6 +25448,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0656a01cf7b64b740b058a9a8ab6b670, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _mode: 0
   _cam: {fileID: 1922888531}
   _targets:
   - {fileID: 1199076481}
@@ -25456,6 +25457,7 @@ MonoBehaviour:
   - {fileID: 139048957}
   _maxZoomIn: 30
   _startPos: {x: 0, y: 12, z: -24}
+  _posOffset: {x: 0, y: 0, z: 0}
   _zoomPanOffset: {x: 0, y: 0, z: -0.1}
   _smoothTimeFactor: 0.08
   _bufferFactor: -0.35
@@ -25463,6 +25465,11 @@ MonoBehaviour:
   _zoomDependentOffset: 1
   _winnerZoomTime: 0.7
   _winnerZoom: 4
+  _distance: 10
+  _orthoZoomOffset: 0
+  _orthoZoomFactor: 1
+  _deathAltitude: 0
+  _orthoMaxZoom: 6
 --- !u!1001 &1923069813
 PrefabInstance:
   m_ObjectHideFlags: 0
