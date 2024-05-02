@@ -19,10 +19,12 @@ public class GodotManAnimator : MonoBehaviour
     private int _pushedBool;
     private int _draggedBool;
     private int _draggingBool;
+    private int _shovedBool;
 
     // Start is called before the first frame update
     void Start()
     {
+        _shovedBool = Animator.StringToHash("IsShoved");
         _draggedBool = Animator.StringToHash("IsDragged");
         _draggingBool = Animator.StringToHash("IsDragging");
         _groundedBool = Animator.StringToHash("IsGrounded");
@@ -44,6 +46,7 @@ public class GodotManAnimator : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        _anim.SetBool(_shovedBool, _hero.IsShoved);
         _anim.SetBool(_draggedBool, _hero.IsDraggedByOther);
         _anim.SetBool(_draggingBool, _hero.IsDraggingOther);
         _anim.SetBool(_pushedBool, _hero.IsPushed);
