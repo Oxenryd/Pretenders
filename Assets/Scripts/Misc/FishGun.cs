@@ -7,10 +7,12 @@ public class FishGun : Grabbable
     [SerializeField] private FishProjectile _fishProjectilePrefab;
     [SerializeField] private CooldownClock _clock;
     [SerializeField] private Vector3 _projPoint = new Vector3(0, 0, 0);
-    private FishProjectile[] _projectilePool = new FishProjectile[40];
+    [SerializeField] private Vector3 _firePoint = new Vector3(0, 0, 0);
+    [SerializeField] private FishProjectile[] _projectilePool = new FishProjectile[40];
+    [SerializeField] private float _cooldown = 15f;
 
     private int _currentPoolIndex = 0;
-    private float _cooldown = 15f;
+    
     private EasyTimer _cooldownTimer;
 
     public bool ReadyToFire
@@ -29,11 +31,12 @@ public class FishGun : Grabbable
     void Awake()
     {
         base.Awake();
+        UseGunAnimation = true;
         _cooldownTimer = new EasyTimer(_cooldown);
         _cooldownTimer.Reset();
         for (int i = 0; i < _projectilePool.Length; i++)
         {
-            _projectilePool[i] = Instantiate(_fishProjectilePrefab, transform);
+            _projectilePool[i] = Instantiate(_fishProjectilePrefab);
             var fishRandom = Random.Range(0, 1000);
             var fishType = FishTypesEnum.Small;
             if (fishRandom >= 900)
@@ -44,6 +47,7 @@ public class FishGun : Grabbable
                 fishType = FishTypesEnum.Medium;
 
             _projectilePool[i].InitFish(fishType);
+            _projectilePool[i].SetLExcludeLayerMask(this.gameObject.layer);
         }
 
 
@@ -61,7 +65,6 @@ public class FishGun : Grabbable
         var container = GameObject.FindWithTag(GlobalStrings.NAME_UIOVERLAY);
         _clock = Instantiate(_clock, container.transform);
         _clock.gameObject.SetActive(false);
-
         _clock.CooldownDone += OnCooldownOver;
         _clock.PositionOffset = new Vector3(0f, 1.3f, 0);
         _clock.MaxBaseAlpha = 1f;
@@ -70,24 +73,19 @@ public class FishGun : Grabbable
     void Update()
     {
         base.Update();
-        
-        if (!_cooldownTimer.Done)
-        {
-            if (!_clock.Active)
-                _clock.Activate(this.transform, _cooldown);
-            
-            _clock.Value = _cooldownTimer.Ratio;
-        }
 
+        _clock.Value = _cooldownTimer.Ratio;
     }
 
     public override bool TriggerEnter()
     {
         if (_cooldownTimer.Done)
         {
-            Debug.Log("PANG");
+            _projectilePool[_currentPoolIndex].Launch(Grabber.GroundPosition + Grabber.transform.rotation * _firePoint, Grabber.FaceDirection);
+            _currentPoolIndex++;
             _cooldownTimer.Reset();
             Grabber.TryBump(-Grabber.FaceDirection, GlobalValues.CHAR_BUMPFORCE * 0.66f);
+            _clock.Activate(this.transform, _cooldown);
             return true;
         }
 

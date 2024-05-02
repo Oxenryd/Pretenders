@@ -30,9 +30,9 @@ public static class GlobalValues
 
     public const float CHAR_MOVEMENT_GRIDTARGET_EPSILON = 0.15f;
 
-    public const float CHAR_PUSH_CHALLENGE_TIME = 1f;
-    public const float CHAR_PUSH_FAILED_STUN_TIME = 1.5f;
-    public const float CHAR_PUSH_SPEED = 1.75f;
+    public const float CHAR_PUSH_CHALLENGE_TIME = 0.4f;
+    public const float CHAR_PUSH_FAILED_STUN_TIME = 1f;
+    public const float CHAR_PUSH_SPEED = 6f;
     public const float CHAR_PUSH_POWER = 6.5f;
     public const float CHAR_PUSH_MIN_DISTANCE = 1.25f;
     public const float CHAR_PUSH_PUSHED_TIME = 1.25f;

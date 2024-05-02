@@ -20,12 +20,12 @@ public class GodotManAnimator : MonoBehaviour
     private int _draggedBool;
     private int _draggingBool;
     private int _shovedBool;
-    private int _grabbableBothBool;
+    private int _gunBool;
 
     // Start is called before the first frame update
     void Start()
     {
-        _grabbableBothBool = Animator.StringToHash("HoldingWithBoth");
+        _gunBool = Animator.StringToHash("IsGunAnimation");
         _shovedBool = Animator.StringToHash("IsShoved");
         _draggedBool = Animator.StringToHash("IsDragged");
         _draggingBool = Animator.StringToHash("IsDragging");
@@ -62,12 +62,22 @@ public class GodotManAnimator : MonoBehaviour
 
         if (_hero.IsGrabbing)
         {
-            if (_hero.CurrentGrab.GrabbablePosition == GrabbablePosition.InFrontTwoHands)
+            if (_hero.CurrentGrab.GrabbablePosition == GrabbablePosition.InFrontTwoHands && !_hero.CurrentGrab.UseGunAnimation)
             {
                 _anim.SetBool(_draggingBool, true);
+                _anim.SetBool(_gunBool, false);
+            } else if (_hero.CurrentGrab.GrabbablePosition != GrabbablePosition.InFrontTwoHands && !_hero.CurrentGrab.UseGunAnimation)
+            {
+                _anim.SetBool(_draggingBool, false);
+                _anim.SetBool(_gunBool, false);
+            } else if (_hero.CurrentGrab.GrabbablePosition != GrabbablePosition.InFrontTwoHands && _hero.CurrentGrab.UseGunAnimation)
+            {
+                _anim.SetBool(_draggingBool, false);
+                _anim.SetBool(_gunBool, true);
             } else
             {
                 _anim.SetBool(_draggingBool, false);
+                _anim.SetBool(_gunBool, false);
             }
         }
     }
