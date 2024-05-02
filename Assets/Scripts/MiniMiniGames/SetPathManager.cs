@@ -8,6 +8,7 @@ public class SetPathManager : MonoBehaviour
     [SerializeField] private GetReadyScript _getReady;
     [SerializeField] private WinnerTextScript _winnerText;
     [SerializeField] private Transitions _transitions;
+    [SerializeField] private HeroMovement[] _heroes;
     public GameObject headlightPrefab;
     public GameObject[] spHeroes;
 
@@ -29,6 +30,11 @@ public class SetPathManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        foreach (var hero in _heroes)
+        {
+            hero.TryMoveAi(new Vector2(0, 1));
+        }
+
         _transitions.TransitionType = TransitionType.CircleFade;
         _fadeTimer = new EasyTimer(GlobalValues.SCENE_CIRCLETRANSIT_TIME);
         _fadeTimer.Reset();
