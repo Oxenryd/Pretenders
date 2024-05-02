@@ -34,6 +34,7 @@ public class SetPathManager : MonoBehaviour
         _fadeTimer.Reset();
         _getReady.Activate();
         GameManager.Instance.ResetPlayerMultipliers();
+        GameManager.Instance.Music.Fadeout(1.5f);
 
         Vector3 lightOneStartPos = new Vector3 (0, 0, 0);
         Vector3 lightTwoStartPos = new Vector3 (0, 0, 0);

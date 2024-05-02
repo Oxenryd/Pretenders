@@ -15,6 +15,8 @@ public class Feet : MonoBehaviour
     private Vector3 _groundNormal;
 
     private HeroMovement _hero;
+    private EasyTimer _keepDownThroughPlatformTimer;
+    private bool _holdingDown = false;
 
     public Collider CurrentCollider
     { get; private set; }
@@ -23,6 +25,7 @@ public class Feet : MonoBehaviour
     void Start()
     {
         _hero = _rBody.gameObject.GetComponent<HeroMovement>();
+        _keepDownThroughPlatformTimer = new EasyTimer(0.3f);
     }
     void FixedUpdate()
     {
@@ -32,13 +35,15 @@ public class Feet : MonoBehaviour
         {
             if (hit.collider.gameObject.layer == GlobalValues.PLATFORM_LAYER)
             {
-                if (_rBody.velocity.y < 0f && _hero.StickInputVector.y > -0.5f)
+                if (_rBody.velocity.y < 0f && _hero.StickInputVector.y > -0.5f && !_holdingDown)
                 {
                     doGrounded(hit);
-                }
-                else
+                } else if (_hero.StickInputVector.y <= -0.5f)
+                {
+                    _keepDownThroughPlatformTimer.Reset();
+                    _holdingDown = true;
                     notGrounded();
-
+                }
             } else
             {
                 doGrounded(hit);
@@ -48,7 +53,11 @@ public class Feet : MonoBehaviour
             notGrounded();
         }
     }
-
+    void Update()
+    {
+        if (_holdingDown && _keepDownThroughPlatformTimer.Done)
+            _holdingDown = false;
+    }
     private void doGrounded(RaycastHit hit)
     {
         _groundNormal = hit.normal;

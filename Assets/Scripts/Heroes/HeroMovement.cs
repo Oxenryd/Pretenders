@@ -26,6 +26,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     [SerializeField] private Collider _bodyCollider;
     [SerializeField] private Collider _headCollider;
     [SerializeField] private LayerMask _bombLayer;
+    [SerializeField] private float _airBrakeFactor = GlobalValues.JUMPDIRECTION_SLOWDOWN_MULTIPLIER;
 
     // EVENTS
     public event EventHandler<Grabbable> GrabbedGrabbable;
@@ -690,7 +691,6 @@ public class HeroMovement : MonoBehaviour, IJumpHit
 
         }
 
-
         // ---------------------------------------------------------    BUMPING
         // Bumped?
         if (_startBump)
@@ -742,7 +742,6 @@ public class HeroMovement : MonoBehaviour, IJumpHit
                 _body.velocity = (_gndNormal) * MaxJumpPower * Effect.CurrentEffects().JumpPowerMultiplier + new Vector3(_body.velocity.x, 0, _body.velocity.z);
             else
                 _body.velocity = (_gndNormal) * MaxJumpPower / 4 * Effect.CurrentEffects().JumpPowerMultiplier + new Vector3(_body.velocity.x, 0, _body.velocity.z);
-
         }
 
         if (TryingToJump)
@@ -833,7 +832,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
 
         // Moving?
         Vector2 planeVelocity = new Vector2(_body.velocity.x, _body.velocity.z);
-        if (Mathf.Round(planeVelocity.sqrMagnitude) > 0f) // Using sqr to save on sqrroots.
+        if (planeVelocity.sqrMagnitude > float.Epsilon) // Using sqr to save on sqrroots.
             IsMoving = true;
         else
             IsMoving = false;
@@ -848,15 +847,14 @@ public class HeroMovement : MonoBehaviour, IJumpHit
             else if (IsDraggingOther)
                 CurrentSpeed = CurrentSpeed * GlobalValues.CHAR_DRAG_SPEED_MULTIPLIER;
 
-            if (!IsGrounded)
+            if (!IsGrounded && _controlScheme != ControlSchemeType.Platform)
             {
                 var dot = Vector3.Dot(FaceDirection, _jumpDirection);
                 if (dot < GlobalValues.JUMPDIRECTION_SLOWDOWN_DOT)
                 {
-                    CurrentSpeed = CurrentSpeed * GlobalValues.JUMPDIRECTION_SLOWDOWN_MULTIPLIER;
+                    CurrentSpeed = CurrentSpeed * _airBrakeFactor;
                 }
             }
-
 
             Vector3 velocity = Vector3.zero;
             switch (CurrentControlScheme)
@@ -867,8 +865,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
                     if (TryingToMove)
                     {
                         _targetGridCenter = TransformHelpers.SnapToGrid(GroundPosition + FaceDirection * _grid.cellSize.x / 2, _grid);
-                    }
-                    else
+                    } else
                     {
                         if (TransformHelpers.PassedGridTarget(this, _targetGridCenter))
                         {
@@ -879,8 +876,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
                     if (Mathf.Abs(_distanceToGridTarget) <= GlobalValues.CHAR_MOVEMENT_GRIDTARGET_EPSILON)
                     {
                         _canChangeQuadDirection = true;
-                    }
-                    else
+                    } else
                     {
                         _canChangeQuadDirection = false;
                     }
@@ -900,15 +896,14 @@ public class HeroMovement : MonoBehaviour, IJumpHit
                     break;
 
                 case ControlSchemeType.Platform:
-                    var hero = GetComponent<Hero>();
-                    if (hero.Index == 0)
-                        Debug.Log($"CurrentDir: {CurrentDirection}");
-
 
                     if (!IsDraggedByOther)
                         velocity = new Vector3(CurrentDirection.x * CurrentSpeed, _body.velocity.y, 0);
                     else
-                        velocity = Dragger.Velocity;
+                    {
+                        transform.position = Dragger.transform.position + Dragger.FaceDirection * 1.2f;
+                        FaceDirection = Dragger.FaceDirection;
+                    }                      
                     break;
 
             }

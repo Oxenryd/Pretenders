@@ -4,9 +4,10 @@ namespace Assets.Scripts.PlatformBrawler
 {
     public class BrawlerLevelBounds : MonoBehaviour
     {
+        [SerializeField] private Bounds _bounds;
         public GameObject BrawlerLevel;
         public BoxCollider _spawnArea;
-        private Bounds _bounds;
+        //private Bounds _bounds;
         public Vector3 TopSpawnPosition { get; private set; }
         public Vector3 BottomSpawnPosition { get; private set; }
         public Vector3 LeftSpawnPosition { get; private set; }

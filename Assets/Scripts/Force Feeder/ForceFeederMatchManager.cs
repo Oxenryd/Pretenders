@@ -33,6 +33,8 @@ public class MatchManager : MonoBehaviour
     {
         _getReady.Activate();
         _getReady.CountdownComplete += onGetReadyCountedDown;
+
+        GameManager.Instance.Music.Fadeout(1.5f);
     }
 
     private void onGetReadyCountedDown(object sender, EventArgs e)
