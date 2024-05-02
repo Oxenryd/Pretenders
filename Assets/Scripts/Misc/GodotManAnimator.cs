@@ -20,10 +20,12 @@ public class GodotManAnimator : MonoBehaviour
     private int _draggedBool;
     private int _draggingBool;
     private int _shovedBool;
+    private int _grabbableBothBool;
 
     // Start is called before the first frame update
     void Start()
     {
+        _grabbableBothBool = Animator.StringToHash("HoldingWithBoth");
         _shovedBool = Animator.StringToHash("IsShoved");
         _draggedBool = Animator.StringToHash("IsDragged");
         _draggingBool = Animator.StringToHash("IsDragging");
@@ -39,8 +41,6 @@ public class GodotManAnimator : MonoBehaviour
         _pushedBool = Animator.StringToHash("IsPushed");
         _draggedBool = Animator.StringToHash("IsDragged");
         _draggingBool = Animator.StringToHash("IsDragging");
-
-
     }
 
     // Update is called once per frame
@@ -59,5 +59,16 @@ public class GodotManAnimator : MonoBehaviour
         _anim.SetBool(_pushingBool, _hero.IsPushing);
         _anim.SetBool(_pushFailedBool, _hero.IsPushFailed);
         _anim.SetFloat(_moveSpeedFloat, _hero.CurrentSpeed / _hero.MaxMoveSpeed);
+
+        if (_hero.IsGrabbing)
+        {
+            if (_hero.CurrentGrab.GrabbablePosition == GrabbablePosition.InFrontTwoHands)
+            {
+                _anim.SetBool(_draggingBool, true);
+            } else
+            {
+                _anim.SetBool(_draggingBool, false);
+            }
+        }
     }
 }
