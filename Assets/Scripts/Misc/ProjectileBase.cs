@@ -59,19 +59,19 @@ public class ProjectileBase : MonoBehaviour
 
     public virtual void Launch(Vector3 position, Vector3 direction)
     {
-        //_isLethal = true;
-        //_launched = true;
-        //_despawning = false;
-        //gameObject.SetActive(true);
-        //_ttlTimer.Reset();
-        //if (AffectedByGravity)
-        //    _body.useGravity = true;
-        //else
-        //    _body.useGravity = false;
-        //_body.velocity = Vector3.zero;
-        //_body.transform.position = position;
-        //_body.AddForce(direction * _speed, ForceMode.Impulse);
-        //OnLaunch();
+        _isLethal = true;
+        _launched = true;
+        _despawning = false;
+        gameObject.SetActive(true);
+        _ttlTimer.Reset();
+        if (AffectedByGravity)
+            _body.useGravity = true;
+        else
+            _body.useGravity = false;
+        _body.velocity = Vector3.zero;
+        _body.transform.position = position;
+        _body.AddForce(direction * _speed, ForceMode.Impulse);
+        OnLaunch();
     }
 
     public virtual void OnLaunch() { }

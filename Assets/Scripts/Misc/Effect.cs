@@ -21,6 +21,10 @@ public class Effect
     { get; set; } = 1f;
     public bool StunImmune
     { get; set; } = false;
+    public int ExtraBombs
+    { get; set; } = 0;
+    public int ExtraBombRange
+    { get; set; } = 0;
     public float EffectDuration
     {
         get
@@ -34,6 +38,7 @@ public class Effect
     }
     public float DurationMultiplier
     { get; set; } = 1f;
+
     public EasyTimer ActiveTimer
     { get { return _activeTimer; } }
 
@@ -57,11 +62,13 @@ public class Effect
     {
         Active = false;
     }
+
     public void Activate()
     {
         Active = true;
         _activeTimer.Reset();
     }
+
     public Effect CurrentEffects()
     {
         if (!Active)

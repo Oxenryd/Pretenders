@@ -7,7 +7,9 @@ public enum DefinedPowerupType
     WeightGain,
     Movespeed_33,
     MegaShove,
-    Jump_50
+    Jump_50,
+    BombPlus,
+    BombRangePlus
 }
 
 public class DefinedPowerUp
@@ -27,6 +29,10 @@ public class DefinedPowerUp
                     return GameManager.Instance.PowerUpPrefabs[2];
                 case DefinedPowerupType.Jump_50:
                     return GameManager.Instance.PowerUpPrefabs[3];
+                case DefinedPowerupType.BombPlus:
+                    return GameManager.Instance.PowerUpPrefabs[4];
+                case DefinedPowerupType.BombRangePlus:
+                    return GameManager.Instance.PowerUpPrefabs[5];
                 default: return null;
             }
         }
@@ -45,6 +51,10 @@ public class DefinedPowerUp
                     return _effectList[2];
                 case DefinedPowerupType.Jump_50:
                     return _effectList[3];
+                case DefinedPowerupType.BombPlus:
+                    return _effectList[4];
+                case DefinedPowerupType.BombRangePlus:
+                    return _effectList[5];
                 default: return Effect.DefaultEffect(); ;
             }
         }
@@ -58,7 +68,9 @@ public class DefinedPowerUp
         new Effect() {ShoveMultiplier = 1.25f},
         new Effect() {MoveSpeedMultiplier = 1.33f},
         new Effect() {ShoveMultiplier = 2f},
-        new Effect() {JumpPowerMultiplier = 1.5f}
+        new Effect() {JumpPowerMultiplier = 1.5f},
+        new Effect() {ExtraBombs = 1 },
+        new Effect() {ExtraBombRange = 1}
     };
 }
 

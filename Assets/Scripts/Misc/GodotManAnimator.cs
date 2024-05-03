@@ -21,10 +21,12 @@ public class GodotManAnimator : MonoBehaviour
     private int _draggingBool;
     private int _shovedBool;
     private int _gunBool;
+    private int _winBool;
 
     // Start is called before the first frame update
     void Start()
     {
+        _winBool = Animator.StringToHash("IsWinning");
         _gunBool = Animator.StringToHash("IsGunAnimation");
         _shovedBool = Animator.StringToHash("IsShoved");
         _draggedBool = Animator.StringToHash("IsDragged");
@@ -46,6 +48,7 @@ public class GodotManAnimator : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        _anim.SetBool(_winBool, _hero.HasWon);
         _anim.SetBool(_shovedBool, _hero.IsShoved);
         _anim.SetBool(_draggedBool, _hero.IsDraggedByOther);
         _anim.SetBool(_draggingBool, _hero.IsDraggingOther);
@@ -81,7 +84,7 @@ public class GodotManAnimator : MonoBehaviour
             }
         } else
         {
-            _anim.SetBool(_draggingBool, false);
+            //_anim.SetBool(_draggingBool, false);
             _anim.SetBool(_gunBool, false);
         }
     }

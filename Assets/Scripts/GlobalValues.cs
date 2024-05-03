@@ -1,5 +1,7 @@
 public static class GlobalValues
 {
+    public const float SETPATH_GAME_TIME = 30.8f;
+
     public const float SHOVE_HEIGHT_BUMP_TOPDOWN = 3f;
     public const float SHOVE_OFFENDCOL_DIS_DUR = 0.1f;
     public const float SHOVE_DEFAULT_SHOVEPOWER = 22f;
@@ -17,7 +19,8 @@ public static class GlobalValues
 
     public const int   TRAY_MAX_SIZE = 5;
 
-    public const int   WINNING_POINTS_FORCE_FEEDER = 30;
+    public const int   WINNING_POINTS_FORCE_FEEDER = 1;
+
     public const float CHAR_GRAB_DEFAULT_SPEEDPENALTY = 0.05f;
     public const float CHAR_GRAB_CHECK_DISTANCE = 1f;
     public const float CHAR_GRAB_POSITION_OFFSET = 0.5f;

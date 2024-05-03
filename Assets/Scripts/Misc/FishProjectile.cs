@@ -41,7 +41,6 @@ public class FishProjectile : ProjectileBase
                 break;
         }
 
-        // TODO: Set different stats for differents fish types
         return Instantiate(_projectileBases[index], this.transform);
     }
 

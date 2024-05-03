@@ -99,6 +99,11 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     private float _shovePower = GlobalValues.SHOVE_DEFAULT_SHOVEPOWER;
     private bool _isForceRotation = false;
 
+    private bool _turningWinner = false;
+
+    public bool HasWon { get; set; } = false;
+    public int BombRangePlus { get; set; } = 0;
+    public int MaxBombs { get; set; } = 1;
     public float ZOffset { get; set; } = 31f;
     public Vector2 StickInputVector
     { get; private set; } = Vector2.zero;
@@ -202,6 +207,21 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     {
         _targetForceRotation = rotation;
         _isForceRotation = true;
+    }
+    public void SetWinner(bool halt)
+    {
+        if (halt)
+            Halt();
+        _body.velocity = Vector3.zero;
+        ForceRotation(new Vector3(0f, 180f, 0f));
+        _turningWinner = true;
+        if (IsGrabbing)
+        {
+            Drop(CurrentGrab);
+        }
+
+        HasWon = true;
+        //AcceptInput = false;
     }
     public void Push()
     {
@@ -548,7 +568,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     // --------------------------------------------------------------------------------------------------------------- Start()
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         // Set the accelTimer, turnTimer and let them subscribe to
         // GameManagers' 'EarlyUpdate' for automatic ticking.
@@ -978,6 +998,13 @@ public class HeroMovement : MonoBehaviour, IJumpHit
         {
             Halt();
             _doneFirstLoop = true;
+        }
+        // ---------------------------------------------------------    WINNER ?
+        if (_turningWinner)
+        {
+            Halt();
+            _acceptInput = false;
+            _turningWinner = false;
         }
     }
 

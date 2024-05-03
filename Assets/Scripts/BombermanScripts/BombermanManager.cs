@@ -126,6 +126,7 @@ public class BombermanManager : MonoBehaviour
             zoomingToWinner = true;
             timer.Time = timer.Time * 3;
             timer.Reset();
+            characterList[winnerIndex].SetWinner(true);
             _cam.SetWinner(characterList[winnerIndex].transform, true);
             _winnerText.Activate();
         }

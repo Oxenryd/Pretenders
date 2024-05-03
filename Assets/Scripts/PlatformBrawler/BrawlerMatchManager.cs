@@ -149,6 +149,8 @@ public class BrawlerMatchManager : MonoBehaviour
             heroes.Add(obj.GetComponent<Hero>());
         }
         var winnerTransform = heroes.Where(hero => hero.Index == winnerIndex).SingleOrDefault().transform;
+        var movement = winnerTransform.GetComponent<HeroMovement>();
+        movement.SetWinner(true);
         _cam.SetWinner(winnerTransform, true);
         //GameManager.Instance.StartNewTournament(); //remove later
         //MatchResult result = new MatchResult(GameType.Brawler, playerPositionInMatch);

@@ -8,6 +8,7 @@ public class MatchManager : MonoBehaviour
     [SerializeField] private GetReadyScript _getReady;
     [SerializeField] private Camera _cam;
     [SerializeField] private Unicorn[] unicorns;
+    [SerializeField] private HeroMovement[] _heroes;
     [SerializeField] private FoodSpawner _foodSpawner;
     ZoomFollowGang zoomFollowScript;
 
@@ -31,6 +32,21 @@ public class MatchManager : MonoBehaviour
 
     void Start()
     {
+        foreach (var hero in _heroes)
+        {
+            var heroComp = hero.GetComponent<Hero>();
+            switch (heroComp.Index)
+            {
+                case 0:
+                    hero.TryMoveAi(new Vector2(-1, 0)); break;
+                case 1:
+                    hero.TryMoveAi(new Vector2(1, 0)); break;
+                case 2:
+                    hero.TryMoveAi(new Vector2(1, 0)); break;
+                case 3:
+                    hero.TryMoveAi(new Vector2(-1, 0)); break;
+            }
+        }
         _getReady.Activate();
         _getReady.CountdownComplete += onGetReadyCountedDown;
 
@@ -80,10 +96,13 @@ public class MatchManager : MonoBehaviour
         }
         
 
-        Transform winner = zoomFollowScript.Targets[winnersIndex];
+        Hero winner = zoomFollowScript.Targets[winnersIndex].GetComponent<Hero>();
         //zoomFollowScript.Targets = new Transform[] { winner };
 
-        zoomFollowScript.SetWinner(winner, false);
+        var hero = winner.GetComponent<HeroMovement>();
+        hero.SetWinner(true);
+
+        zoomFollowScript.SetWinner(winner.transform, false);
         _zoomingToWinner = true;
         _transTimer.Time = _transTimer.Time * 3;
         _winnerText.Activate();
