@@ -31,8 +31,29 @@ public class BrawlerMatchManager : MonoBehaviour
     void Start()
     {
         //roundWinner.gameObject.SetActive(false);
+        List<Hero> heroes = new List<Hero>();
+        foreach (var player in players)
+        {
+            heroes.Add(player.GetComponent<Hero>());
+        }
+        foreach (var hero in heroes)
+        {
+            switch (hero.Index)
+            {
+                case 0:
+                case 2:
+                    hero.Movement.TryMoveAi(new Vector2(1, 0)); break;
+
+                case 1:
+                case 3:
+                    hero.Movement.TryMoveAi(new Vector2(-1, 0)); break;
+
+            }
+        }
+
         _getReady.Activate();
         _fadeTimer.Reset();
+        GameManager.Instance.Music.Fadeout(1.5f);
     }
 
     void Update()
@@ -128,6 +149,8 @@ public class BrawlerMatchManager : MonoBehaviour
             heroes.Add(obj.GetComponent<Hero>());
         }
         var winnerTransform = heroes.Where(hero => hero.Index == winnerIndex).SingleOrDefault().transform;
+        var movement = winnerTransform.GetComponent<HeroMovement>();
+        movement.SetWinner(true);
         _cam.SetWinner(winnerTransform, true);
         //GameManager.Instance.StartNewTournament(); //remove later
         //MatchResult result = new MatchResult(GameType.Brawler, playerPositionInMatch);

@@ -100,6 +100,8 @@ public class TransitionZoneScript : MonoBehaviour
 
     private void onHeroPressedTrigger(object sender, EventArgs e)
     {
+        if (_interactivePlayer.IsGrabbing) return;
+
         _transitions.TransitionType = TransitionType.CircleFade;
         _fadeTimer.Reset();
         _transitioning = true;

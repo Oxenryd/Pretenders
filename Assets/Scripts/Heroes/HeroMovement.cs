@@ -26,6 +26,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     [SerializeField] private Collider _bodyCollider;
     [SerializeField] private Collider _headCollider;
     [SerializeField] private LayerMask _bombLayer;
+    [SerializeField] private float _airBrakeFactor = GlobalValues.JUMPDIRECTION_SLOWDOWN_MULTIPLIER;
 
     // EVENTS
     public event EventHandler<Grabbable> GrabbedGrabbable;
@@ -98,6 +99,11 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     private float _shovePower = GlobalValues.SHOVE_DEFAULT_SHOVEPOWER;
     private bool _isForceRotation = false;
 
+    private bool _turningWinner = false;
+
+    public bool HasWon { get; set; } = false;
+    public int BombRangePlus { get; set; } = 0;
+    public int MaxBombs { get; set; } = 1;
     public float ZOffset { get; set; } = 31f;
     public Vector2 StickInputVector
     { get; private set; } = Vector2.zero;
@@ -202,6 +208,21 @@ public class HeroMovement : MonoBehaviour, IJumpHit
         _targetForceRotation = rotation;
         _isForceRotation = true;
     }
+    public void SetWinner(bool halt)
+    {
+        if (halt)
+            Halt();
+        _body.velocity = Vector3.zero;
+        ForceRotation(new Vector3(0f, 180f, 0f));
+        _turningWinner = true;
+        if (IsGrabbing)
+        {
+            Drop(CurrentGrab);
+        }
+
+        HasWon = true;
+        //AcceptInput = false;
+    }
     public void Push()
     {
         IsPushed = true;
@@ -249,6 +270,31 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     public void TryShove(Vector3 direction, HeroMovement offender, float divider)
     {
         var power = (offender.Effect.CurrentEffects().ShoveMultiplier - Effect.CurrentEffects().ShoveMultiplier + 1) * offender.ShovePower / divider;
+        if (!IsShoved)
+        {
+            _startShoving = true;
+
+            if (IsGrabbing)
+            {
+                CurrentGrab.KnockOff();
+            }
+
+            Vector3 forceDir = Vector3.zero;
+            switch (CurrentControlScheme) // TODO: Add different models for force calc in differnt control modes.
+            {
+                case ControlSchemeType.Platform:
+                case ControlSchemeType.TopDown:
+                    forceDir = new Vector3(direction.x * power, GlobalValues.SHOVE_HEIGHT_BUMP_TOPDOWN, direction.z * power);
+                    break;
+            }
+
+            _shoveVector = forceDir;
+        }
+    }
+
+    public void TryBlast(Vector3 direction, float power)
+    {
+        //var power = GlobalValues.SHOVE_DEFAULT_SHOVEPOWER * 0.5f;
         if (!IsShoved)
         {
             _startShoving = true;
@@ -522,7 +568,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     // --------------------------------------------------------------------------------------------------------------- Start()
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         // Set the accelTimer, turnTimer and let them subscribe to
         // GameManagers' 'EarlyUpdate' for automatic ticking.
@@ -690,7 +736,6 @@ public class HeroMovement : MonoBehaviour, IJumpHit
 
         }
 
-
         // ---------------------------------------------------------    BUMPING
         // Bumped?
         if (_startBump)
@@ -742,7 +787,6 @@ public class HeroMovement : MonoBehaviour, IJumpHit
                 _body.velocity = (_gndNormal) * MaxJumpPower * Effect.CurrentEffects().JumpPowerMultiplier + new Vector3(_body.velocity.x, 0, _body.velocity.z);
             else
                 _body.velocity = (_gndNormal) * MaxJumpPower / 4 * Effect.CurrentEffects().JumpPowerMultiplier + new Vector3(_body.velocity.x, 0, _body.velocity.z);
-
         }
 
         if (TryingToJump)
@@ -833,7 +877,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
 
         // Moving?
         Vector2 planeVelocity = new Vector2(_body.velocity.x, _body.velocity.z);
-        if (Mathf.Round(planeVelocity.sqrMagnitude) > 0f) // Using sqr to save on sqrroots.
+        if (planeVelocity.sqrMagnitude > float.Epsilon) // Using sqr to save on sqrroots.
             IsMoving = true;
         else
             IsMoving = false;
@@ -848,15 +892,14 @@ public class HeroMovement : MonoBehaviour, IJumpHit
             else if (IsDraggingOther)
                 CurrentSpeed = CurrentSpeed * GlobalValues.CHAR_DRAG_SPEED_MULTIPLIER;
 
-            if (!IsGrounded)
+            if (!IsGrounded && _controlScheme != ControlSchemeType.Platform)
             {
                 var dot = Vector3.Dot(FaceDirection, _jumpDirection);
                 if (dot < GlobalValues.JUMPDIRECTION_SLOWDOWN_DOT)
                 {
-                    CurrentSpeed = CurrentSpeed * GlobalValues.JUMPDIRECTION_SLOWDOWN_MULTIPLIER;
+                    CurrentSpeed = CurrentSpeed * _airBrakeFactor;
                 }
             }
-
 
             Vector3 velocity = Vector3.zero;
             switch (CurrentControlScheme)
@@ -867,8 +910,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
                     if (TryingToMove)
                     {
                         _targetGridCenter = TransformHelpers.SnapToGrid(GroundPosition + FaceDirection * _grid.cellSize.x / 2, _grid);
-                    }
-                    else
+                    } else
                     {
                         if (TransformHelpers.PassedGridTarget(this, _targetGridCenter))
                         {
@@ -879,8 +921,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
                     if (Mathf.Abs(_distanceToGridTarget) <= GlobalValues.CHAR_MOVEMENT_GRIDTARGET_EPSILON)
                     {
                         _canChangeQuadDirection = true;
-                    }
-                    else
+                    } else
                     {
                         _canChangeQuadDirection = false;
                     }
@@ -888,27 +929,27 @@ public class HeroMovement : MonoBehaviour, IJumpHit
                     break;
 
                 case ControlSchemeType.TopDown:
-                    if (!IsDraggedByOther)
+                    if (IsDraggedByOther)
+                    {
+                        transform.position = Dragger.transform.position + Dragger.FaceDirection * GlobalValues.CHAR_DRAG_HOLD_DISTANCE;
+                        FaceDirection = Dragger.FaceDirection;
+                    } else
                     {
                         float grabSpeedFactor = IsGrabbing ? 1f - CurrentGrab.SpeedPenalty() : 1f;
                         velocity = new Vector3(CurrentDirection.x * CurrentSpeed * grabSpeedFactor, _body.velocity.y, CurrentDirection.z * CurrentSpeed * grabSpeedFactor);
-                    } else
-                    {
-                        transform.position = Dragger.transform.position + Dragger.FaceDirection * 1.2f;
-                        FaceDirection = Dragger.FaceDirection;
                     }
                     break;
 
                 case ControlSchemeType.Platform:
-                    var hero = GetComponent<Hero>();
-                    if (hero.Index == 0)
-                        Debug.Log($"CurrentDir: {CurrentDirection}");
 
-
-                    if (!IsDraggedByOther)
+                    if (IsDraggedByOther)
+                    {
+                        transform.position = Dragger.transform.position + Dragger.FaceDirection * GlobalValues.CHAR_DRAG_HOLD_DISTANCE;
+                        FaceDirection = Dragger.FaceDirection;
+                    } else
+                    {
                         velocity = new Vector3(CurrentDirection.x * CurrentSpeed, _body.velocity.y, 0);
-                    else
-                        velocity = Dragger.Velocity;
+                    }                      
                     break;
 
             }
@@ -957,6 +998,13 @@ public class HeroMovement : MonoBehaviour, IJumpHit
         {
             Halt();
             _doneFirstLoop = true;
+        }
+        // ---------------------------------------------------------    WINNER ?
+        if (_turningWinner)
+        {
+            Halt();
+            _acceptInput = false;
+            _turningWinner = false;
         }
     }
 

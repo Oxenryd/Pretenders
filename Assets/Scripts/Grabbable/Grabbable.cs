@@ -29,7 +29,7 @@ public class Grabbable : MonoBehaviour
     { get; set; } = false;
     private int _grabberLayer = 0;
     public bool GrabInProgress { get; set; } = false;
-
+    public bool UseGunAnimation { get; set; } = false;
     public bool DetachOnDrop { get; set; } = true;
     public int GrabberLayer
     { get { return _grabberLayer; } }
@@ -288,7 +288,7 @@ public class Grabbable : MonoBehaviour
                 case GrabbablePosition.AboveHeadOneHand:
                 case GrabbablePosition.InFrontOneHand:
                     transform.rotation = TransformHelpers.FixNegativeZRotation(Vector3.forward, _grabber.FaceDirection) * _grabbableRotationOffset;
-                    transform.position = _grabber.LeftHand.position + _grabber.LeftHand.rotation * new Vector3(GrabPointOffset.x, GrabPointOffset.y, GrabPointOffset.z);
+                    transform.position = _grabber.RightHand.position + _grabber.RightHand.rotation * new Vector3(GrabPointOffset.x, GrabPointOffset.y, GrabPointOffset.z);
                     break;
                 case GrabbablePosition.InFrontTwoHands:
                     transform.rotation = TransformHelpers.FixNegativeZRotation(Vector3.forward, _grabber.FaceDirection) * _grabbableRotationOffset;
