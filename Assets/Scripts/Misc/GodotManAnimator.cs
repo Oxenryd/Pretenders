@@ -79,6 +79,10 @@ public class GodotManAnimator : MonoBehaviour
                 _anim.SetBool(_draggingBool, false);
                 _anim.SetBool(_gunBool, false);
             }
+        } else
+        {
+            _anim.SetBool(_draggingBool, false);
+            _anim.SetBool(_gunBool, false);
         }
     }
 }

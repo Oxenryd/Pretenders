@@ -36919,6 +36919,16 @@ PrefabInstance:
       propertyPath: _jumpPower
       value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 8083230177598133970, guid: 8e9fd27858b22fa488080eb8c8e4e5fe,
+        type: 3}
+      propertyPath: _retardTime
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 8083230177598133970, guid: 8e9fd27858b22fa488080eb8c8e4e5fe,
+        type: 3}
+      propertyPath: _accelerationTime
+      value: 0.7
+      objectReference: {fileID: 0}
     - target: {fileID: 9064377974834095183, guid: 8e9fd27858b22fa488080eb8c8e4e5fe,
         type: 3}
       propertyPath: m_Name
@@ -37230,6 +37240,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4731074111460786912, guid: a8e1a0104759cd0478b803574e4cd466,
+        type: 3}
+      propertyPath: _turnTime
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4731074111460786912, guid: a8e1a0104759cd0478b803574e4cd466,
+        type: 3}
+      propertyPath: _jumpPower
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 4731074111460786912, guid: a8e1a0104759cd0478b803574e4cd466,
+        type: 3}
+      propertyPath: _retardTime
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 4731074111460786912, guid: a8e1a0104759cd0478b803574e4cd466,
+        type: 3}
+      propertyPath: _accelerationTime
+      value: 0.7
+      objectReference: {fileID: 0}
     - target: {fileID: 5498440418393780349, guid: a8e1a0104759cd0478b803574e4cd466,
         type: 3}
       propertyPath: m_Name
@@ -37318,6 +37348,16 @@ PrefabInstance:
       propertyPath: _jumpPower
       value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 7594070505810226908, guid: b9b098aa14a828444998748b4d77461a,
+        type: 3}
+      propertyPath: _retardTime
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7594070505810226908, guid: b9b098aa14a828444998748b4d77461a,
+        type: 3}
+      propertyPath: _accelerationTime
+      value: 0.7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -37395,6 +37435,16 @@ PrefabInstance:
         type: 3}
       propertyPath: _jumpPower
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 7652094383606315473, guid: 3b9c53b460636d34290d21b7aaa30ef5,
+        type: 3}
+      propertyPath: _retardTime
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7652094383606315473, guid: 3b9c53b460636d34290d21b7aaa30ef5,
+        type: 3}
+      propertyPath: _accelerationTime
+      value: 0.7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
