@@ -1,5 +1,9 @@
 public static class GlobalValues
 {
+    public const float EFFECT_DEFAULT_DURATION = 8f;
+
+    public const float POWERUP_DEFAULT_EXPIRETIME = 8f;
+
     public const float SETPATH_GAME_TIME = 30.8f;
 
     public const float SHOVE_HEIGHT_BUMP_TOPDOWN = 3f;

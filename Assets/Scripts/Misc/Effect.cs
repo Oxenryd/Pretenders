@@ -4,6 +4,7 @@ public class Effect
 
     private EasyTimer _activeTimer;
 
+    public bool Expires { get; set; } = true;
     public bool Active { get; private set; } = false;
     public float BumbMultiplier
     { get; set; } = 1f;
@@ -44,7 +45,7 @@ public class Effect
 
     public Effect()
     {
-        _activeTimer = new EasyTimer(5f, false, true);
+        _activeTimer = new EasyTimer(GlobalValues.EFFECT_DEFAULT_DURATION, false, true);
         GameManager.Instance.EarlyFixedUpdate += OnFixedUpdate;
     }
 
