@@ -272,6 +272,31 @@ public class HeroMovement : MonoBehaviour, IJumpHit
         }
     }
 
+    public void TryBlast(Vector3 direction, float power)
+    {
+        //var power = GlobalValues.SHOVE_DEFAULT_SHOVEPOWER * 0.5f;
+        if (!IsShoved)
+        {
+            _startShoving = true;
+
+            if (IsGrabbing)
+            {
+                CurrentGrab.KnockOff();
+            }
+
+            Vector3 forceDir = Vector3.zero;
+            switch (CurrentControlScheme) // TODO: Add different models for force calc in differnt control modes.
+            {
+                case ControlSchemeType.Platform:
+                case ControlSchemeType.TopDown:
+                    forceDir = new Vector3(direction.x * power, GlobalValues.SHOVE_HEIGHT_BUMP_TOPDOWN, direction.z * power);
+                    break;
+            }
+
+            _shoveVector = forceDir;
+        }
+    }
+
     public void Halt()
     {
         if (!IsAlive)
@@ -884,25 +909,26 @@ public class HeroMovement : MonoBehaviour, IJumpHit
                     break;
 
                 case ControlSchemeType.TopDown:
-                    if (!IsDraggedByOther)
+                    if (IsDraggedByOther)
+                    {
+                      //  transform.position = Dragger.transform.position + Dragger.FaceDirection * GlobalValues.CHAR_DRAG_DRAG_DISTANCE;
+                      //  FaceDirection = Dragger.FaceDirection;
+                    } else
                     {
                         float grabSpeedFactor = IsGrabbing ? 1f - CurrentGrab.SpeedPenalty() : 1f;
                         velocity = new Vector3(CurrentDirection.x * CurrentSpeed * grabSpeedFactor, _body.velocity.y, CurrentDirection.z * CurrentSpeed * grabSpeedFactor);
-                    } else
-                    {
-                        transform.position = Dragger.transform.position + Dragger.FaceDirection * 1.2f;
-                        FaceDirection = Dragger.FaceDirection;
                     }
                     break;
 
                 case ControlSchemeType.Platform:
 
-                    if (!IsDraggedByOther)
-                        velocity = new Vector3(CurrentDirection.x * CurrentSpeed, _body.velocity.y, 0);
-                    else
+                    if (IsDraggedByOther)
                     {
-                        transform.position = Dragger.transform.position + Dragger.FaceDirection * 1.2f;
+                        transform.position = Dragger.transform.position + Dragger.FaceDirection * GlobalValues.CHAR_DRAG_DRAG_DISTANCE;
                         FaceDirection = Dragger.FaceDirection;
+                    } else
+                    {
+                        velocity = new Vector3(CurrentDirection.x * CurrentSpeed, _body.velocity.y, 0);
                     }                      
                     break;
 

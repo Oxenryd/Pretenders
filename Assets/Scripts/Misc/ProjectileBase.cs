@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,8 +8,8 @@ public class ProjectileBase : MonoBehaviour
     [SerializeField] private float _groundDecel = 0.1f;
     [SerializeField] protected Rigidbody _body;
     [SerializeField] private Vector3 _spawnPointOffset;
-    [SerializeField] private float _timeToLive = 4f;
-    [SerializeField] private float _despawnTime = 1f;
+    [SerializeField] private float _timeToLive = 2.5f;
+    [SerializeField] private float _despawnTime = 1.5f;
     [SerializeField] protected float _speed = 10f;
 
     private bool _affectedByGravity = false;
@@ -18,6 +19,10 @@ public class ProjectileBase : MonoBehaviour
     protected bool _despawning = false;
     protected bool _launched = false;
     protected bool _isLethal = false;
+
+    public FishGun FishGun { get; set; }
+
+    public Vector3 Direction { get; protected set; } = Vector3.zero;
 
     public float TimeToLive
     { 
@@ -52,22 +57,24 @@ public class ProjectileBase : MonoBehaviour
     { get { return _speed; } set { _speed = value; } }
 
 
-    public void Launch(Vector3 position, Vector3 direction)
+    public virtual void Launch(Vector3 position, Vector3 direction)
     {
-        _isLethal = true;
-        _launched = true;
-        _despawning = false;
-        gameObject.SetActive(true);
-        _ttlTimer.Reset();
-        if (AffectedByGravity)
-            _body.useGravity = true;
-        else
-            _body.useGravity = false;
-        _body.velocity = Vector3.zero;
-        _body.transform.position = position;
-        _body.AddForce(direction * _speed, ForceMode.Impulse);
+        //_isLethal = true;
+        //_launched = true;
+        //_despawning = false;
+        //gameObject.SetActive(true);
+        //_ttlTimer.Reset();
+        //if (AffectedByGravity)
+        //    _body.useGravity = true;
+        //else
+        //    _body.useGravity = false;
+        //_body.velocity = Vector3.zero;
+        //_body.transform.position = position;
+        //_body.AddForce(direction * _speed, ForceMode.Impulse);
+        //OnLaunch();
     }
 
+    public virtual void OnLaunch() { }
 
     void Awake()
     {
@@ -108,8 +115,6 @@ public class ProjectileBase : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        
-
         _body.useGravity = true;
         _isLethal = false;
     }

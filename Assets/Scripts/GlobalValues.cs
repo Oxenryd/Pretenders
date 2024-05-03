@@ -41,6 +41,7 @@ public static class GlobalValues
     public const float CHAR_DRAG_DRAGGER_DECREASE = 0.03f;
     public const float CHAR_DRAG_DRAGGED_INCREASE = 0.06f;
     public const float CHAR_DRAG_DRAGGED_COOLDOWN = 1.2f;
+    public const float CHAR_DRAG_DRAG_DISTANCE = 0.9f;
     public const float CHAR_DRAG_DOT_MIN = 0.4f;
 
     public const float CHAR_STRUGGLE_MAX_TIME = 6f;
@@ -66,6 +67,9 @@ public static class GlobalValues
     public const float SCENE_CIRCLETRANSIT_TIME = 1f;
 
     public static float[] TOURNAMENT_SCORES = new float[] { 6f, 4f, 2f, 1f };
+
+    public const float FISHGUN_GROWTH_TIME = 0.25f;
+    public const float FISHGUN_SHARK_RADIUS = 7f;
 
 
 }
