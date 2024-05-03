@@ -41,7 +41,7 @@ public static class GlobalValues
     public const float CHAR_DRAG_DRAGGER_DECREASE = 0.03f;
     public const float CHAR_DRAG_DRAGGED_INCREASE = 0.06f;
     public const float CHAR_DRAG_DRAGGED_COOLDOWN = 1.2f;
-    public const float CHAR_DRAG_DRAG_DISTANCE = 0.9f;
+    public const float CHAR_DRAG_HOLD_DISTANCE = 1f;
     public const float CHAR_DRAG_DOT_MIN = 0.4f;
 
     public const float CHAR_STRUGGLE_MAX_TIME = 6f;

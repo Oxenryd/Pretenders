@@ -911,8 +911,8 @@ public class HeroMovement : MonoBehaviour, IJumpHit
                 case ControlSchemeType.TopDown:
                     if (IsDraggedByOther)
                     {
-                      //  transform.position = Dragger.transform.position + Dragger.FaceDirection * GlobalValues.CHAR_DRAG_DRAG_DISTANCE;
-                      //  FaceDirection = Dragger.FaceDirection;
+                        transform.position = Dragger.transform.position + Dragger.FaceDirection * GlobalValues.CHAR_DRAG_HOLD_DISTANCE;
+                        FaceDirection = Dragger.FaceDirection;
                     } else
                     {
                         float grabSpeedFactor = IsGrabbing ? 1f - CurrentGrab.SpeedPenalty() : 1f;
@@ -924,7 +924,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
 
                     if (IsDraggedByOther)
                     {
-                        transform.position = Dragger.transform.position + Dragger.FaceDirection * GlobalValues.CHAR_DRAG_DRAG_DISTANCE;
+                        transform.position = Dragger.transform.position + Dragger.FaceDirection * GlobalValues.CHAR_DRAG_HOLD_DISTANCE;
                         FaceDirection = Dragger.FaceDirection;
                     } else
                     {
