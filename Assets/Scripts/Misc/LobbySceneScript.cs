@@ -30,7 +30,8 @@ public class LobbySceneScript : MonoBehaviour
         else
             _transition.Value = 1;
         _fadeTimer.Reset();
-        GameManager.Instance.Music.Crossfade(Music.LOBBY, 0, 2f);
+        if (GameManager.Instance.Music != null)
+            GameManager.Instance.Music.Crossfade(Music.LOBBY, 0, 2f);
 
         //DEBUG DEBUG DEBUG
         //GameManager.Instance.InputManager.Heroes[0].PressedPushButton += testTournamentRando;

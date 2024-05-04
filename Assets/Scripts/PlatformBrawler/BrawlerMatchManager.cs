@@ -11,7 +11,7 @@ public class BrawlerMatchManager : MonoBehaviour
     [SerializeField] private Transitions _transitions;
     [SerializeField] public float _deathAltitude;
     [SerializeField] private List<GameObject> players = new List<GameObject>();
-    [SerializeField] private GetReadyScript _getReady = new GetReadyScript();
+    [SerializeField] private GetReadyScript _getReady; // = new GetReadyScript();
 
     private bool _fadingIn = true;
     private bool _fadingOut = false;
@@ -53,7 +53,8 @@ public class BrawlerMatchManager : MonoBehaviour
 
         _getReady.Activate();
         _fadeTimer.Reset();
-        GameManager.Instance.Music.Fadeout(1.5f);
+        if (GameManager.Instance.Music != null)
+            GameManager.Instance.Music.Fadeout(1.5f);
     }
 
     void Update()

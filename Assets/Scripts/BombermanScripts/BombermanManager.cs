@@ -56,7 +56,8 @@ public class BombermanManager : MonoBehaviour
             getReadyScript.CountdownComplete += OnKillAll;
         }
 
-        GameManager.Instance.Music.Fadeout(1.5f);
+        if (GameManager.Instance.Music != null)
+            GameManager.Instance.Music.Fadeout(1.5f);
     }
 
     private void OnKillAll(object sender, System.EventArgs e)
