@@ -677,7 +677,7 @@ MonoBehaviour:
     type: 3}
   _clock: {fileID: 608339130746749996, guid: 775a5114c4542284a8a42b624138f7ca, type: 3}
   _projPoint: {x: 0, y: 0, z: 0}
-  _firePoint: {x: 0.31, y: 1.21, z: 2}
+  _firePoint: {x: 0.31, y: 1.42, z: 2}
   _projectilePool:
   - {fileID: 0}
   - {fileID: 0}
