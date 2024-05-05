@@ -354,7 +354,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -876546973899608171, guid: 6d46e046127728c4caa7b55354fc1abd, type: 3}
+  - {fileID: 2100000, guid: ea5690d7a8b644546845b6a65e16684a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1063,11 +1063,11 @@ GameObject:
   - component: {fileID: 4803840465984694500}
   - component: {fileID: 2758190212403949737}
   - component: {fileID: 7939069613154092521}
-  - component: {fileID: 1551463617641022289}
   - component: {fileID: 3759216790929205792}
   - component: {fileID: 4257651621362425519}
   - component: {fileID: 6944807023070149927}
   - component: {fileID: 5255964612367463918}
+  - component: {fileID: 82382292004001964}
   m_Layer: 0
   m_Name: GodotMan Player
   m_TagString: Character
@@ -1097,6 +1097,7 @@ Transform:
   - {fileID: 1627697997735688389}
   - {fileID: 148789350307597644}
   - {fileID: 5910876192440633845}
+  - {fileID: 2105168932221247439}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1867029894314202458
@@ -1117,7 +1118,7 @@ MonoBehaviour:
   _bodyCollider: {fileID: 595235999496498031}
   _headFeet: {fileID: 6613860259621691451}
   _shovePower: 22
-  _primaryColor: {r: 0.010531545, g: 1, b: 0, a: 0}
+  _primaryColor: {r: 0, g: 0, b: 1, a: 1}
   _secondaryColor: {r: 0, g: 0.024975777, b: 1, a: 0}
   _primMat: {fileID: 2100000, guid: c8baab115a67ce745abecc61596733f9, type: 2}
   _secMat: {fileID: 2100000, guid: c8baab115a67ce745abecc61596733f9, type: 2}
@@ -1163,23 +1164,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 968d239aed46bb943baf3c6b42031841, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _acceptInput: 1
   _leftHand: {fileID: 3507568918869141958}
   _rightHand: {fileID: 5873474000126636961}
+  _gridOffset: {x: 0, y: 0, z: 0}
   _controlScheme: 1
   _quickTurnFactor: 0.2
   _jumpBufferTime: 0.13
   _body: {fileID: 7939069613154092521}
   _input: {fileID: 0}
-  _accelerationTime: 0.9
-  _retardTime: 0.9
-  _turnTime: 0.9
+  _accelerationTime: 0.7
+  _retardTime: 0.7
+  _turnTime: 0.3
   _moveSpeed: 5
-  _jumpPower: 8
+  _jumpPower: 10
   _shoveStunDuration: 1
   _struggle: {fileID: 0}
   _grid: {fileID: 0}
   _bodyCollider: {fileID: 595235999496498031}
   _headCollider: {fileID: 3014587680072323626}
+  _bombLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  _airBrakeFactor: 0.3
 --- !u!114 &2758190212403949737
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1238,18 +1245,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 80
   m_CollisionDetection: 0
---- !u!114 &1551463617641022289
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5714205671814208121}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6717e29aa4603c64e8b0fa3e39a67a2f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &3759216790929205792
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1265,6 +1260,9 @@ MonoBehaviour:
   _enabled: 0
   bombPrefab: {fileID: 170936541569395615, guid: 2b48f418bddb8a74694b19e7c4a8ebcd,
     type: 3}
+  bombLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
   heroGameObject: {fileID: 1867029894314202458}
 --- !u!114 &4257651621362425519
 MonoBehaviour:
@@ -1319,6 +1317,38 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _anim: {fileID: 6944807023070149927}
   _hero: {fileID: 4803840465984694500}
+--- !u!114 &82382292004001964
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5714205671814208121}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4ed9ec820d60e5439f9ce9907db943c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _hero: {fileID: 4803840465984694500}
+  _dustsChild: {fileID: 2105168932221247439}
+  _particleJump: {fileID: 8839999961749380226, guid: cace2cf71966e634c93c5ed8ec3bcc10,
+    type: 3}
+  _particleLand: {fileID: 4492854000073009487, guid: 7aa7c99ab1de3b143873e3dd5e1f8770,
+    type: 3}
+  _particleDJump: {fileID: 8839999961749380226, guid: cace2cf71966e634c93c5ed8ec3bcc10,
+    type: 3}
+  _particleHurt: {fileID: 8906689598690057259, guid: 6d0b479299d3a2847b8e1d3b34483c08,
+    type: 3}
+  _particleFootDownRun: {fileID: 6752099740175495251, guid: e836822416d78d941ae83c0b2c9c43f3,
+    type: 3}
+  _leftFootPosOffset: {x: -0.15, y: 0, z: 0.3}
+  _rightFootPosOffset: {x: 0.15, y: 0, z: 0.3}
+  _slidePosOffset: {x: 0, y: 0, z: 0.03}
+  _landSizeFactor: 0.08
+  _runSizeFactor: 0.05
+  _runSpeedFactor: -0.05
+  _pushingSpeedFactor: 1
+  _pushingSizeFactor: 1
 --- !u!1 &5900687955717002557
 GameObject:
   m_ObjectHideFlags: 0
@@ -1350,6 +1380,37 @@ Transform:
   m_Children:
   - {fileID: 3537280425534847193}
   m_Father: {fileID: 3364196224576518037}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &6325650520526938153
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2105168932221247439}
+  m_Layer: 0
+  m_Name: Dusts
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2105168932221247439
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6325650520526938153}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4090277857106042501}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6345688034241110892
 GameObject:

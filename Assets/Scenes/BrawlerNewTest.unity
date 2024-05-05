@@ -32893,7 +32893,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: GodotMan Player Green Variant
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 404936312496654648, guid: 8e9fd27858b22fa488080eb8c8e4e5fe, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

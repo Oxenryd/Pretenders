@@ -223,8 +223,9 @@ public class HeroMovement : MonoBehaviour, IJumpHit
         HasWon = true;
         //AcceptInput = false;
     }
-    public void Push()
+    public void Push(HeroMovement offender)
     {
+        TryBump(offender.FaceDirection, GlobalValues.CHAR_PUSH_POWER);
         IsPushed = true;
         IsStunned = true;
         _pushedTimer.Reset();
@@ -683,6 +684,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
 
                 IsPushFailed = true;
                 Stun(GlobalValues.CHAR_PUSH_FAILED_STUN_TIME);
+                _haltTimer.Reset();
                 _pushFailTimer.Reset();
             }
         }
@@ -744,6 +746,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
             _bumpTimer.Reset();
             _body.velocity = Vector3.zero;
             _body.AddForce(_bumpVector * Effect.CurrentEffects().BumbMultiplier, ForceMode.Impulse);
+            CurrentSpeed = _body.velocity.magnitude;
             _startBump = false;
             IsBumped = true;
         }
@@ -862,8 +865,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
                     CurrentSpeed = MaxMoveSpeed * Effect.CurrentEffects().MoveSpeedMultiplier;
                 }
             }
-        }
-        else if (!TryingToMove)
+        } else if (!TryingToMove)
         {
             if  (_controlScheme == ControlSchemeType.Platform)
             {
@@ -899,6 +901,11 @@ public class HeroMovement : MonoBehaviour, IJumpHit
                 {
                     CurrentSpeed = CurrentSpeed * _airBrakeFactor;
                 }
+            }
+
+            if (IsPushFailed)
+            {
+                CurrentSpeed = Mathf.Lerp(CurrentSpeed, 0f, haltT);
             }
 
             Vector3 velocity = Vector3.zero;
@@ -965,11 +972,15 @@ public class HeroMovement : MonoBehaviour, IJumpHit
             }
 
         }
-
+        
+        //if (IsBumped)
+        //{
+        //    CurrentSpeed = Mathf.Lerp(CurrentSpeed, 0f, _bumpTimer.Ratio);
+        //    _body.velocity = _bumpVector.normalized * CurrentSpeed;
+        //}
         if (IsPushing)
         {
             _body.velocity = FaceDirection * GlobalValues.CHAR_PUSH_SPEED;
-
         }
 
         if (!IsGrounded)
@@ -1135,9 +1146,8 @@ public class HeroMovement : MonoBehaviour, IJumpHit
                         var distance = Vector3.Distance(_body.position, draggable.RigidBody.position);
                         if (IsPushing && distance <= GlobalValues.CHAR_PUSH_MIN_DISTANCE)
                         {
-                            draggable.TryBump(FaceDirection, GlobalValues.CHAR_PUSH_POWER);
                             IsPushing = false;
-                            draggable.Push();
+                            draggable.Push(this);
                         }
                         return true;
                     }
