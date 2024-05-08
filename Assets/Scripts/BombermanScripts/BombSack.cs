@@ -61,7 +61,7 @@ public class BombSack : MonoBehaviour
         {
             Vector3 middlePoint = GridCellMiddlePoint.Get(grid, character.GameObject.transform.position);
             RaycastHit hit;
-            Physics.Raycast(middlePoint + new Vector3(0, 0, 0), character.FaceDirection, out hit, grid.cellSize.x, bombLayerMask);
+            Physics.Raycast(middlePoint + new Vector3(0, 0.75f, 0), character.FaceDirection, out hit, grid.cellSize.x, bombLayerMask);
             if (!hit.collider)
             {
                 for (int i = 0; i < directions.Count; i++)

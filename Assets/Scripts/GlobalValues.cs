@@ -1,5 +1,7 @@
 public static class GlobalValues
 {
+    public static readonly UnityEngine.Vector3 CHAR_OFFLIMIT_POSITION = new UnityEngine.Vector3(-10000f, 0f, -10000f);
+
     public const float EFFECT_DEFAULT_DURATION = 8f;
 
     public const float POWERUP_DEFAULT_EXPIRETIME = 8f;
@@ -51,6 +53,7 @@ public static class GlobalValues
     public const float CHAR_DRAG_HOLD_DISTANCE = 1f;
     public const float CHAR_DRAG_DOT_MIN = 0.4f;
 
+    public const float CHAR_DEAD_Y_LIMIT = 1000f;
     public const float CHAR_STRUGGLE_MAX_TIME = 6f;
     public const float CHAR_KEEP_GROUNDED_AFTER_LANDING_TIME = 0.2f;
 
@@ -63,6 +66,7 @@ public static class GlobalValues
     public const float GRABBABLE_MAX_STORED_VELOCITY_MAGNITUDE = 10f;
     public const float GRABBABLE_DEFAULT_MAX_DETACH_POWER = 10f;
 
+    public const int   BLOCKS_LAYER = 3;
     public const int   PLATFORM_LAYER = 8;
     public const int   OBJECTS_LAYER = 22;
     public const int   GROUND_LAYER = 10;

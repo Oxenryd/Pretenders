@@ -4,27 +4,15 @@ using UnityEngine;
 
 public class CrateExplosion : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject powerUpObject;
-
-    private Bomb powerUp;
-    void Start()
-    {
-    }
-
-    private void SetInactive()
-    {
-        gameObject.SetActive(false);
-    }
+    [SerializeField] private MeshRenderer _renderer;
+    [SerializeField] private Collider _collider;
+    [SerializeField] private ParticleSystem _explosion;
 
     public void Explode()
     {
-        //Instantiate(powerUpObject, transform.position, transform.rotation);
-        SetInactive();
+        _renderer.enabled = false;
+        _collider.enabled = false;
+        _explosion.Play();
     }
 
-    void Update()
-    {
-        
-    }
 }
