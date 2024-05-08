@@ -101,6 +101,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
 
     private bool _turningWinner = false;
 
+    public bool CanGrabBombs { get; set; } = true;
     public bool HasWon { get; set; } = false;
     public int BombRangePlus { get; set; } = 0;
     public int MaxBombs { get; set; } = 1;
@@ -375,6 +376,30 @@ public class HeroMovement : MonoBehaviour, IJumpHit
         }
     }
 
+    public void StartDragStruggle(HeroMovement dragger, HeroMovement dragged)
+    {
+        if (dragged.IsDraggingOther)
+            dragged.DragStruggle.Abort();
+
+        if (dragged.IsGrabbing)
+        {
+            dragged.CurrentGrab.Drop();
+            dragged.IsGrabbing = false;
+        }
+
+        _struggle = GameManager.Instance.SceneManager.NextDragStruggle();
+        dragged.DragStruggle = _struggle;
+        _struggle.Activate(dragger, dragged);
+
+        IsDraggingOther = true;
+        CanBeDragged = true;
+
+        dragged.Dragger = this;
+        dragged.IsDraggedByOther = true;
+        dragged.CanBeDragged = false;
+        dragged.RigidBody.isKinematic = true;
+    }
+
     // Handle Input Events
     // ------------------------------------------------------------------------------------- INPUTS START HERE
     public void TryJump(InputAction.CallbackContext context)
@@ -604,7 +629,17 @@ public class HeroMovement : MonoBehaviour, IJumpHit
         if (_controlScheme == ControlSchemeType.PricePall)
             return;
 
-        if(!IsAlive) return;
+        if(!IsAlive)
+        {
+            if (transform.position.y > GlobalValues.CHAR_DEAD_Y_LIMIT)
+            {
+                _body.velocity = Vector3.zero;
+                _body.position = GlobalValues.CHAR_OFFLIMIT_POSITION;
+            }
+            return;
+        }
+
+
         if (_isForceRotation)
         {
             var dir = Quaternion.Euler(_targetForceRotation) * Vector3.forward;
@@ -850,10 +885,9 @@ public class HeroMovement : MonoBehaviour, IJumpHit
             {
                 CurrentDirection = Vector3.Lerp(CurrentDirection, TargetDirection, turnT);
                 CurrentSpeed = Mathf.Clamp(Mathf.Lerp(CurrentSpeed, MaxMoveSpeed * Effect.CurrentEffects().MoveSpeedMultiplier, accelT), 0f, TargetSpeed);
-            } else
+            } else // Below == Bomberman
             {
                 if (IsAlive)
-
                 {
                     _validMovement();
 
@@ -1039,7 +1073,8 @@ public class HeroMovement : MonoBehaviour, IJumpHit
                 }
                 else if (!CurrentGrab.IsGrabbed && CurrentGrab.CanBeGrabbed)
                 {
-                    foundGrab.PickupAlert.Ping(this, foundGrab.transform, false);
+                    if ( (_controlScheme == ControlSchemeType.BomberMan && CanGrabBombs) || _controlScheme != ControlSchemeType.BomberMan)
+                        foundGrab.PickupAlert.Ping(this, foundGrab.transform, false);
                 }
             }
         }
@@ -1070,7 +1105,8 @@ public class HeroMovement : MonoBehaviour, IJumpHit
         // Trying to grab?
         if (CanMove && _tryingToGrab && hitSomething)
         {
-            doGrabbingDragging(foundObject);
+            if ((_controlScheme == ControlSchemeType.BomberMan && CanGrabBombs) || _controlScheme != ControlSchemeType.BomberMan)
+                doGrabbingDragging(foundObject);
             Halt();
         }
 
@@ -1275,30 +1311,15 @@ public class HeroMovement : MonoBehaviour, IJumpHit
         TryingToMove = true;
     }
 
-    public void StartDragStruggle(HeroMovement dragger, HeroMovement dragged)
+
+    void OnCollisionEnter(Collision collision)
     {
-        if (dragged.IsDraggingOther)
-            dragged.DragStruggle.Abort();
-
-        if (dragged.IsGrabbing)
+        var bomb = collision.gameObject.GetComponent<Bomb>();
+        if (bomb != null)
         {
-            dragged.CurrentGrab.Drop();
-            dragged.IsGrabbing = false;
+            bomb.SetCanExplode(true);
         }
-
-        _struggle = GameManager.Instance.SceneManager.NextDragStruggle();
-        dragged.DragStruggle = _struggle;
-        _struggle.Activate(dragger, dragged);
-
-        IsDraggingOther = true;
-        CanBeDragged = true;
-
-        dragged.Dragger = this;
-        dragged.IsDraggedByOther = true;
-        dragged.CanBeDragged = false;
-        dragged.RigidBody.isKinematic = true;
     }
-
 
     void OnDrawGizmos()
     {

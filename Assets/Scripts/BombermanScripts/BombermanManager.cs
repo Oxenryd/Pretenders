@@ -149,7 +149,14 @@ public class BombermanManager : MonoBehaviour
             heroMovementScript.IsAlive = false;
             heroMovementScript.AcceptInput = false;
             heroMovementScript.RigidBody.velocity = Vector3.zero;
-            heroMovementScript.RigidBody.AddForce((-heroMovementScript.FaceDirection + Vector3.up).normalized * 30, ForceMode.Impulse);
+            heroMovementScript.RigidBody.useGravity = false;
+            //heroMovementScript.RigidBody.AddForce((-heroMovementScript.FaceDirection + Vector3.up).normalized * 30, ForceMode.Impulse);
+            heroMovementScript.RigidBody.AddForce((-heroMovementScript.FaceDirection + Vector3.up).normalized * 40, ForceMode.Impulse);
+            var colliders = heroMovementScript.GetComponentsInChildren<Collider>();
+            foreach (Collider collider in colliders)
+            {
+                collider.enabled = false;
+            }
             AddPlayerDeathToQueue(hero.Index);
         }
     }
