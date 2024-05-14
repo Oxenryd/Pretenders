@@ -20,13 +20,15 @@ public class DragStruggle : MonoBehaviour
     private EasyTimer _maxStruggleTime;
     private HeroMovement _dragger;
     private HeroMovement _dragged;
-
+    private EasyTimer _safetyTimeout;
     public float Duration
     { get; set; } = 0;
     public float Ratio
     { get { return Duration / _maxStruggleTime.Time; } }
     public void Abort()
     {
+        _value = 0;
+        _meter.Value = 0;
         _dragger.DragStruggle = null;
         _dragger.IsDraggingOther = false;
         _dragger.IsGrabbing = false;
@@ -43,6 +45,7 @@ public class DragStruggle : MonoBehaviour
     {
         _imageTimer = new EasyTimer(FLICKER_TIME);
         _fadeTimer = new EasyTimer(FADE_TIME);
+        _safetyTimeout = new EasyTimer(GlobalValues.CHAR_GRAB_SAFETY_TIMEOUT);
         _maxStruggleTime = new EasyTimer(GlobalValues.CHAR_STRUGGLE_MAX_TIME);
         _camera = Camera.main;
     }
@@ -55,6 +58,7 @@ public class DragStruggle : MonoBehaviour
 
     public void Activate(HeroMovement dragger, HeroMovement dragged)
     {
+        _safetyTimeout.Reset();
         Duration = 0;
         _maxStruggleTime.Reset();
         gameObject.SetActive(true);
@@ -114,6 +118,13 @@ public class DragStruggle : MonoBehaviour
         Duration += GameManager.Instance.DeltaTime;
         _value = Math.Max(_maxStruggleTime.Ratio, _value);
         _meter.Value = _value;
+
+        if (_safetyTimeout.Done)
+        {
+            _value = 1f;
+            _meter.Value = 0f;
+        }
+            
 
         winningCondition();
     }

@@ -422,6 +422,8 @@ public class HeroMovement : MonoBehaviour, IJumpHit
 
     public void TryPush(InputAction.CallbackContext context)
     {
+        if (_controlScheme == ControlSchemeType.BomberMan) return;
+
         if (context.started)
         {
             OnPressedPushButton();
@@ -525,6 +527,12 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     {
         var inputDir = context.ReadValue<Vector2>();
         StickInputVector = inputDir;
+
+        if (inputDir.magnitude < GlobalValues.INPUT_DEADZONE)
+        {
+            Halt();
+            return;
+        }
 
         if (!AcceptInput) return;
 

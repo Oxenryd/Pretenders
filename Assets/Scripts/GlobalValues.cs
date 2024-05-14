@@ -25,7 +25,7 @@ public static class GlobalValues
 
     public const int   TRAY_MAX_SIZE = 5;
 
-    public const int   WINNING_POINTS_FORCE_FEEDER = 100;
+    public const int   WINNING_POINTS_FORCE_FEEDER = 40;
 
     public const float CHAR_GRAB_DEFAULT_SPEEDPENALTY = 0.05f;
     public const float CHAR_GRAB_CHECK_DISTANCE = 1f;
@@ -36,6 +36,7 @@ public static class GlobalValues
     public const float CHAR_GRAB_DROPFORCE = 6f;
     public const float CHAR_GRAB_RADIUS_DEFAULT_TIMETOGRAB = 0.3f;
     public const float CHAR_GRAB_TIMEOUT = 0.5f;
+    public const float CHAR_GRAB_SAFETY_TIMEOUT = 15f;
 
     public const float CHAR_MOVEMENT_GRIDTARGET_EPSILON = 0.15f;
 
@@ -65,6 +66,8 @@ public static class GlobalValues
     public const float GRABBABLE_COLLIDER_TIMEOUT_DEFAULTTIME = 0.3f;
     public const float GRABBABLE_MAX_STORED_VELOCITY_MAGNITUDE = 10f;
     public const float GRABBABLE_DEFAULT_MAX_DETACH_POWER = 10f;
+
+    public const float INPUT_DEADZONE = 0.25f;
 
     public const int   BLOCKS_LAYER = 3;
     public const int   PLATFORM_LAYER = 8;

@@ -2587,6 +2587,11 @@ PrefabInstance:
       propertyPath: _enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2067279763842759445, guid: 3b9c53b460636d34290d21b7aaa30ef5,
+        type: 3}
+      propertyPath: bombLayerMask.m_Bits
+      value: 30728
+      objectReference: {fileID: 0}
     - target: {fileID: 2147668712665598746, guid: 3b9c53b460636d34290d21b7aaa30ef5,
         type: 3}
       propertyPath: m_Layer
@@ -2684,8 +2689,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7652094383606315473, guid: 3b9c53b460636d34290d21b7aaa30ef5,
         type: 3}
+      propertyPath: _grid
+      value: 
+      objectReference: {fileID: 647735485}
+    - target: {fileID: 7652094383606315473, guid: 3b9c53b460636d34290d21b7aaa30ef5,
+        type: 3}
       propertyPath: _moveSpeed
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7652094383606315473, guid: 3b9c53b460636d34290d21b7aaa30ef5,
+        type: 3}
+      propertyPath: _controlScheme
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7652094383606315473, guid: 3b9c53b460636d34290d21b7aaa30ef5,
         type: 3}
@@ -14186,6 +14201,11 @@ PrefabInstance:
       propertyPath: _enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 480943667475551254, guid: 8e9fd27858b22fa488080eb8c8e4e5fe,
+        type: 3}
+      propertyPath: bombLayerMask.m_Bits
+      value: 30728
+      objectReference: {fileID: 0}
     - target: {fileID: 563751605146395673, guid: 8e9fd27858b22fa488080eb8c8e4e5fe,
         type: 3}
       propertyPath: m_Layer
@@ -14383,8 +14403,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8083230177598133970, guid: 8e9fd27858b22fa488080eb8c8e4e5fe,
         type: 3}
+      propertyPath: _grid
+      value: 
+      objectReference: {fileID: 647735485}
+    - target: {fileID: 8083230177598133970, guid: 8e9fd27858b22fa488080eb8c8e4e5fe,
+        type: 3}
       propertyPath: _moveSpeed
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8083230177598133970, guid: 8e9fd27858b22fa488080eb8c8e4e5fe,
+        type: 3}
+      propertyPath: _controlScheme
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8083230177598133970, guid: 8e9fd27858b22fa488080eb8c8e4e5fe,
         type: 3}
@@ -37291,7 +37321,7 @@ MonoBehaviour:
   _grid: {fileID: 647735485}
   deathQueue: 00000000000000000000000000000000
   getReady: {fileID: 769114274}
-  killAll: 0
+  killAll: 1
 --- !u!1001 &1799275644
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -41143,6 +41173,11 @@ PrefabInstance:
       propertyPath: _enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2297484871720250392, guid: b9b098aa14a828444998748b4d77461a,
+        type: 3}
+      propertyPath: bombLayerMask.m_Bits
+      value: 30728
+      objectReference: {fileID: 0}
     - target: {fileID: 2401836788151963630, guid: b9b098aa14a828444998748b4d77461a,
         type: 3}
       propertyPath: m_Layer
@@ -41235,8 +41270,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7594070505810226908, guid: b9b098aa14a828444998748b4d77461a,
         type: 3}
+      propertyPath: _grid
+      value: 
+      objectReference: {fileID: 647735485}
+    - target: {fileID: 7594070505810226908, guid: b9b098aa14a828444998748b4d77461a,
+        type: 3}
       propertyPath: _moveSpeed
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7594070505810226908, guid: b9b098aa14a828444998748b4d77461a,
+        type: 3}
+      propertyPath: _controlScheme
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7594070505810226908, guid: b9b098aa14a828444998748b4d77461a,
         type: 3}
