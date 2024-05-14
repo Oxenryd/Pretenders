@@ -996,7 +996,14 @@ public class HeroMovement : MonoBehaviour, IJumpHit
             }
 
             if (!IsDraggedByOther)
+            {
+                if (float.IsNaN(velocity.x))
+                    velocity = new Vector3(0, velocity.y, velocity.z);
+                if (float.IsNaN(velocity.z))
+                    velocity = new Vector3(velocity.x, velocity.y, 0);
                 _body.velocity = velocity;
+            }
+                
 
             var dirVelocity = new Vector3(velocity.x, 0, velocity.z).normalized;
             if (_controlScheme != ControlSchemeType.BomberMan)
