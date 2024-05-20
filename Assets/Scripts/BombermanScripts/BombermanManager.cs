@@ -35,6 +35,7 @@ public class BombermanManager : MonoBehaviour
         timer.Reset();
 
         RandomizeArray(startCorners);
+        var gridOccupation = _grid.GetComponent<GridOccupation>();
         for (int i = 0; i < startCorners.Length; i++)
         {
             if (startCorners[i] == new Vector3(2, 0, 2) || startCorners[i] == new Vector3(42, 0, 2))
@@ -47,6 +48,7 @@ public class BombermanManager : MonoBehaviour
                 characterList[i].ForceRotation(new Vector3(0, -180, 0));
                 characterList[i].transform.position = GridCellMiddlePoint.Get(_grid, startCorners[i]);
             }
+            gridOccupation.SetOccupied(i, characterList[i].transform.position);
         }
         var getReadyScript = getReady.GetComponent<GetReadyScript>();
         getReadyScript.Activate();

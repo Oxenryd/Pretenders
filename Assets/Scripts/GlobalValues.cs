@@ -16,6 +16,8 @@ public static class GlobalValues
     public const int   BOMBS_MAXBOMBS = 10;
     public const int   BOMBS_MAXEXPLOSIONSPERDIRECTION = 10;
 
+    public const float BOMBERMAN_PLAYER_CHECK_DISTANCE_RATIO = 1.83f;
+
     public const float JUMPDIRECTION_SLOWDOWN_DOT = 0.71f;
     public const float JUMPDIRECTION_SLOWDOWN_MULTIPLIER = 0.3f;
 

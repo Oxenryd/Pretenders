@@ -100,7 +100,11 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     private bool _isForceRotation = false;
 
     private bool _turningWinner = false;
+    private GridOccupation _gridOccupation;
+    private Hero _hero;
 
+    public Hero Hero
+    {  get { return _hero; } }
     public bool CanGrabBombs { get; set; } = true;
     public bool HasWon { get; set; } = false;
     public int BombRangePlus { get; set; } = 0;
@@ -607,6 +611,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
         // Set the accelTimer, turnTimer and let them subscribe to
         // GameManagers' 'EarlyUpdate' for automatic ticking.
         this.GameObject = gameObject;
+        _hero = GetComponent<Hero>();
         _accelTimer = new EasyTimer(_accelerationTime, false, true);
         _turnTimer = new EasyTimer(_turnTime, true, true);
         _haltTimer = new EasyTimer(_retardTime, false, true);
@@ -622,6 +627,11 @@ public class HeroMovement : MonoBehaviour, IJumpHit
         _pushFailTimer = new EasyTimer(GlobalValues.CHAR_PUSH_FAILED_STUN_TIME, false, true);
         _pushedTimer = new EasyTimer(GlobalValues.CHAR_PUSH_PUSHED_TIME, false, true);
 
+        if (_controlScheme == ControlSchemeType.BomberMan)
+        {
+            _gridOccupation = _grid.GetComponent<GridOccupation>();
+        }
+        
         if (_controlScheme == ControlSchemeType.TopDown)
             TryMoveAi(Vector2.right);
         Effect = Effect.DefaultEffect();
@@ -897,13 +907,14 @@ public class HeroMovement : MonoBehaviour, IJumpHit
             {
                 if (IsAlive)
                 {
-                    _validMovement();
-
                     if (_canChangeQuadDirection)
                     {
                         FaceDirection = TargetDirection;
                         CurrentDirection = FaceDirection;
                     }
+                    if ( _validMovement() )
+                        _gridOccupation.SetOccupied(_hero);
+
                     CurrentSpeed = MaxMoveSpeed * Effect.CurrentEffects().MoveSpeedMultiplier;
                 }
             }
@@ -1273,15 +1284,24 @@ public class HeroMovement : MonoBehaviour, IJumpHit
 
 
     // Privates
-    private void _validMovement()
+    private bool _validMovement()
     {
-        RaycastHit hit;
-        Physics.Raycast(transform.position + new Vector3(0, .5f, 0), TargetDirection, out hit, _grid.cellSize.x, _bombLayer);
-
-        if (hit.collider)
+        RaycastHit wallHit;
+        LayerMask walls = LayerUtil.Include(GlobalValues.BLOCKS_LAYER);
+        Physics.Raycast(transform.position + new Vector3(0, .5f, 0), TargetDirection, out wallHit, _grid.cellSize.x, walls);
+        if (wallHit.collider || _gridOccupation.CheckOccupied(_hero))
         {
             Halt();
+            return false;
         }
+
+        //RaycastHit playerHit;
+        //LayerMask players = LayerUtil.Include(11, 12, 13, 14);
+        //Physics.Raycast(transform.position + new Vector3(0, .5f, 0), TargetDirection, out playerHit, _grid.cellSize.x * GlobalValues.BOMBERMAN_PLAYER_CHECK_DISTANCE_RATIO, players);
+        //if (playerHit.collider)
+        //    Halt();
+
+        return true;
     }
     private bool _movingInSameDirection()
     {

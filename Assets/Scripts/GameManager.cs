@@ -109,6 +109,8 @@ public class GameManager : MonoBehaviour
     public void StartNewTournament() { StartNewTournament(false); }
     public void StartNewTournament(bool includeMiniGames)
     {
+        _resultsNextCall = false;
+        _minigameNextCall = false;
         _tournamentComplete = false;
         _includingMiniGames = includeMiniGames;
         Tournament = true;
@@ -221,18 +223,7 @@ public class GameManager : MonoBehaviour
     { return _lastStandings.ToArray(); }
     public MatchResult[] GetMatchResults()
     { return _currentResults.ToArray(); }
-    //public float GetTournamentScore(int playerIndex)
-    //{ return _tournamentScore[playerIndex]; }
-    //public void IncreaseTournamentScore(int playerIndex, float score)
-    //{ _tournamentScore[playerIndex] += score; }
-    //public void ResetTournamentScore()
-    //{
 
-    //    for (int i = 0; i < _tournamentScore.Length; i++)
-    //    {
-    //        _tournamentScore[i] = 0f;
-    //    }
-    //}
     public SceneManager SceneManager
     { get { return _curSceneman; } }
     public InputManager InputManager
@@ -311,7 +302,7 @@ public class GameManager : MonoBehaviour
         var transition = GameObject.FindGameObjectWithTag(GlobalStrings.TRANSITIONS_TAG);
         _transitions = transition.GetComponent<Transitions>();
 
-        var sceneMan = GameObject.FindGameObjectsWithTag(GlobalStrings.NAME_SCENEMANAGER);//.GetComponent<SceneManager>();
+        var sceneMan = GameObject.FindGameObjectsWithTag(GlobalStrings.NAME_SCENEMANAGER);
         _curSceneman = sceneMan[^1].GetComponent<SceneManager>();
         List<HeroMovement> movements = new List<HeroMovement>();
         foreach (var character in _playableCharacters)

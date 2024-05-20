@@ -13403,6 +13403,7 @@ GameObject:
   m_Component:
   - component: {fileID: 647735486}
   - component: {fileID: 647735485}
+  - component: {fileID: 647735487}
   m_Layer: 0
   m_Name: Grid
   m_TagString: BombermanGrid
@@ -13438,6 +13439,19 @@ Transform:
   - {fileID: 1471209571}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &647735487
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 647735484}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7287f2faa47a4d343a8c84f713817e69, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _grid: {fileID: 647735485}
 --- !u!1001 &649237426
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -37321,7 +37335,7 @@ MonoBehaviour:
   _grid: {fileID: 647735485}
   deathQueue: 00000000000000000000000000000000
   getReady: {fileID: 769114274}
-  killAll: 1
+  killAll: 0
 --- !u!1001 &1799275644
 PrefabInstance:
   m_ObjectHideFlags: 0
