@@ -436,7 +436,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
 
             if (!AcceptInput) return;
 
-            if (!CanMove || IsStunned || IsGrabbing || IsDraggingOther || IsTugging || IsDraggedByOther || IsJumping || IsFalling)
+            if (!CanMove || IsStunned || IsGrabbing || IsDraggingOther || IsTugging || IsDraggedByOther || IsJumping || IsFalling || IsPushing)
                 return;
 
             _tryingToPush = true;
@@ -912,8 +912,14 @@ public class HeroMovement : MonoBehaviour, IJumpHit
                         FaceDirection = TargetDirection;
                         CurrentDirection = FaceDirection;
                     }
-                    if ( _validMovement() )
+
+                    if (_validMovement())
                         _gridOccupation.SetOccupied(_hero);
+                    else
+                    {
+                        _gridOccupation.SetOccupied(Hero.Index, transform.position);
+                        transform.position = _gridOccupation.TileCenter(Hero);
+                    }
 
                     CurrentSpeed = MaxMoveSpeed * Effect.CurrentEffects().MoveSpeedMultiplier;
                 }
@@ -1288,18 +1294,12 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     {
         RaycastHit wallHit;
         LayerMask walls = LayerUtil.Include(GlobalValues.BLOCKS_LAYER);
-        Physics.Raycast(transform.position + new Vector3(0, .5f, 0), TargetDirection, out wallHit, _grid.cellSize.x, walls);
+        Physics.Raycast(transform.position + new Vector3(0, .5f, 0), TargetDirection, out wallHit, _grid.cellSize.x * 0.51f, walls);
         if (wallHit.collider || _gridOccupation.CheckOccupied(_hero))
         {
             Halt();
             return false;
         }
-
-        //RaycastHit playerHit;
-        //LayerMask players = LayerUtil.Include(11, 12, 13, 14);
-        //Physics.Raycast(transform.position + new Vector3(0, .5f, 0), TargetDirection, out playerHit, _grid.cellSize.x * GlobalValues.BOMBERMAN_PLAYER_CHECK_DISTANCE_RATIO, players);
-        //if (playerHit.collider)
-        //    Halt();
 
         return true;
     }

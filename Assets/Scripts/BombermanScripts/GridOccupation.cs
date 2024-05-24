@@ -18,6 +18,11 @@ public class GridOccupation : MonoBehaviour
     [SerializeField]
     private Vector2[] _occupiedTiles = new Vector2[4];
 
+    public Vector2 GetHeroTile(Hero hero)
+    {
+        return _occupiedTiles[hero.Index];
+    }
+
     public bool CheckOccupied(Hero hero)
     {
         var movement = hero.Movement;
@@ -35,6 +40,16 @@ public class GridOccupation : MonoBehaviour
         return false;
     }
 
+    public Vector3 TileCenter(Hero hero)
+    {
+        return TileCenter(_occupiedTiles[hero.Index]);
+    }
+    public Vector3 TileCenter(Vector2 tile)
+    {
+        return new Vector3(tile.x * _grid.cellSize.x, 0f, tile.y * _grid.cellSize.y);
+    }
+    public Vector3 TileCenter(int x, int y) => TileCenter(new Vector2(x, y));
+   
     public void SetOccupied(Hero hero)
     {
         var movement = hero.Movement;

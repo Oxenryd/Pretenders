@@ -24,6 +24,7 @@ public class PickupAlert : MonoBehaviour
     [SerializeField] private float _wobbleRange = 10f;
     [SerializeField] private float _textStartSize = 36f;
     [SerializeField] private Vector3 _positionOffset = new Vector3(0, 3, 0f);
+    [SerializeField][Range(0.0f, 1.0f)] private float _opacity = 0.5f;
 
     private Transform _target;
 
@@ -75,7 +76,7 @@ public class PickupAlert : MonoBehaviour
     {
         _image.enabled = true;
         _text.enabled = true;
-        _image.color = new Color(color.r, color.g, color.b, 1f);
+        _image.color = new Color(color.r, color.g, color.b, _opacity);
         _text.color = _image.color;
         _text.fontSize = _textStartSize - _wobbleRange * 0.5f;
         _mode = AlertMode.Animating;
