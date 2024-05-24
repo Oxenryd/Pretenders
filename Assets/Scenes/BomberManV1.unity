@@ -13452,6 +13452,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _grid: {fileID: 647735485}
+  _ratioX: 0.7
+  _ratioY: 0.75
+  _occupiedTiles:
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
 --- !u!1001 &649237426
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -37335,7 +37342,7 @@ MonoBehaviour:
   _grid: {fileID: 647735485}
   deathQueue: 00000000000000000000000000000000
   getReady: {fileID: 769114274}
-  killAll: 0
+  killAll: 1
 --- !u!1001 &1799275644
 PrefabInstance:
   m_ObjectHideFlags: 0
