@@ -16,8 +16,8 @@ public class LobbySceneScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        var resultScreenTest = GameObject.FindWithTag(GlobalStrings.NAME_RESULTSCREEN_DEBUG).GetComponent<TransitionZoneScript>();
-        resultScreenTest.TriggeredTransition += resultScreenLoadTest;
+       // var resultScreenTest = GameObject.FindWithTag(GlobalStrings.NAME_RESULTSCREEN_DEBUG).GetComponent<TransitionZoneScript>();
+       // resultScreenTest.TriggeredTransition += resultScreenLoadTest;
 
         _readyScript.CountdownComplete += (sender, args) =>
         {
