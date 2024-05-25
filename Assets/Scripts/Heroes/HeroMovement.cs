@@ -54,6 +54,8 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     protected void OnPressedGrabButton()
     { PressedGrabButton?.Invoke(this, EventArgs.Empty); }
 
+
+    
     private EasyTimer _accelTimer;
     private EasyTimer _turnTimer;
     private EasyTimer _haltTimer;
@@ -101,6 +103,8 @@ public class HeroMovement : MonoBehaviour, IJumpHit
 
     private bool _turningWinner = false;
     private GridOccupation _gridOccupation;
+    private Vector2 _targetTile = Vector2.zero;
+    private bool _pendingStop = false;
     private Hero _hero;
 
     public Hero Hero
@@ -325,11 +329,12 @@ public class HeroMovement : MonoBehaviour, IJumpHit
 
     public void Halt()
     {
+        TryingToMove = false;
         if (!IsAlive)
         {
             return;
         }
-        TryingToMove = false;
+        
         _stopSpeed = CurrentSpeed;
         _accelTimer.Reset();
         _turnTimer.Reset();
@@ -546,15 +551,34 @@ public class HeroMovement : MonoBehaviour, IJumpHit
                 ? TransformHelpers.QuadDirQuantize(new Vector3(inputDir.x, 0, inputDir.y))
                 : new Vector3(inputDir.x, 0, inputDir.y);
 
-            _startMovingFromStandStill(actualDir);
+            if (_controlScheme == ControlSchemeType.BomberMan)
+            {
+                TryingToMove = true;
+                TargetDirection = actualDir;
+                if (FaceDirection != TargetDirection && CurrentSpeed != 0f)
+                {
+                    _pendingStop = true;
+                }
+
+            } else
+                _startMovingFromStandStill(actualDir);
         }
         else if (CanMove && context.performed)
         {
             Vector3 actualDir = _controlScheme == ControlSchemeType.BomberMan
                 ? TransformHelpers.QuadDirQuantize(new Vector3(inputDir.x, 0, inputDir.y))
                 : new Vector3(inputDir.x, 0, inputDir.y);
-
-            _resumeMoving(actualDir);
+            
+            if (_controlScheme == ControlSchemeType.BomberMan)
+            {
+                TryingToMove = true;
+                TargetDirection = actualDir;
+                if (FaceDirection != TargetDirection && CurrentSpeed != 0f)
+                {
+                    _pendingStop = true;
+                }
+            } else
+                _resumeMoving(actualDir);
         }
         else if (context.canceled)
         {
@@ -905,7 +929,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
                 CurrentSpeed = Mathf.Clamp(Mathf.Lerp(CurrentSpeed, MaxMoveSpeed * Effect.CurrentEffects().MoveSpeedMultiplier, accelT), 0f, TargetSpeed);
             } else // Below == Bomberman
             {
-                if (IsAlive)
+                if (IsAlive && !_pendingStop)
                 {
                     if (_canChangeQuadDirection)
                     {
@@ -913,15 +937,17 @@ public class HeroMovement : MonoBehaviour, IJumpHit
                         CurrentDirection = FaceDirection;
                     }
 
-                    if (_validMovement())
-                        _gridOccupation.SetOccupied(_hero);
-                    else
+                    if ( _validMovement() )
                     {
-                        _gridOccupation.SetOccupied(Hero.Index, transform.position);
-                        transform.position = _gridOccupation.TileCenter(Hero);
+                        _targetTile = _gridOccupation.SetOccupied(_hero);
+                        CurrentSpeed = MaxMoveSpeed * Effect.CurrentEffects().MoveSpeedMultiplier;
                     }
-
-                    CurrentSpeed = MaxMoveSpeed * Effect.CurrentEffects().MoveSpeedMultiplier;
+                    //else
+                    //{
+                    //    _targetTile = _gridOccupation.SetOccupiedForced(Hero.Index, transform.position);
+                    //    transform.position = _gridOccupation.TileCenter(Hero);
+                    //    CurrentSpeed = 0f;
+                    //}
                 }
             }
         } else if (!TryingToMove)
@@ -971,27 +997,58 @@ public class HeroMovement : MonoBehaviour, IJumpHit
             switch (CurrentControlScheme)
             {
                 case ControlSchemeType.BomberMan:
-                    velocity = FaceDirection.normalized * CurrentSpeed;
-                    _distanceToGridTarget = Vector3.Distance(_targetGridCenter, GroundPosition);
-                    if (TryingToMove)
-                    {
-                        _targetGridCenter = TransformHelpers.SnapToGrid(GroundPosition + FaceDirection * _grid.cellSize.x / 2, _grid);
-                    } else
-                    {
-                        if (TransformHelpers.PassedGridTarget(this, _targetGridCenter))
-                        {
-                            CurrentSpeed = 0;
-                            velocity = Vector3.zero;
-                        }
-                    }
-                    if (Mathf.Abs(_distanceToGridTarget) <= GlobalValues.CHAR_MOVEMENT_GRIDTARGET_EPSILON)
-                    {
-                        _canChangeQuadDirection = true;
-                    } else
-                    {
-                        _canChangeQuadDirection = false;
-                    }
+                    //velocity = FaceDirection.normalized * CurrentSpeed;
+                    //_distanceToGridTarget = Vector3.Distance(_targetGridCenter, GroundPosition);
+                    //if (TryingToMove)
+                    //{
+                    //    _targetGridCenter = TransformHelpers.SnapToGrid(GroundPosition + FaceDirection * _grid.cellSize.x / 2, _grid);
+                    //} else
+                    //{
+                    //    if (TransformHelpers.PassedGridTarget(this, _targetGridCenter))
+                    //    {
+                    //        CurrentSpeed = 0;
+                    //        velocity = Vector3.zero;
+                    //    }
+                    //}
 
+                    
+                    
+
+                    if (CurrentSpeed != 0f)
+                    {
+                        velocity = FaceDirection.normalized * CurrentSpeed;
+                        var targetPos = _gridOccupation.TileCenter(_targetTile);
+                        _distanceToGridTarget = Vector3.Distance(targetPos, GroundPosition);
+                        if (TransformHelpers.PassedGridTarget(this, targetPos))
+                        {
+                            if (_pendingStop || !TryingToMove)
+                            {
+                                CurrentSpeed = 0f;
+                                velocity = Vector3.zero;
+                                _canChangeQuadDirection = true;
+                                _pendingStop = false;
+                                FaceDirection = TargetDirection;
+                            } else if (TryingToMove)
+                            {
+                                FaceDirection = TargetDirection;
+                                CurrentDirection = FaceDirection;
+                                if (_validMovement())
+                                {
+                                    _targetTile = _gridOccupation.SetOccupied(_hero);
+                                    CurrentSpeed = MaxMoveSpeed * Effect.CurrentEffects().MoveSpeedMultiplier;
+                                    velocity = FaceDirection.normalized * CurrentSpeed;
+                                    _canChangeQuadDirection = false;
+                                } else
+                                {
+                                    _targetTile = _gridOccupation.SetOccupiedForced(Hero.Index, transform.position);
+                                    transform.position = _gridOccupation.TileCenter(_targetTile);
+                                }
+                            }
+                        } else
+                            _canChangeQuadDirection = false;
+                    }
+                    if (Hero.Index == 0)
+                        Debug.Log($"TARGET: {_targetTile} - IN TILE: {_gridOccupation.XyFromVector3(GroundPosition)}");
                     break;
 
                 case ControlSchemeType.TopDown:
@@ -1026,13 +1083,13 @@ public class HeroMovement : MonoBehaviour, IJumpHit
                     velocity = new Vector3(0, velocity.y, velocity.z);
                 if (float.IsNaN(velocity.z))
                     velocity = new Vector3(velocity.x, velocity.y, 0);
+
                 _body.velocity = velocity;
             }
-                
-
-            var dirVelocity = new Vector3(velocity.x, 0, velocity.z).normalized;
+                  
             if (_controlScheme != ControlSchemeType.BomberMan)
             {
+                var dirVelocity = new Vector3(velocity.x, 0, velocity.z).normalized;
                 if (dirVelocity.sqrMagnitude > 0.005f && !IsShoved && !IsDraggedByOther && !IsFalling && !IsJumping)
                     FaceDirection = new Vector3(_body.velocity.x, 0f, _body.velocity.z).normalized;
             }
@@ -1294,7 +1351,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     {
         RaycastHit wallHit;
         LayerMask walls = LayerUtil.Include(GlobalValues.BLOCKS_LAYER);
-        Physics.Raycast(transform.position + new Vector3(0, .5f, 0), TargetDirection, out wallHit, _grid.cellSize.x * 0.51f, walls);
+        Physics.Raycast(transform.position + new Vector3(0, .5f, 0), TargetDirection, out wallHit, _grid.cellSize.x * 0.67f, walls);
         if (wallHit.collider || _gridOccupation.CheckOccupied(_hero))
         {
             Halt();
@@ -1312,6 +1369,9 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     {
         if (IsTugging || IsPushing || IsPushFailed) return;
         TargetDirection = direction;
+
+        //if (_controlScheme == ControlSchemeType.BomberMan && _canChangeQuadDirection)
+        //    FaceDirection = TargetDirection.normalized;
 
         if (IsGrabInProgress && CurrentGrab != null)
         {

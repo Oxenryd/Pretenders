@@ -38,17 +38,18 @@ public class BombermanManager : MonoBehaviour
         var gridOccupation = _grid.GetComponent<GridOccupation>();
         for (int i = 0; i < startCorners.Length; i++)
         {
-            if (startCorners[i] == new Vector3(2, 0, 2) || startCorners[i] == new Vector3(42, 0, 2))
+            if (startCorners[i] == new Vector3(1, 0, 3) || startCorners[i] == new Vector3(41, 0, 3))
             {
                 characterList[i].ForceRotation(Vector3.zero);
-                characterList[i].transform.position = GridCellMiddlePoint.Get(_grid, startCorners[i]);
+                //characterList[i].transform.position = GridCellMiddlePoint.Get(_grid, startCorners[i]);
             }
-            if (startCorners[i] == new Vector3(2, 0, 38) || startCorners[i] == new Vector3(42, 0, 38))
+            if (startCorners[i] == new Vector3(1, 0, 39) || startCorners[i] == new Vector3(41, 0, 39))
             {
                 characterList[i].ForceRotation(new Vector3(0, -180, 0));
-                characterList[i].transform.position = GridCellMiddlePoint.Get(_grid, startCorners[i]);
+                //characterList[i].transform.position = GridCellMiddlePoint.Get(_grid, startCorners[i]);
             }
-            gridOccupation.SetOccupied(i, characterList[i].transform.position);
+            characterList[i].transform.position = startCorners[i];
+            gridOccupation.SetOccupiedForced(i, characterList[i].transform.position);
         }
         var getReadyScript = getReady.GetComponent<GetReadyScript>();
         getReadyScript.Activate();

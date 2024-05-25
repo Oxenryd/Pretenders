@@ -59,17 +59,17 @@ public static class TransformHelpers
     {
         var outX = 0;
         var outZ = 0;
-        if (inputDirection.z > 0.7071f)
+        if (inputDirection.z > GlobalValues.INPUT_DEADZONE) //0.7071f
             outZ = 1;   
-        else if (inputDirection.z < -0.7071f)
+        else if (inputDirection.z < -GlobalValues.INPUT_DEADZONE)
             outZ = -1;
 
-        if (inputDirection.x > 0.7071f)
+        if (inputDirection.x > GlobalValues.INPUT_DEADZONE)
         {
             outX = 1;
             outZ = 0;
         }          
-        else if (inputDirection.x < -0.7071f)
+        else if (inputDirection.x < -GlobalValues.INPUT_DEADZONE)
         {
             outX = -1;
             outZ = 0;

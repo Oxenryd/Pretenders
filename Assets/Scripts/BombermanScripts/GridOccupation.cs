@@ -46,21 +46,28 @@ public class GridOccupation : MonoBehaviour
     }
     public Vector3 TileCenter(Vector2 tile)
     {
-        return new Vector3(tile.x * _grid.cellSize.x, 0f, tile.y * _grid.cellSize.y);
+        return new Vector3(tile.x * _grid.cellSize.x + _grid.cellSize.x / 2, 0f, tile.y * _grid.cellSize.y + _grid.cellSize.y / 2);
     }
     public Vector3 TileCenter(int x, int y) => TileCenter(new Vector2(x, y));
    
-    public void SetOccupied(Hero hero)
+    public Vector2 SetOccupied(Hero hero)
     {
         var movement = hero.Movement;
         var directionCheck = new Vector3(movement.FaceDirection.x * _grid.cellSize.x * _ratioX, 0f, movement.FaceDirection.z * _grid.cellSize.y * _ratioY);
         _occupiedTiles[hero.Index] = XyFromVector3(movement.transform.position + directionCheck);
+        return _occupiedTiles[hero.Index];
     }
 
-    public void SetOccupiedByBomb(Bomb bomb)
+    //public Vector2 GetHeroIsInTile(Hero hero)
+    //{
+    //    return XyFromVector3(hero.transform.position);
+    //}
+
+    public Vector2 SetOccupiedByBomb(Bomb bomb)
     {
         var hero = bomb.Hero;
         _occupiedTiles[hero.Index + 4] = XyFromVector3(bomb.transform.position);
+        return _occupiedTiles[hero.Index + 4];
     }
 
     public void RemoveOccupiedByBomb(Bomb bomb)
@@ -69,15 +76,19 @@ public class GridOccupation : MonoBehaviour
         _occupiedTiles[hero.Index + 4] = new Vector2(-1, -1);
     }
 
-    public void SetOccupied(int heroIndex, Vector3 position)
+    public Vector2 SetOccupiedForced(int heroIndex, Vector3 position)
     {
         _occupiedTiles[heroIndex] = XyFromVector3(new Vector3(position.x, 0f, position.z));
+        return _occupiedTiles[heroIndex];
     }
 
     public Vector2 XyFromVector3(Vector3 position)
     {
-        int x = Mathf.RoundToInt(position.x / _grid.cellSize.x);
-        int y = Mathf.RoundToInt(position.z / _grid.cellSize.y);
+       // int x = Mathf.RoundToInt(position.x / _grid.cellSize.x);
+        //int y = Mathf.RoundToInt(position.z / _grid.cellSize.y);
+
+        int x = (int)(position.x / _grid.cellSize.x);
+        int y = (int)(position.z / _grid.cellSize.y);
 
         return new Vector2 (x, y);
     }

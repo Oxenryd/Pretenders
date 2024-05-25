@@ -301,19 +301,15 @@ public class Bomb : Grabbable
         RaycastHit hit;
         Physics.Raycast(transform.position + new Vector3(0, .5f, 0), direction, out hit, tick, levelMask);
 
-        var bombCollision = hit.collider.GetComponent<Bomb>();
-        if (bombCollision != null)
+        if (hit.collider != null)
         {
-            bombCollision.Detonate();
-        }
+            var bombCollision = hit.collider.GetComponent<Bomb>();
+            if (bombCollision != null)
+            {
+                bombCollision.Detonate();
+            }
 
-        if (!hit.collider)
-        {
-            Instantiate(explosion, transform.position + (tick * direction), transform.rotation);
-        }
-        else
-        {
-            if(hit.collider.TryGetComponent<CrateExplosion>(out var crate))
+            if (hit.collider.TryGetComponent<CrateExplosion>(out var crate))
             {
                 crate.Explode();
                 directions[direction] = true;
@@ -321,14 +317,16 @@ public class Bomb : Grabbable
 
             // Check hero collision
             var heroCollision = hit.collider.GetComponentInParent<Hero>();
-            if(heroCollision != null)
+            if (heroCollision != null)
             {
                 bombermanManager.PlayerDeath(heroCollision);
-            }
-            else
+            } else
             {
                 directions[direction] = true;
             }
+        } else
+        {
+            Instantiate(explosion, transform.position + (tick * direction), transform.rotation);
         }
     }
 
