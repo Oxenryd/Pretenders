@@ -291,6 +291,7 @@ public class Bomb : Grabbable
             var heroCollision = hit.collider.GetComponentInParent<Hero>();
             if (heroCollision != null)
             {
+                _gridOccupation.RemoveHero(heroCollision);
                 bombermanManager.PlayerDeath(heroCollision);
             }
         }
@@ -319,6 +320,7 @@ public class Bomb : Grabbable
             var heroCollision = hit.collider.GetComponentInParent<Hero>();
             if (heroCollision != null)
             {
+                _gridOccupation.RemoveHero(heroCollision);
                 bombermanManager.PlayerDeath(heroCollision);
             } else
             {

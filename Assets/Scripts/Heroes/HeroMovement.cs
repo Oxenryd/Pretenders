@@ -37,6 +37,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     public event EventHandler PressedJumpButton;
     public event EventHandler PressedPushButton;
     public event EventHandler PressedGrabButton;
+    public event EventHandler PressedEscapeButton;
     public void OnGrabGrabbable(Grabbable grabbable)
     { GrabbedGrabbable?.Invoke(this, grabbable); }
     public void OnDropGrabbable()
@@ -53,6 +54,8 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     { PressedPushButton?.Invoke(this, EventArgs.Empty); }
     protected void OnPressedGrabButton()
     { PressedGrabButton?.Invoke(this, EventArgs.Empty); }
+    protected void OnPressedEscapeButton()
+    { PressedEscapeButton?.Invoke(this, EventArgs.Empty); }
 
 
     
@@ -411,6 +414,13 @@ public class HeroMovement : MonoBehaviour, IJumpHit
 
     // Handle Input Events
     // ------------------------------------------------------------------------------------- INPUTS START HERE
+    public void TryEscape(InputAction.CallbackContext context)
+    {
+        if (context.started)
+        {
+            OnPressedEscapeButton();
+        }
+    }
     public void TryJump(InputAction.CallbackContext context)
     {
         if (context.started)

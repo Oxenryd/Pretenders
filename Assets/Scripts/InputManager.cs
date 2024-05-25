@@ -223,6 +223,10 @@ public class InputManager : MonoBehaviour
                     action.started += _characters[playerIndex].TryPush;
                     action.canceled += _characters[playerIndex].TryPush;
                     break;
+                case GlobalStrings.INPUT_MOVE_ESCAPE:
+                    action.started += _characters[playerIndex].TryEscape;
+                    action.canceled += _characters[playerIndex].TryEscape;
+                    break;
             }
         }
     }
@@ -258,6 +262,10 @@ public class InputManager : MonoBehaviour
                 case GlobalStrings.INPUT_MOVE_PUSH:
                     action.started -= _characters[playerIndex].TryPush;
                     action.canceled -= _characters[playerIndex].TryPush;
+                    break;
+                case GlobalStrings.INPUT_MOVE_ESCAPE:
+                    action.started -= _characters[playerIndex].TryEscape;
+                    action.canceled -= _characters[playerIndex].TryEscape;
                     break;
             }
         }

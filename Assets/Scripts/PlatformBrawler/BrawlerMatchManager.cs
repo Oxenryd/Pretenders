@@ -23,13 +23,10 @@ public class BrawlerMatchManager : MonoBehaviour
     public List<GameObject> placements = new List<GameObject>();
     int playersAlive = 4;
 
-    void Awake()
-    {
-        _fadeTimer = new EasyTimer(GlobalValues.SCENE_CIRCLETRANSIT_TIME);
-    }
-
     void Start()
     {
+        _fadeTimer = new EasyTimer(GlobalValues.SCENE_CIRCLETRANSIT_TIME);
+        _fadingIn = true;
         //roundWinner.gameObject.SetActive(false);
         List<Hero> heroes = new List<Hero>();
         foreach (var player in players)

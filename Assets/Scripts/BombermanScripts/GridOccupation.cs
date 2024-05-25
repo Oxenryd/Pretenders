@@ -70,6 +70,12 @@ public class GridOccupation : MonoBehaviour
         return _occupiedTiles[hero.Index + 4];
     }
 
+    public void RemoveHero(int heroIndex)
+    {
+        _occupiedTiles[heroIndex] = new Vector2(-1, -1);
+    }
+    public void RemoveHero(Hero hero) => RemoveHero(hero.Index);
+
     public void RemoveOccupiedByBomb(Bomb bomb)
     {
         var hero = bomb.Hero;

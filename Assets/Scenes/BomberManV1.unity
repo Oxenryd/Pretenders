@@ -36900,7 +36900,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 0.98, y: 1, z: 0.98}
   m_Center: {x: 0, y: 0.5, z: 0}
 --- !u!1 &1921610729
 GameObject:
@@ -36943,7 +36943,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1922888532}
   - component: {fileID: 1922888531}
-  - component: {fileID: 1922888530}
   - component: {fileID: 1922888533}
   - component: {fileID: 1922888534}
   m_Layer: 0
@@ -36953,14 +36952,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!81 &1922888530
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1922888529}
-  m_Enabled: 1
 --- !u!20 &1922888531
 Camera:
   m_ObjectHideFlags: 0

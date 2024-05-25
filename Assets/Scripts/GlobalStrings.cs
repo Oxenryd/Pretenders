@@ -34,6 +34,7 @@ public static class GlobalStrings
     public const string INPUT_MOVE_GRAB = "Grab";
     public const string INPUT_MOVE_TRIGGER = "Trigger";
     public const string INPUT_MOVE_PUSH = "Push";
+    public const string INPUT_MOVE_ESCAPE = "Escape";
 
     //Error msg
     public const string ERR_NUMBER_OF_PLAYERS1 = "Number of players can not be lower than 0. Forced to 0.";

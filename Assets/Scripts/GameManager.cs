@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Scene = UnityEngine.SceneManagement.Scene;
@@ -35,7 +36,10 @@ public class GameManager : MonoBehaviour
     private bool _includingMiniGames = false;
     private string[] _tournamentGameList;
     private int _currentTournamentScene = 0;
-    
+
+    private EasyTimer _escapeTransitTimer;
+    private bool _escapeTransit = false;
+    private Transitions _escapeTransition;
 
     public bool IncludeMiniGames
     { get { return _useMiniGames; } set {  _useMiniGames = value; } }
@@ -312,7 +316,26 @@ public class GameManager : MonoBehaviour
         }
         _inputMan.ResetHeroes(movements.ToArray());
 
+        if (arg0.name != "Lobby" && arg0.name != "StartScreen" && arg0.name != "PricePall" && arg0.name != "ResultScreen")
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                movements[i].PressedEscapeButton += escapeToLobby;
+            }
+        }
+
         FromSceneLoaded = true;
+    }
+
+    private void escapeToLobby(object sender, EventArgs e)
+    {
+        if (!_escapeTransit)
+        {
+            _escapeTransitTimer = new EasyTimer(1f);
+            _escapeTransitTimer.Reset();
+            _escapeTransition = GameObject.FindWithTag(GlobalStrings.TRANSITIONS_TAG).GetComponent<Transitions>();
+            _escapeTransit = true;
+        }   
     }
 
     private bool checkThisIsTheOneAndOnly()
@@ -421,6 +444,17 @@ public class GameManager : MonoBehaviour
         OnEarlyUpdate(DeltaTime);
 
         transform.position = _camTransform.position;
+
+        // Someone pressed escape??
+        if (_escapeTransit)
+        {
+            _transitions.Value = 1 - _escapeTransitTimer.Ratio;
+            if (_escapeTransitTimer.Done)
+            {
+                _escapeTransit = false;
+                UnitySceneManager.LoadScene(GlobalStrings.SCENE_LOBBY);
+            }
+        }
     }
     private void FixedUpdate()
     {
