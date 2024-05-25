@@ -41,6 +41,7 @@ public class BombSack : MonoBehaviour
         {
             var bombObj = Instantiate(bombPrefab).GetComponent<Bomb>();
             bombs[i] = bombObj;
+            bombObj.Hero = heroGameObject;
             bombObj.SetInactive();
         }
 

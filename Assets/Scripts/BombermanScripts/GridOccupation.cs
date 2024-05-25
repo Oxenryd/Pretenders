@@ -16,7 +16,7 @@ public class GridOccupation : MonoBehaviour
     private float _ratioY = 0.75f;
 
     [SerializeField]
-    private Vector2[] _occupiedTiles = new Vector2[4];
+    private Vector2[] _occupiedTiles = new Vector2[8];
 
     public Vector2 GetHeroTile(Hero hero)
     {
@@ -57,6 +57,18 @@ public class GridOccupation : MonoBehaviour
         _occupiedTiles[hero.Index] = XyFromVector3(movement.transform.position + directionCheck);
     }
 
+    public void SetOccupiedByBomb(Bomb bomb)
+    {
+        var hero = bomb.Hero;
+        _occupiedTiles[hero.Index + 4] = XyFromVector3(bomb.transform.position);
+    }
+
+    public void RemoveOccupiedByBomb(Bomb bomb)
+    {
+        var hero = bomb.Hero;
+        _occupiedTiles[hero.Index + 4] = new Vector2(-1, -1);
+    }
+
     public void SetOccupied(int heroIndex, Vector3 position)
     {
         _occupiedTiles[heroIndex] = XyFromVector3(new Vector3(position.x, 0f, position.z));
@@ -73,7 +85,10 @@ public class GridOccupation : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        for (int i = 4; i < _occupiedTiles.Length; i++)
+        {
+            _occupiedTiles[i] = new Vector2(-1, -1);
+        }
     }
 
     // Update is called once per frame

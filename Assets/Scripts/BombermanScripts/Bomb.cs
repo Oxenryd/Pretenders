@@ -49,6 +49,8 @@ public class Bomb : Grabbable
 
     private bool threwBomb = false;
 
+    private GridOccupation _gridOccupation;
+
     [SerializeField]
     private GameObject crossDrawing;
     private SpriteRenderer spriteRenderer;
@@ -65,12 +67,14 @@ public class Bomb : Grabbable
     public bool IsActive
     { get; set; } = false;
 
+    public Hero Hero { get; set; }
 
     private void Start()
     {
         base.Start();
         bombermanManager = GameObject.FindWithTag("BombManager").GetComponent<BombermanManager>();
         spriteRenderer = crossDrawing.GetComponent<SpriteRenderer>();
+        _gridOccupation = GameObject.FindWithTag("BombermanGrid").GetComponent<GridOccupation>();
     }
     void Awake()
     {
@@ -96,13 +100,14 @@ public class Bomb : Grabbable
         base.Update();
         if (!IsActive) return;
 
-        if (timer.Done && hasDetonated != true && _canExplode)
+        if (timer.Done && !hasDetonated && _canExplode)
         {
             canThrow = true;
             if (IsGrabbed)
                 Drop();
             hasDetonated = true;
             detonationTickTimer.Reset();
+            _gridOccupation.RemoveOccupiedByBomb(this);
         }
         if (hasDetonated && detonationTickTimer.Done)
         {
@@ -127,6 +132,7 @@ public class Bomb : Grabbable
 
         if (IsGrabbed)
         {
+            _gridOccupation.RemoveOccupiedByBomb(this);
             if (Grabber.TriggerButtonDown)
             {
                 DrawTrajectory();
@@ -159,10 +165,19 @@ public class Bomb : Grabbable
             _canExplode = true;
             Rigidbody.isKinematic = true;
             gameObject.transform.position = new Vector3(Mathf.RoundToInt(gameObject.transform.position.x / 2) * 2, 0, Mathf.RoundToInt(gameObject.transform.position.z / 2) * 2);
+            _gridOccupation.SetOccupiedByBomb(this);
         }
     }
 
-
+    public void Detonate()
+    {
+        canThrow = true;
+        if (IsGrabbed)
+            Drop();
+        hasDetonated = true;
+        detonationTickTimer.Reset();
+        _gridOccupation.RemoveOccupiedByBomb(this);
+    }
 
     private bool HitTheFloor()
     {
@@ -177,6 +192,9 @@ public class Bomb : Grabbable
     }
     public void SpawnBomb(Vector3 charPosition)
     {
+        if (_gridOccupation == null)
+            _gridOccupation = GameObject.FindWithTag("BombermanGrid").GetComponent<GridOccupation>();
+
         hasDetonated = false;
         timer.Reset();
         currentXplosion = 0;
@@ -189,6 +207,7 @@ public class Bomb : Grabbable
             var directionKey = directions.Keys.ElementAt(i);
             directions[directionKey] = false;
         }
+        _gridOccupation.SetOccupiedByBomb(this);
     }
     public override bool InjectDropAbort()
     {
@@ -281,6 +300,12 @@ public class Bomb : Grabbable
     {
         RaycastHit hit;
         Physics.Raycast(transform.position + new Vector3(0, .5f, 0), direction, out hit, tick, levelMask);
+
+        var bombCollision = hit.collider.GetComponent<Bomb>();
+        if (bombCollision != null)
+        {
+            bombCollision.Detonate();
+        }
 
         if (!hit.collider)
         {
