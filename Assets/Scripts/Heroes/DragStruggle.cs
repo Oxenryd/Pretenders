@@ -2,6 +2,10 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// This class controls the behaviour of struggles whre characters are being dragged by each other.<br></br>
+/// Since it is a MonoBehaviour, this needs to be initialized with Initialize() before being ready.
+/// </summary>
 public class DragStruggle : MonoBehaviour
 {
     private const float FLICKER_TIME = 0.05f;
@@ -41,6 +45,9 @@ public class DragStruggle : MonoBehaviour
     public bool Active
     { get { return _active; } set {  _active = value; } }
 
+    /// <summary>
+    /// Practically the constructor of many members of this DragStruggle.
+    /// </summary>
     public void Initialize()
     {
         _imageTimer = new EasyTimer(FLICKER_TIME);
@@ -56,6 +63,11 @@ public class DragStruggle : MonoBehaviour
         _maxStruggleTime.Reset();
     }
 
+    /// <summary>
+    /// Starts a struggle between the provided HeroMovements.
+    /// </summary>
+    /// <param name="dragger"></param>
+    /// <param name="dragged"></param>
     public void Activate(HeroMovement dragger, HeroMovement dragged)
     {
         _safetyTimeout.Reset();
@@ -129,6 +141,10 @@ public class DragStruggle : MonoBehaviour
         winningCondition();
     }
 
+    /// <summary>
+    /// Defines both the condition and the behaviour of this truggle.<br></br>
+    /// By Default this checks the internal value being greater/equal to 1 and shoves the dragged character in the draggers' FaceDirection.
+    /// </summary>
     protected virtual void winningCondition()
     {
         if (_value >= 1f)

@@ -1,6 +1,8 @@
 ﻿using System;
 using UnityEngine;
 
+// File that containts definitions of different kind of powerups and references to their position in the GameManager array of available powerups.
+
 public enum DefinedPowerupType
 {
     None,

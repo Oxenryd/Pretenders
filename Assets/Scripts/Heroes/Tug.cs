@@ -5,6 +5,9 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Class that controls tugs between characters.
+/// </summary>
 public class Tug : MonoBehaviour
 {
     private const float FLICKER_TIME = 0.05f;

@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Pretender Song class to be used by Music class.
+/// </summary>
 public record PtSong
 {
     private float _loopStart = 0f;

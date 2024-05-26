@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// Class for controlling the Head-Stomp-Bonk mechanisms.
+/// </summary>
 public class HeadBody : MonoBehaviour
 {
     [SerializeField] private Collider _headBox;

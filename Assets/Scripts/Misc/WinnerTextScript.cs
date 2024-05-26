@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
+/// <summary>
+/// Simple class that handles the bobbing and displaying of winner text in matches.
+/// </summary>
 public class WinnerTextScript : MonoBehaviour
 {
     private bool _active = false;

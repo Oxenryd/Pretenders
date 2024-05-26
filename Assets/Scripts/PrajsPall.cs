@@ -5,6 +5,9 @@ using System.Linq;
 using TMPro;
 using UnityEngine;
 
+/// <summary>
+/// Class that handles the behaviours of the result screen shown after a tournament.
+/// </summary>
 public class PrajsPall : MonoBehaviour
 {
     [SerializeField] private Color[] _colors;

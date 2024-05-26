@@ -5,6 +5,9 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnitySceneManager = UnityEngine.SceneManagement.SceneManager;
 
+/// <summary>
+/// Not currently in use.
+/// </summary>
 public class LoadingScreenScript : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI _loadingText;
@@ -45,17 +48,6 @@ public class LoadingScreenScript : MonoBehaviour
         if (_loadingDone && _textFade.Done)
             _break = true;
     }
-
-    //private IEnumerator loadNext()
-    //{
-    //    _loadingNext = UnitySceneManager.LoadSceneAsync(GameManager.Instance.NextScene, LoadSceneMode.Additive);
-    //    while (!_loadingNext.isDone)
-    //    {
-    //        yield return null;
-    //    }
-    //    Scene nextScene = UnitySceneManager.GetSceneByName(GameManager.Instance.NextScene);
-    //    var result = UnitySceneManager.SetActiveScene(nextScene);
-    //}
 
     private void loadNext()
     {

@@ -1,3 +1,6 @@
+/// <summary>
+/// Class for storing and activating effects, that can be provided through powerups, for example.
+/// </summary>
 public class Effect
 {
     private static Effect _noEffect = null;

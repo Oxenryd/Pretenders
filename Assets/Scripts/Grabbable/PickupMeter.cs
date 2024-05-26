@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
+/// <summary>
+/// This class is for controlling a meter shown during the pickup phase of Grabbables.
+/// </summary>
 public class PickupMeter : MonoBehaviour
 {
     public bool Active = false;

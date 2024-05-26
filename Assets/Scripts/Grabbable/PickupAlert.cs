@@ -7,7 +7,9 @@ using UnityEngine.UI;
 using UnityEngine.UIElements;
 
 
-
+/// <summary>
+/// This class is used to control a meter indicating whether an object can be picked up (Grabbed).
+/// </summary>
 public class PickupAlert : MonoBehaviour
 {
     private const string TUG = "Tug!!";
@@ -42,6 +44,12 @@ public class PickupAlert : MonoBehaviour
     public AlertMode Mode
     { get { return _mode; } }
 
+    /// <summary>
+    /// Flags this meter for being shown and sets the internal state to "signaled".
+    /// </summary>
+    /// <param name="icm"></param>
+    /// <param name="grabbableTransform"></param>
+    /// <param name="tug"></param>
     public void Ping(HeroMovement icm, Transform grabbableTransform, bool tug)
     {
         if (!_signalled && _mode != AlertMode.Active)

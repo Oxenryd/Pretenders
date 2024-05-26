@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Class that handles the circular or fading transitions between screens/scenes.
+/// </summary>
 public class Transitions : MonoBehaviour
 {
     [SerializeField] private TransitionType _transitionType = TransitionType.FadeToBlack;

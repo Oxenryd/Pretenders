@@ -1,5 +1,9 @@
 using UnityEngine;
 
+/// <summary>
+/// Class the controls the particles when landing, running and doing other stuff for characters.<br></br>
+/// Methods can be called from animations for sync.
+/// </summary>
 public class HeroDust : MonoBehaviour
 {
     [SerializeField] private HeroMovement _hero;

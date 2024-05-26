@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Class that handles powerups that can be picked up.
+/// </summary>
 public class PowerUp : MonoBehaviour
 {
     private Effect _effect;

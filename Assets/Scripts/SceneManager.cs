@@ -1,5 +1,9 @@
 using UnityEngine;
 
+/// <summary>
+/// Class that got demoted to more or less just keep the dragstruggles and rotate them.
+/// In earlier development the idea was that this should keep scene-specific information but that got handed out to other classes.
+/// </summary>
 public class SceneManager : MonoBehaviour
 {
     [SerializeField] private bool _charactersTakeInput = true;

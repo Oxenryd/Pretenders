@@ -677,6 +677,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0656a01cf7b64b740b058a9a8ab6b670, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _mode: 0
   _cam: {fileID: 414149918}
   _targets:
   - {fileID: 1084178402}
@@ -685,6 +686,7 @@ MonoBehaviour:
   - {fileID: 1779664942}
   _maxZoomIn: 30
   _startPos: {x: 0, y: 12, z: -24}
+  _posOffset: {x: 0, y: 0, z: 0}
   _zoomPanOffset: {x: 0, y: 0.03, z: -0.1}
   _smoothTimeFactor: 0.08
   _bufferFactor: -0.35
@@ -692,6 +694,11 @@ MonoBehaviour:
   _zoomDependentOffset: 1
   _winnerZoomTime: 0.7
   _winnerZoom: 12
+  _distance: 10
+  _orthoZoomOffset: 0
+  _orthoZoomFactor: 1
+  _deathAltitude: 0
+  _orthoMaxZoom: 6
 --- !u!114 &414149916
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1765,6 +1772,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: GameManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 3290007767619051340, guid: ec0d970c1685595448339c641651f152,
+        type: 3}
+      propertyPath: _showFps
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3290007767619051340, guid: ec0d970c1685595448339c641651f152,
         type: 3}

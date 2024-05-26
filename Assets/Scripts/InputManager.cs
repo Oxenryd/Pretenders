@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
 
 /// <summary>
-/// Class that control characters' movement behaviors.
+/// Class that control characters' inputs and assigned hardware.
 /// </summary>
 public class InputManager : MonoBehaviour
 {

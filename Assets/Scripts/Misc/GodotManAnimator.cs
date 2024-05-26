@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Simple class that reads a HeroMovement and update its Animator with the corresponding state.
+/// </summary>
 public class GodotManAnimator : MonoBehaviour
 {
     [SerializeField] private Animator _anim;

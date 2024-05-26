@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// Class that controls a visual cue indicating whether a Grabbable can be transferred to another.
+/// </summary>
 public class TransferAlert : MonoBehaviour
 {
     private Camera _camera;

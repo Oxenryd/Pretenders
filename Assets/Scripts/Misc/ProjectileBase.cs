@@ -3,6 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Projectile Base for FishGun.
+/// </summary>
 public class ProjectileBase : MonoBehaviour
 {
     [SerializeField] private float _groundDecel = 0.1f;
