@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// A music handling class that can fade in/out and crossfade between songs.
+/// </summary>
 public class Music : MonoBehaviour
 {
     public static readonly int SILENCE = 0;
@@ -52,12 +55,21 @@ public class Music : MonoBehaviour
         };
         _currentSongindex = -1;
     }
-
+    /// <summary>
+    /// Fade out current playing song, taking 'fadeTime' in seconds time.
+    /// </summary>
+    /// <param name="fadeTime"></param>
     public void Fadeout(float fadeTime)
     {
         Crossfade(SILENCE, 0f, fadeTime);
     }
 
+    /// <summary>
+    /// Crossfades between currently playing song and passed in songIndex. Pass toTime to the starting time of next song and fadeTime for how long time the fade should take (in seconds).
+    /// </summary>
+    /// <param name="toSongIndex"></param>
+    /// <param name="toTime"></param>
+    /// <param name="fadeTime"></param>
     public void Crossfade(int toSongIndex, float toTime, float fadeTime)
     {
         if (_mainOut.clip == null)
@@ -75,8 +87,18 @@ public class Music : MonoBehaviour
         _pendingSongindex = toSongIndex;
     }
 
+    /// <summary>
+    /// Just cut currently playing song and play song at index.
+    /// </summary>
+    /// <param name="toSongIndex"></param>
     public void PlayNow(int toSongIndex)
     { PlayNow(toSongIndex, _songs[toSongIndex].Beginning, 0f); }
+    /// <summary>
+    /// Stop current song and start playing passed in songindex at specific startAt time, take fadeInTime to complete the fade in.
+    /// </summary>
+    /// <param name="songIndex"></param>
+    /// <param name="startAt"></param>
+    /// <param name="fadeInTime"></param>
     public void PlayNow(int songIndex, float startAt, float fadeInTime)
     {
         _currentSongindex = songIndex;
@@ -96,6 +118,9 @@ public class Music : MonoBehaviour
         _mainOut.Play();
     }
 
+    /// <summary>
+    /// Forcefully stop music.
+    /// </summary>
     public void StopNow()
     {
         _stopAndReset();

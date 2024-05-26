@@ -5,6 +5,9 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Class that controls and behaviour of a cooldown and its clock meter visual.
+/// </summary>
 public class CooldownClock : MonoBehaviour
 {
     private Camera _camera;
@@ -41,7 +44,11 @@ public class CooldownClock : MonoBehaviour
     { CooldownDone?.Invoke(this, EventArgs.Empty); }
 
 
-
+    /// <summary>
+    /// Make the clock visible and reset the cooldown timer.
+    /// </summary>
+    /// <param name="target"></param>
+    /// <param name="coolDownTime"></param>
     public void Activate(Transform target, float coolDownTime)
     {
         _fadingIn = true;
@@ -53,6 +60,9 @@ public class CooldownClock : MonoBehaviour
         _timer.Reset();      
     }
 
+    /// <summary>
+    /// Hidew the clock.
+    /// </summary>
     public void Deactivate()
     {
         Active = false;

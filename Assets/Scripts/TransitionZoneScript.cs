@@ -4,6 +4,9 @@ using UnityEngine;
 using UnitySceneManager = UnityEngine.SceneManagement.SceneManager;
 using Scene = UnityEngine.SceneManagement.Scene;
 
+/// <summary>
+/// Class that handles transitions to other game modes from the Lobby.
+/// </summary>
 public class TransitionZoneScript : MonoBehaviour
 {
     [SerializeField] private LobbySceneScript _script;

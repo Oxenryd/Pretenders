@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Class for controlling a circular meter shown during tugs.
+/// </summary>
 public class CircleMeter : MonoBehaviour
 {
     public bool Active = false;

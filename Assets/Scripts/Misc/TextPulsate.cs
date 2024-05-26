@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
+
 public class TextPulsate : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI _text;

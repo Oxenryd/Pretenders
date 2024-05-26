@@ -40,6 +40,10 @@ public class ZoomFollowGang : MonoBehaviour
     private float _t = 0;
     private Vector3 _startPosWinner;
 
+    /// <summary>
+    /// Remove a character from the array and rebuild it with the remaining.
+    /// </summary>
+    /// <param name="playerIndex"></param>
     public void RemoveActor(int playerIndex)
     {
         var objs = new List<GameObject>();
@@ -61,6 +65,11 @@ public class ZoomFollowGang : MonoBehaviour
         _targets = transforms.ToArray();
     }
 
+    /// <summary>
+    /// Used to pick out a character to zoom in to when it has won a match.
+    /// </summary>
+    /// <param name="winner"></param>
+    /// <param name="orthoMode"></param>
     public void SetWinner(Transform winner, bool orthoMode)
     {
         OrthoMode = orthoMode;

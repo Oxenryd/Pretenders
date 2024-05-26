@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Used as a dummy implementation of a recievable.
+/// </summary>
 public class DummyRecievable : MonoBehaviour, IRecievable
 {
     [SerializeField] private TransferAlert _transferAlert;

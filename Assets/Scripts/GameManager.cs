@@ -24,6 +24,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Transitions _transitions;
     [SerializeField] private bool _useMiniGames = true;
     [SerializeField] private GameObject[] _powerupPrefabs;
+    [SerializeField] private bool _showFps = true;
 
     private float[] _fpsBuffer;
     private int _fpsCounter = 0;
@@ -39,7 +40,6 @@ public class GameManager : MonoBehaviour
 
     private EasyTimer _escapeTransitTimer;
     private bool _escapeTransit = false;
-    private Transitions _escapeTransition;
 
     public bool IncludeMiniGames
     { get { return _useMiniGames; } set {  _useMiniGames = value; } }
@@ -316,7 +316,7 @@ public class GameManager : MonoBehaviour
         }
         _inputMan.ResetHeroes(movements.ToArray());
 
-        if (arg0.name != "Lobby" && arg0.name != "StartScreen" && arg0.name != "PricePall" && arg0.name != "ResultScreen")
+        if (arg0.name != "StartScreen" && arg0.name != "PricePall" && arg0.name != "ResultScreen")
         {
             for (int i = 0; i < 4; i++)
             {
@@ -325,6 +325,12 @@ public class GameManager : MonoBehaviour
         }
 
         FromSceneLoaded = true;
+
+        var fpsCounter = GameObject.FindWithTag("UiOverlay").GetComponent<UiOverlay>();
+        if (fpsCounter != null)
+        {
+            fpsCounter.ToggleFps(_showFps);
+        }
     }
 
     private void escapeToLobby(object sender, EventArgs e)
@@ -333,7 +339,6 @@ public class GameManager : MonoBehaviour
         {
             _escapeTransitTimer = new EasyTimer(1f);
             _escapeTransitTimer.Reset();
-            _escapeTransition = GameObject.FindWithTag(GlobalStrings.TRANSITIONS_TAG).GetComponent<Transitions>();
             _escapeTransit = true;
         }   
     }

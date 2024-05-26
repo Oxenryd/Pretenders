@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// A triggerable Grabbable that can fire Fishes by activating it.
+/// </summary>
 public class FishGun : Grabbable
 {
     [SerializeField] private FishProjectile _fishProjectilePrefab;

@@ -6,6 +6,9 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+/// <summary>
+/// Class that handles the transitions in the start screen.
+/// </summary>
 public class StartScreenScript : MonoBehaviour
 {
     private string[] _messages = {

@@ -2,6 +2,8 @@ using System;
 using UnityEngine;
 using static UnityEngine.UI.Image;
 
+// This cs file contains multiple helpers and extension methods for various things.
+
 public static class LayerUtil
 {
     public static LayerMask Include(params int[] layerNumbers) 
@@ -50,11 +52,6 @@ public static class TransformHelpers
         return rotation;
     }
 
-    public static Vector3 SnapToGrid(Vector3 characterPosition, Grid grid)
-    {
-        return new Vector3(Mathf.RoundToInt(characterPosition.x / grid.cellSize.x) * grid.cellSize.x, 0, Mathf.RoundToInt(characterPosition.z / grid.cellSize.z) * grid.cellSize.z);
-    }
-
     public static Vector3 QuadDirQuantize(Vector3 inputDirection)
     {
         var outX = 0;
@@ -96,7 +93,6 @@ public static class TransformHelpers
         else if (inputDirection.x < -0.7071f)
             original |= PlayerInputEnum.DirectionLeft;
 
-       // return original;
     }
 
 

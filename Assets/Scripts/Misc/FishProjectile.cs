@@ -3,6 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Class that stores and sets up projectiles for the FishGun.
+/// </summary>
 public class FishProjectile : ProjectileBase
 {
     [SerializeField] private GameObject[] _projectileBases = new GameObject[4];
@@ -20,6 +23,11 @@ public class FishProjectile : ProjectileBase
         _body.excludeLayers = LayerUtil.Include(layers);
     }
 
+    /// <summary>
+    /// Gets and sets up a projectile on its fish type.
+    /// </summary>
+    /// <param name="fishType"></param>
+    /// <returns></returns>
     public GameObject InitFish(FishTypesEnum fishType)
     {
         _growthTimer = new EasyTimer(GlobalValues.FISHGUN_GROWTH_TIME);

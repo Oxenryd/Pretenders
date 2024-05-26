@@ -10,7 +10,7 @@ public static class GlobalValues
 
     public const float SHOVE_HEIGHT_BUMP_TOPDOWN = 3f;
     public const float SHOVE_OFFENDCOL_DIS_DUR = 0.1f;
-    public const float SHOVE_DEFAULT_SHOVEPOWER = 22f;
+    public const float SHOVE_DEFAULT_SHOVEPOWER = 27f;
     public const float SHOVE_DAMPING_MULTIPLIER = 0.95f;
 
     public const int   BOMBS_MAXBOMBS = 10;
@@ -22,8 +22,8 @@ public static class GlobalValues
     public const float JUMPDIRECTION_SLOWDOWN_MULTIPLIER = 0.3f;
 
     public const float CHAR_BUMP_DOT_LIMIT = -0.7f;
-    public const float CHAR_BUMPFORCE = 2f;
-    public const float CHAR_BUMPDURATION = 0.28f;
+    public const float CHAR_BUMPFORCE = 2.8f;
+    public const float CHAR_BUMPDURATION = 0.35f;
 
     public const int   TRAY_MAX_SIZE = 5;
 
@@ -44,10 +44,11 @@ public static class GlobalValues
 
     public const float CHAR_PUSH_CHALLENGE_TIME = 0.4f;
     public const float CHAR_PUSH_FAILED_STUN_TIME = 1f;
-    public const float CHAR_PUSH_SPEED = 6f;
+    public const float CHAR_PUSH_SPEED = 9f;
     public const float CHAR_PUSH_POWER = 6.5f;
     public const float CHAR_PUSH_MIN_DISTANCE = 1.25f;
     public const float CHAR_PUSH_PUSHED_TIME = 1.25f;
+    public const float CHAR_PUSH_RECOVER_TIME = 1.25f;
 
     public const float CHAR_DRAG_SPEED_MULTIPLIER = 0.6f;
     public const float CHAR_DRAG_DRAGGER_DECREASE = 0.03f;

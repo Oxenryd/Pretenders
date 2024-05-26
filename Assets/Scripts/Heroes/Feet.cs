@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+/// <summary>
+/// Controls and sets the 'Grounded' state of characters and also provide ground interactions through a spring style mechanism.
+/// </summary>
 public class Feet : MonoBehaviour
 {
     [SerializeField] private Rigidbody _rBody;
@@ -33,22 +36,24 @@ public class Feet : MonoBehaviour
         if (Physics.Raycast(_feetTransform.position, Vector3.down, out hit, _restingLength,
             LayerUtil.Include(GlobalValues.GROUND_LAYER, GlobalValues.GROUNDABLE_LAYER, GlobalValues.PLATFORM_LAYER)))
         {
-            if (hit.collider.gameObject.layer == GlobalValues.PLATFORM_LAYER)
+            if (hit.collider.gameObject.layer == GlobalValues.PLATFORM_LAYER) // Specific behaviour for jump-through-upwards platforms.
             {
                 if (_rBody.velocity.y < 0f && _hero.StickInputVector.y > -0.5f && !_holdingDown)
                 {
                     doGrounded(hit);
-                } else if (_hero.StickInputVector.y <= -0.5f)
+                } else if (_hero.StickInputVector.y <= -0.5f)                                                              
                 {
+                    // Did player try to go down a level by pressing down while being on a platform?
+                    // Artificially hold down to ensure character is not pushed up straight away next frame.
                     _keepDownThroughPlatformTimer.Reset();
                     _holdingDown = true;
                     notGrounded();
                 }
-            } else
+            } else // Normal ground Hit
             {
                 doGrounded(hit);
             }
-        } else
+        } else // No Ground hit with raycast
         {
             notGrounded();
         }
@@ -61,10 +66,12 @@ public class Feet : MonoBehaviour
     private void doGrounded(RaycastHit hit)
     {
         _groundNormal = hit.normal;
-        CurrentCollider = hit.collider;
-        _distanceToGround = (_feetTransform.position - hit.point).magnitude;
+        CurrentCollider = hit.collider;       
         IsGrounded = true;
         _movement.SignalGrounded(_groundNormal);
+
+        // Spring action
+        _distanceToGround = (_feetTransform.position - hit.point).magnitude;
         var dot = Mathf.Max(0, Vector3.Dot(Vector3.up, _groundNormal));
         var k = _distanceToGround - _restingLength;
         var F = -_stiffness * k - _damping * (_rBody.velocity.y * dot);
