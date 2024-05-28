@@ -4,6 +4,9 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// This class handles the transitions, screen fades and calculates the results for tournament in the Brawler Minigame.
+/// </summary>
 public class BrawlerMatchManager : MonoBehaviour
 {
     [SerializeField] private ZoomFollowGang _cam;
