@@ -8,6 +8,9 @@ using UnityEngine;
 /// </summary>
 public class Feet : MonoBehaviour
 {
+    public const float DEFAULT_HOLD_DOWN_TIME = 0.3f;
+    public const float FORCED_HOLD_DOWN_TIME = 1f;
+
     [SerializeField] private Rigidbody _rBody;
     [SerializeField] private float _stiffness = 650f;
     [SerializeField] private float _restingLength = 1f;
@@ -25,10 +28,18 @@ public class Feet : MonoBehaviour
     { get; private set; }
     public bool IsGrounded { get; private set; }
 
+    public void ForceDown()
+    {
+        _keepDownThroughPlatformTimer.Time = FORCED_HOLD_DOWN_TIME;
+        _keepDownThroughPlatformTimer.Reset();
+        _holdingDown = true;
+        notGrounded();
+    }
+
     void Start()
     {
         _hero = _rBody.gameObject.GetComponent<HeroMovement>();
-        _keepDownThroughPlatformTimer = new EasyTimer(0.3f);
+        _keepDownThroughPlatformTimer = new EasyTimer(DEFAULT_HOLD_DOWN_TIME);
     }
     void FixedUpdate()
     {
@@ -45,6 +56,7 @@ public class Feet : MonoBehaviour
                 {
                     // Did player try to go down a level by pressing down while being on a platform?
                     // Artificially hold down to ensure character is not pushed up straight away next frame.
+                    _keepDownThroughPlatformTimer.Time = DEFAULT_HOLD_DOWN_TIME;
                     _keepDownThroughPlatformTimer.Reset();
                     _holdingDown = true;
                     notGrounded();

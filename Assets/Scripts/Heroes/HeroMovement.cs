@@ -61,7 +61,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     { PressedEscapeButton?.Invoke(this, EventArgs.Empty); }
 
 
-    
+    private Feet _feet;
     private EasyTimer _accelTimer;
     private EasyTimer _turnTimer;
     private EasyTimer _haltTimer;
@@ -262,7 +262,12 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     }
 
     public void OnHeadHit(HeroMovement offender)
-    { }
+    {
+        if (_controlScheme == ControlSchemeType.Platform)
+        {
+            _feet.ForceDown();
+        }
+    }
 
     /// <summary>
     /// This is called on this offender of a head-Bonk, shoving the victim and temporarly setting state of this offender to avoid glitches.
@@ -712,6 +717,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
         // GameManagers' 'EarlyUpdate' for automatic ticking.
         this.GameObject = gameObject;
         _hero = GetComponent<Hero>();
+        _feet = GetComponent<Feet>();
         _accelTimer = new EasyTimer(_accelerationTime, false, true);
         _turnTimer = new EasyTimer(_turnTime, true, true);
         _haltTimer = new EasyTimer(_retardTime, false, true);
