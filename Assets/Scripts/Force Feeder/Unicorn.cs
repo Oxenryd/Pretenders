@@ -45,33 +45,22 @@ public class Unicorn : MonoBehaviour, IRecievable
         _transferAlert.gameObject.SetActive(false);
     }
 
-    //void OnCollisionEnter(Collision collision)
-    //{
-    //    if (collision.gameObject.layer == GlobalValues.WALL_LAYER)
-    //    {
-    //        Vector3 collisionNormal = collision.contacts[0].normal;
-    //        _targetDirection = Vector3.Reflect(_direction, collisionNormal);
-    //        _passedTimeSinceLastStateChange = 0f;
-    //    }
-    //}
 
     void FixedUpdate()
     {
-        //Vector3 rayOrigin =  new Vector3(transform.position.x, transform.position.y- 2.0f,transform.position.z); // Starting from the object's position
-        //Vector3 rayDirection = _targetDirection - transform.position; // Direction towards the target
 
         Vector3 rayOrigin = new Vector3(transform.position.x, transform.position.y - 1.0f, transform.position.z);
         Vector3 rayDirection = transform.forward;
         RaycastHit hitInfo;
         rayDirection.Normalize();
 
-        // Perform the raycast
-
+        // Perform a raycast to check if a collission has occured.
         if (Physics.Raycast(rayOrigin, rayDirection, out hitInfo, _rayCastLength) && _state != UnicornState.eating)
         {
             if(hitInfo.collider != _previousCollider.collider)
             {
                 _previousCollider = hitInfo;
+
                 // Calculate the reflection direction
                 _targetDirection = Vector3.Reflect(rayDirection, hitInfo.normal);
 
@@ -94,30 +83,35 @@ public class Unicorn : MonoBehaviour, IRecievable
 
     }
 
+    /// <summary>
+    /// Method for controlling a unicorn while in a state of eating.
+    /// </summary>
     void Eat()
     {
+        // Finds new food to be eaten 
         if (_foodToBeEaten == null && _foodList.Count > 0) _foodToBeEaten = FindClosestFood();
         else
         {
-            // Rotate towards the food
-
+            //If food is present, the unicorn turns towards the food.
             Vector3 directionToFood = (_foodToBeEaten.transform.position - transform.position).normalized;
             Quaternion targetRotation = Quaternion.LookRotation(directionToFood);
             Quaternion rotationY = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * _rotationSpeed);
             transform.rotation = Quaternion.Euler(0f, rotationY.eulerAngles.y, 0f);
 
-            // If close enough to the food, eat it
+            // Finds the distance to the food.
             float distanceToFood = Vector3.Distance(transform.position, _foodToBeEaten.transform.position);
 
-            // Move towards the food
+            // Eat Timer two ensures that the food gets eaten even if the unicorn is not able to get to it for whatever reason
             if (_eatTimerII.Done)
             {
                 EatFood();
             }
+            //If the distance to the food is greater than the threshold, we move towards the food
             if (distanceToFood > _eatingDistanceThreshold)
             {
                 transform.position += transform.forward * _speed * Time.deltaTime;
             }
+            // Eat the food if the unicorn is close enough to it.
             else if (_eatTimer.Done)
             {
                 EatFood();
@@ -126,20 +120,30 @@ public class Unicorn : MonoBehaviour, IRecievable
 
     }
 
+    /// <summary>
+    /// Method for eating food that is given to the unicorn.
+    /// </summary>
     private void EatFood()
     {
+        // When eating the food, the item is removed from the foodlist and set to null which allows the unicorn to continue
+        // Eating another piece of food. The food is then hidden which effectively returns it to the food spawner.
         _foodList.Remove(_foodToBeEaten);
         _foodToBeEaten.Hide();
         _foodToBeEaten = null;
     }
 
+    /// <summary>
+    /// Method for controlling the unicorns walk.
+    /// </summary>
     public void Walk()
     {
+
         Vector3 currentRotation = transform.rotation.eulerAngles;
         transform.rotation = Quaternion.Euler(0f, currentRotation.y, 0f);
 
         float dotProduct = Vector3.Dot(_direction, _targetDirection);
 
+        // Sets the direction to the target durectíon if dotproduct is greater than 0.97, otherwise you continue rotate the unicorn.
         if (dotProduct > 0.97)
         {
             _direction = _targetDirection;
@@ -150,8 +154,8 @@ public class Unicorn : MonoBehaviour, IRecievable
             RotatateDirection();
         }
 
+        //Moves the unicorn in the given direction and also fixes the rotation.
         transform.position = transform.position + _direction.normalized * _speed * Time.deltaTime;
-
         if (_direction != Vector3.zero)
         {
             transform.rotation = TransformHelpers.FixNegativeZRotation(Vector3.forward, _direction);
