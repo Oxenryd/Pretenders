@@ -27,7 +27,11 @@ public class BombSack : MonoBehaviour
     private Bomb[] bombs = new Bomb[GlobalValues.BOMBS_MAXBOMBS];
     private Dictionary<Vector3, Vector3> directions = new Dictionary<Vector3, Vector3>() { { Vector3.back, new Vector3(0,0,-2) }, { Vector3.forward, new Vector3(0,0,2) }, { Vector3.left, new Vector3(-2,0,0) }, { Vector3.right, new Vector3(2,0,0) } };
 
-    // Start is called before the first frame update
+
+    /// <summary>
+    /// This class handles the behavior of all the bombs.
+    /// It instantiates the bombs and handles the spawning and recycling of them.
+    /// </summary>
     void Start()
     {
         if (!_enabled) return;
@@ -35,7 +39,6 @@ public class BombSack : MonoBehaviour
         grid = gridObject.GetComponent<Grid>();
 
         character = heroGameObject.gameObject.GetComponent<HeroMovement>();
-        //Click L
 
         for (int i = 0; i < bombs.Length; i++)
         {
@@ -49,9 +52,16 @@ public class BombSack : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// This method activates a bomb.
+    /// Only one bomb can get placed at a time until that bomb explodes.
+    /// It also checks if the placement of the bomb is valid.
+    /// If there is a collider nearby it will stop the player from placing a bomb
+    /// Otherwise it will call the bomb class to handle the behavior of the bomb
+    /// </summary>
+
     private void TrySpawnBomb(object sender, EventArgs e)
     {
-        // How many active bombs???
         int activeBombs = 0;
         for (int i = 0; i < bombs.Length; i++)
         {

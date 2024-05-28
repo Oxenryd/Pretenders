@@ -28,6 +28,13 @@ public class BombermanManager : MonoBehaviour
     private GameObject getReady;
     [SerializeField]
     private bool killAll = true;
+
+    /// <summary>
+    /// This class handles the overall behavior of the bomber man gameplay
+    /// It determines the positions at which the characters start at in bomber man
+    /// It handles the player death in bomber man
+    /// It handles the transitions for this scene
+    /// </summary>
     void Start()
     {
         transitions = GameObject.FindWithTag(GlobalStrings.TRANSITIONS_TAG).GetComponent<Transitions>();
@@ -36,17 +43,17 @@ public class BombermanManager : MonoBehaviour
 
         RandomizeArray(startCorners);
         var gridOccupation = _grid.GetComponent<GridOccupation>();
+        //This loop determines at which corner each character will stand in and depending on that corner if will change
+        //The direction at which the characters face
         for (int i = 0; i < startCorners.Length; i++)
         {
             if (startCorners[i] == new Vector3(1, 0, 3) || startCorners[i] == new Vector3(41, 0, 3))
             {
                 characterList[i].ForceRotation(Vector3.zero);
-                //characterList[i].transform.position = GridCellMiddlePoint.Get(_grid, startCorners[i]);
             }
             if (startCorners[i] == new Vector3(1, 0, 39) || startCorners[i] == new Vector3(41, 0, 39))
             {
                 characterList[i].ForceRotation(new Vector3(0, -180, 0));
-                //characterList[i].transform.position = GridCellMiddlePoint.Get(_grid, startCorners[i]);
             }
             characterList[i].transform.position = startCorners[i];
             gridOccupation.SetOccupiedForced(i, characterList[i].transform.position);
@@ -63,6 +70,10 @@ public class BombermanManager : MonoBehaviour
             GameManager.Instance.Music.Fadeout(1.5f);
     }
 
+    /// <summary>
+    /// This method is a debugging method that kills all the characters in the bomberman scene
+    /// </summary>
+
     private void OnKillAll(object sender, System.EventArgs e)
     {
         KillAllElse();
@@ -72,6 +83,10 @@ public class BombermanManager : MonoBehaviour
     {
         timer = new EasyTimer(GlobalValues.SCENE_CIRCLETRANSIT_TIME);
     }
+
+    /// <summary>
+    /// The update method handles the timers which determines when the intro and outro transitions will start.
+    /// </summary>
     void Update()
     {
         if (fadingIn)
@@ -107,6 +122,11 @@ public class BombermanManager : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// This method adds all the players in an array which will determine the match result
+    /// The array is ordered based on which character got killed first.
+    /// It also handles the animations for the winning scene when there is only one player left in the scene.
+    /// </summary>
     public void AddPlayerDeathToQueue(int playerId)
     {
         deathQueue[playerId] = placementToSet;
@@ -136,6 +156,9 @@ public class BombermanManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// This method is a debugging method that kills all the characters in the bomberman scene
+    /// </summary>
     void KillAllElse()
     {
         for(int i = 1; i < 4;  i++)
@@ -144,6 +167,11 @@ public class BombermanManager : MonoBehaviour
             PlayerDeath(hero);
         }
     }
+
+    /// <summary>
+    /// The playerDeath method handles the individual players death
+    /// When a player dies it will fly off the scene and no longer be in the camera
+    /// </summary>
     public void PlayerDeath(Hero hero)
     {
         var heroMovementScript = hero.gameObject.GetComponent<HeroMovement>();
@@ -163,6 +191,10 @@ public class BombermanManager : MonoBehaviour
             AddPlayerDeathToQueue(hero.Index);
         }
     }
+
+    /// <summary>
+    /// This is a randomizing array which is used to randomize where the characters start in order to achieve more fairness in the game
+    /// </summary>
     private void RandomizeArray<T>(T[] array)
     {
         for (int i = array.Length - 1; i > 0; i--)
