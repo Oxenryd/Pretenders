@@ -4,6 +4,7 @@ using System.Linq;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BombermanManager : MonoBehaviour
 {
@@ -35,6 +36,8 @@ public class BombermanManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI[] _bombTexts;
     private int _currentBombs = 1;
     private int _currentExplosionLength = 5;
+    [SerializeField] private Image[] _crosses;
+
 
     /// <summary>
     /// This class handles the overall behavior of the bomber man gameplay
@@ -144,6 +147,7 @@ public class BombermanManager : MonoBehaviour
     /// </summary>
     public void AddPlayerDeathToQueue(int playerId)
     {
+        _crosses[playerId].enabled = true;
         deathQueue[playerId] = placementToSet;
         placementToSet--;
         _currentExplosionLength = _currentExplosionLength + 2;
