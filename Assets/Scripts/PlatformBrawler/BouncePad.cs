@@ -2,6 +2,10 @@
 
 namespace Assets.Scripts.PlatformBrawler
 {
+    /// <summary>
+    /// A class which handles the behaviour of bouncepad objects in the platform brawler minigame.
+    /// Inherits from the Grabbable class to allow the bouncepad to be picked up and moved by players.
+    /// </summary>
     internal class BouncePad : Grabbable
     {
         private Animator _animator;
@@ -16,7 +20,7 @@ namespace Assets.Scripts.PlatformBrawler
         void Start()
         {
             base.Start();
-            ColliderEnabledWhileGrabbed = false;
+            ColliderEnabledWhileGrabbed = false; //Makes sure that players can not be bounced away while the boucepad is being carried
             _animator = GetComponent<Animator>();
             _body = GetComponent<Rigidbody>();
             for(int i = 0; i < 4; i++)
@@ -24,7 +28,11 @@ namespace Assets.Scripts.PlatformBrawler
                 _bouncedTimers[i] = new EasyTimer(0.5f, false, true);
             }
         }
-
+        /// <summary>
+        /// Fixed update which uses a raycast to check if the player is landing on a platform making
+        /// sure that they do not continue falling through.
+        /// Resets the bounced state of the player once the bounce timer is finished.
+        /// </summary>
         void FixedUpdate()
         {
             if (Physics.Raycast(transform.position, -transform.up, out RaycastHit hit, _rayLength))
@@ -44,6 +52,11 @@ namespace Assets.Scripts.PlatformBrawler
                 }
             }
         }
+        /// <summary>
+        /// Method which handles what should happen when a player collides with a bouncepad. 
+        /// Adds upward force to the player and plays the bouncepad animation.
+        /// </summary>
+        /// <param name="collision"></param>
         void OnCollisionEnter(Collision collision)
         {        
             GameObject theBouncedOne = collision.gameObject;

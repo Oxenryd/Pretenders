@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/// <summary>
+/// Class which determines the behaviour of the camera in the platform brawler minigame.
+/// Ensures that all players stay in the frame until they fall of the map and out of bounds.
+/// </summary>
 public class PlatformCamera : MonoBehaviour
 {
     [SerializeField] private Camera _cam;
-    //[SerializeField] private Transform[] _targets = new Transform[4];
     [SerializeField] private float _maxZoomIn = 5f;
     [SerializeField] private float _maxZoomOut = 20f;
     [SerializeField] private Vector3 _startPos = new Vector3(0, 12f, -24f);
@@ -29,6 +31,7 @@ public class PlatformCamera : MonoBehaviour
         
         for (int i = 0; i < targets.Count; i++)
         {
+            //Removes player as a target for the camera if they fall out of bounds
             if (targets[i].transform.position.y <= _deathAltitude)
             {
                 targets.RemoveAt(i);
