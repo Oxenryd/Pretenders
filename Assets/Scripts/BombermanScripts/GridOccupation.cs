@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-
+/// <summary>
+/// This class controls which tiles are occupied by characters and bombs in bomberman minigame.
+/// </summary>
 public class GridOccupation : MonoBehaviour
 {
     [SerializeField]
@@ -19,13 +21,20 @@ public class GridOccupation : MonoBehaviour
     private Vector2[] _occupiedTiles = new Vector2[8];
 
     /// <summary>
-    /// This class handles the map in bomberman which is grid based
+    /// Get the tile which passed in hero is currently in according to the grid.
     /// </summary>
+    /// <param name="hero"></param>
+    /// <returns></returns>
     public Vector2 GetHeroTile(Hero hero)
     {
         return _occupiedTiles[hero.Index];
     }
-
+    /// <summary>
+    /// Check if next tile is occupied in regards of the direction passed in hero is trying to move in.<br></br>
+    /// Returns true if the tile is occupied.
+    /// </summary>
+    /// <param name="hero"></param>
+    /// <returns></returns>
     public bool CheckOccupied(Hero hero)
     {
         var movement = hero.Movement;
@@ -43,16 +52,31 @@ public class GridOccupation : MonoBehaviour
         return false;
     }
 
+    /// <summary>
+    /// Get the tile center world coordinates based on a hero.
+    /// </summary>
+    /// <param name="hero"></param>
+    /// <returns></returns>
     public Vector3 TileCenter(Hero hero)
     {
         return TileCenter(_occupiedTiles[hero.Index]);
     }
+    /// <summary>
+    /// Get world position of tile center of tile passed in.
+    /// </summary>
+    /// <param name="tile"></param>
+    /// <returns></returns>
     public Vector3 TileCenter(Vector2 tile)
     {
         return new Vector3(tile.x * _grid.cellSize.x + _grid.cellSize.x / 2, 0f, tile.y * _grid.cellSize.y + _grid.cellSize.y / 2);
     }
     public Vector3 TileCenter(int x, int y) => TileCenter(new Vector2(x, y));
    
+    /// <summary>
+    /// Mark the tile passed in Hero is trying to move to as occupied by it.
+    /// </summary>
+    /// <param name="hero"></param>
+    /// <returns></returns>
     public Vector2 SetOccupied(Hero hero)
     {
         var movement = hero.Movement;
@@ -66,6 +90,11 @@ public class GridOccupation : MonoBehaviour
     //    return XyFromVector3(hero.transform.position);
     //}
 
+    /// <summary>
+    /// Set current tile as occupied by the bomb passed in as parameter.
+    /// </summary>
+    /// <param name="bomb"></param>
+    /// <returns></returns>
     public Vector2 SetOccupiedByBomb(Bomb bomb)
     {
         var hero = bomb.Hero;
@@ -73,24 +102,43 @@ public class GridOccupation : MonoBehaviour
         return _occupiedTiles[hero.Index + 4];
     }
 
+    /// <summary>
+    /// Remove the hero from the grid by setting the occupied tile of hero with index to (-1, -1). 
+    /// </summary>
+    /// <param name="heroIndex"></param>
     public void RemoveHero(int heroIndex)
     {
         _occupiedTiles[heroIndex] = new Vector2(-1, -1);
     }
     public void RemoveHero(Hero hero) => RemoveHero(hero.Index);
 
+    /// <summary>
+    /// Remove the bomb from the grid by setting its occupied tile to (-1, -1).
+    /// </summary>
+    /// <param name="bomb"></param>
     public void RemoveOccupiedByBomb(Bomb bomb)
     {
         var hero = bomb.Hero;
         _occupiedTiles[hero.Index + 4] = new Vector2(-1, -1);
     }
 
+    /// <summary>
+    /// Force a specific tile to occupied based on hero index and a position.
+    /// </summary>
+    /// <param name="heroIndex"></param>
+    /// <param name="position"></param>
+    /// <returns></returns>
     public Vector2 SetOccupiedForced(int heroIndex, Vector3 position)
     {
         _occupiedTiles[heroIndex] = XyFromVector3(new Vector3(position.x, 0f, position.z));
         return _occupiedTiles[heroIndex];
     }
 
+    /// <summary>
+    /// Get the X,Y tile coordinates as a Vector2 based on a world position as Vector3
+    /// </summary>
+    /// <param name="position"></param>
+    /// <returns></returns>
     public Vector2 XyFromVector3(Vector3 position)
     {
        // int x = Mathf.RoundToInt(position.x / _grid.cellSize.x);
@@ -108,10 +156,5 @@ public class GridOccupation : MonoBehaviour
         {
             _occupiedTiles[i] = new Vector2(-1, -1);
         }
-    }
-
-    void Update()
-    {
-        
     }
 }
