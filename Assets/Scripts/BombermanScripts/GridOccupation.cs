@@ -18,7 +18,7 @@ public class GridOccupation : MonoBehaviour
     private float _ratioY = 0.75f;
 
     [SerializeField]
-    private Vector2[] _occupiedTiles = new Vector2[8];
+    private Vector2[] _occupiedTiles = new Vector2[16];
 
     /// <summary>
     /// Get the tile which passed in hero is currently in according to the grid.
@@ -95,11 +95,11 @@ public class GridOccupation : MonoBehaviour
     /// </summary>
     /// <param name="bomb"></param>
     /// <returns></returns>
-    public Vector2 SetOccupiedByBomb(Bomb bomb)
+    public Vector2 SetOccupiedByBomb(Bomb bomb, int bombIndex)
     {
         var hero = bomb.Hero;
-        _occupiedTiles[hero.Index + 4] = XyFromVector3(bomb.transform.position);
-        return _occupiedTiles[hero.Index + 4];
+        _occupiedTiles[hero.Index + 4 * bombIndex] = XyFromVector3(bomb.transform.position);
+        return _occupiedTiles[hero.Index + 4 * bombIndex];
     }
 
     /// <summary>
@@ -116,10 +116,19 @@ public class GridOccupation : MonoBehaviour
     /// Remove the bomb from the grid by setting its occupied tile to (-1, -1).
     /// </summary>
     /// <param name="bomb"></param>
-    public void RemoveOccupiedByBomb(Bomb bomb)
+    public void RemoveOccupiedByBomb(Bomb bomb, int bombIndex)
     {
         var hero = bomb.Hero;
-        _occupiedTiles[hero.Index + 4] = new Vector2(-1, -1);
+        _occupiedTiles[hero.Index + 4 * bombIndex] = new Vector2(-1, -1);
+    }
+    /// <summary>
+    /// Get the tile a bomb belonging to hero
+    /// </summary>
+    /// <param name="hero"></param>
+    /// <returns></returns>
+    public Vector2 GetTileBomb(Hero hero, int bombIndex)
+    {
+        return _occupiedTiles[hero.Index + 4 * bombIndex];
     }
 
     /// <summary>

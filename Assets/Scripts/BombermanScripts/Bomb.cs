@@ -56,7 +56,7 @@ public class Bomb : Grabbable
     private SpriteRenderer spriteRenderer;
 
     private bool _canExplode = true;
-
+    private int _bombIndex = 1;
     private EasyTimer timer;
     private EasyTimer detonationTickTimer;
     private bool hasDetonated = false;
@@ -71,6 +71,8 @@ public class Bomb : Grabbable
     /// This class handles bomb behavior. 
     /// It handles the explosions, the spawning, the drawing of the trajectory and the throwing of the bomb.
     /// </summary>
+
+
 
     private void Start()
     {
@@ -111,19 +113,19 @@ public class Bomb : Grabbable
         base.Update();
         if (!IsActive) return;
 
-        if (timer.Done && !hasDetonated && _canExplode)
+        if (timer.Done && !hasDetonated && _canExplode) //Pre-detonation
         {
             canThrow = true;
             if (IsGrabbed)
                 Drop();
             hasDetonated = true;
             detonationTickTimer.Reset();
-            _gridOccupation.RemoveOccupiedByBomb(this);
+            _gridOccupation.RemoveOccupiedByBomb(this, _bombIndex);
         }
-        if (hasDetonated && detonationTickTimer.Done)
+        if (hasDetonated && detonationTickTimer.Done) // Has detonated
         {
             explosionCheckOnTop();
-
+            _gridOccupation.RemoveOccupiedByBomb(this, _bombIndex);
             currentXplosion++;
             for (int i = 0; i < directions.Count; i++)
             {
@@ -142,7 +144,7 @@ public class Bomb : Grabbable
 
         if (IsGrabbed)
         {
-            _gridOccupation.RemoveOccupiedByBomb(this);
+            _gridOccupation.RemoveOccupiedByBomb(this, _bombIndex);
             if (Grabber.TriggerButtonDown)
             {
                 DrawTrajectory();
@@ -150,7 +152,7 @@ public class Bomb : Grabbable
                 var newValue = throwForce + 10f * GameManager.Instance.DeltaTime;
                 throwForce = Mathf.Clamp(newValue, 0, 27);
             }
-            if (startedThrowProcess && !Grabber.TriggerButtonDown)
+            if (startedThrowProcess && !Grabber.TriggerButtonDown) // Threw bomb
             {
                 threwBomb = true;
                 _canExplode = false;
@@ -170,12 +172,15 @@ public class Bomb : Grabbable
                 }
             }
         }
+        else if (IsActive)
+            _gridOccupation.SetOccupiedByBomb(this, _bombIndex);
+
         if (HitTheFloor())
         {
             _canExplode = true;
             Rigidbody.isKinematic = true;
-            gameObject.transform.position = new Vector3(Mathf.RoundToInt(gameObject.transform.position.x / 2) * 2, 0, Mathf.RoundToInt(gameObject.transform.position.z / 2) * 2);
-            _gridOccupation.SetOccupiedByBomb(this);
+            gameObject.transform.position = _gridOccupation.TileCenter(_gridOccupation.GetTileBomb(Hero, _bombIndex));//new Vector3(Mathf.RoundToInt(gameObject.transform.position.x / 2) * 2, 0, Mathf.RoundToInt(gameObject.transform.position.z / 2) * 2);
+            _gridOccupation.SetOccupiedByBomb(this, _bombIndex);
         }
     }
 
@@ -189,7 +194,7 @@ public class Bomb : Grabbable
             Drop();
         hasDetonated = true;
         detonationTickTimer.Reset();
-        _gridOccupation.RemoveOccupiedByBomb(this);
+        _gridOccupation.RemoveOccupiedByBomb(this, _bombIndex);
     }
 
     private bool HitTheFloor()
@@ -208,8 +213,10 @@ public class Bomb : Grabbable
     /// This method spawns the bomb.
     /// Since the bombs are recycled this method also resets variables so the explosions are set correctly.
     /// </summary>
-    public void SpawnBomb(Vector3 charPosition)
+    public void SpawnBomb(Vector3 charPosition, int bombIndex, int explosionLength)
     {
+        amountOfExplosions = explosionLength;
+        _bombIndex = bombIndex;
         if (_gridOccupation == null)
             _gridOccupation = GameObject.FindWithTag("BombermanGrid").GetComponent<GridOccupation>();
 
@@ -225,7 +232,7 @@ public class Bomb : Grabbable
             var directionKey = directions.Keys.ElementAt(i);
             directions[directionKey] = false;
         }
-        _gridOccupation.SetOccupiedByBomb(this);
+        _gridOccupation.SetOccupiedByBomb(this, _bombIndex);
     }
     public override bool InjectDropAbort()
     {
@@ -249,6 +256,7 @@ public class Bomb : Grabbable
     {
         if (threwBomb)
         {
+            //transform.position += Grabber.FaceDirection * 0.5f + new Vector3(0, 0.5f, 0);
             launchDirection = (Grabber.FaceDirection + Vector3.up).normalized;
             Rigidbody.AddForce(launchDirection * throwForce, ForceMode.Impulse);
             lineRenderer.positionCount = 0;
@@ -337,7 +345,7 @@ public class Bomb : Grabbable
     private void explosionCheckNearby(Vector3 direction, int tick)
     {
         RaycastHit hit;
-        Physics.Raycast(transform.position + new Vector3(0, .5f, 0), direction, out hit, tick, levelMask);
+        Physics.Raycast(transform.position + new Vector3(0, .75f, 0), direction, out hit, tick, levelMask);
 
         if (hit.collider != null)
         {

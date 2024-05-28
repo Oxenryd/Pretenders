@@ -28,6 +28,13 @@ public class BombermanManager : MonoBehaviour
     private GameObject getReady;
     [SerializeField]
     private bool killAll = true;
+    [SerializeField]
+    private bool _allowThrows = false;
+
+    private BombSack[] _bombSacks = new BombSack[4];
+    [SerializeField] private TextMeshProUGUI[] _bombTexts;
+    private int _currentBombs = 1;
+    private int _currentExplosionLength = 5;
 
     /// <summary>
     /// This class handles the overall behavior of the bomber man gameplay
@@ -37,6 +44,14 @@ public class BombermanManager : MonoBehaviour
     /// </summary>
     void Start()
     {
+        for (int i = 0; i < 4; i++)
+        {
+            characterList[i].CanThrowBombs = _allowThrows;
+            _bombSacks[i] = characterList[i].GetComponent<BombSack>();
+        }
+            
+        
+
         transitions = GameObject.FindWithTag(GlobalStrings.TRANSITIONS_TAG).GetComponent<Transitions>();
         transitions.Value = 0;
         timer.Reset();
@@ -131,6 +146,19 @@ public class BombermanManager : MonoBehaviour
     {
         deathQueue[playerId] = placementToSet;
         placementToSet--;
+        _currentExplosionLength = _currentExplosionLength + 2;
+        _currentBombs++;
+        foreach (var sack in _bombSacks)
+        {
+            sack.IncreaseMaxBombs();
+            sack.SetExplosionLength(_currentExplosionLength);
+        }
+
+        foreach (var text in _bombTexts)
+        {
+            text.text = $"Bombs: x{_currentBombs}\nsize +{_currentExplosionLength - 5}";
+        }
+
         if(placementToSet < 1)
         {
             if (GameManager.Instance.Tournament)

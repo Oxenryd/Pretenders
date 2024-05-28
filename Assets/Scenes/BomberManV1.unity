@@ -9939,6 +9939,7 @@ MonoBehaviour:
   _transitions: {fileID: 0}
   _useMiniGames: 1
   _powerupPrefabs: []
+  _showFps: 1
 --- !u!4 &535132393 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7642490317224071183, guid: 6095b89640f944840bc529d411191b78,
@@ -12317,9 +12318,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _grid: {fileID: 647735485}
-  _ratioX: 0.67
-  _ratioY: 0.67
+  _ratioX: 0.6
+  _ratioY: 0.6
   _occupiedTiles:
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
   - {x: 0, y: 0}
   - {x: 0, y: 0}
   - {x: 0, y: 0}
@@ -14928,7 +14937,7 @@ PrefabInstance:
     - target: {fileID: 6831108247427218337, guid: 4e65446824aa83740a3b982898b91365,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 4.9
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 6831108247427218337, guid: 4e65446824aa83740a3b982898b91365,
         type: 3}
@@ -34397,6 +34406,12 @@ MonoBehaviour:
   deathQueue: 00000000000000000000000000000000
   getReady: {fileID: 769114274}
   killAll: 0
+  _allowThrows: 1
+  _bombTexts:
+  - {fileID: 1237181269}
+  - {fileID: 2033406829}
+  - {fileID: 1121771184}
+  - {fileID: 1114893504}
 --- !u!1001 &1799275644
 PrefabInstance:
   m_ObjectHideFlags: 0

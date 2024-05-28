@@ -15,6 +15,7 @@ public class BombSack : MonoBehaviour
     [SerializeField]
     private LayerMask bombLayerMask;
 
+    private int _currentBombIndexBuffer = 0;
     private int _currentBombIndex = 0;
     private int _maxCurrentBombs = 1;
     private Grid grid;
@@ -26,7 +27,7 @@ public class BombSack : MonoBehaviour
 
     private Bomb[] bombs = new Bomb[GlobalValues.BOMBS_MAXBOMBS];
     private Dictionary<Vector3, Vector3> directions = new Dictionary<Vector3, Vector3>() { { Vector3.back, new Vector3(0,0,-2) }, { Vector3.forward, new Vector3(0,0,2) }, { Vector3.left, new Vector3(-2,0,0) }, { Vector3.right, new Vector3(2,0,0) } };
-
+    private int _explosionLength = 5;
 
     /// <summary>
     /// This class handles the behavior of all the bombs.
@@ -59,6 +60,12 @@ public class BombSack : MonoBehaviour
     /// If there is a collider nearby it will stop the player from placing a bomb
     /// Otherwise it will call the bomb class to handle the behavior of the bomb
     /// </summary>
+    public void SetExplosionLength(int length)
+    { _explosionLength = length; }
+    public void IncreaseMaxBombs()
+    {
+        _maxCurrentBombs++;
+    }
 
     private void TrySpawnBomb(object sender, EventArgs e)
     {
@@ -81,10 +88,11 @@ public class BombSack : MonoBehaviour
 
                     if (directionKey == character.FaceDirection)
                     {
-                        bombs[_currentBombIndex].SpawnBomb(middlePoint + directions[directionKey]);
-                        _currentBombIndex++;
-                        if (_currentBombIndex >= bombs.Length)
-                            _currentBombIndex = 0;
+                        bombs[_currentBombIndexBuffer].SpawnBomb(middlePoint + directions[directionKey], _currentBombIndex + 1, _explosionLength);
+                        _currentBombIndex = (_currentBombIndex + 1) % _maxCurrentBombs;     
+                        _currentBombIndexBuffer++;
+                        if (_currentBombIndexBuffer >= bombs.Length)
+                            _currentBombIndexBuffer = 0;
                     }
                 }
             }

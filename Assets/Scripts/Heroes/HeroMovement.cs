@@ -883,7 +883,8 @@ public class HeroMovement : MonoBehaviour, IJumpHit
         }
         if (_grabTimout.Done && !IsTugging)
         {
-            grabDragStuffs();
+            if ( !(_controlScheme == ControlSchemeType.BomberMan && !CanThrowBombs) )
+                grabDragStuffs();
         }
         _tryingToGrab = false;
 
@@ -1023,7 +1024,8 @@ public class HeroMovement : MonoBehaviour, IJumpHit
                 {
                     if (_canChangeQuadDirection)
                     {
-                        FaceDirection = TargetDirection;
+                        if ( !(TargetDirection.x == 0f && TargetDirection.z == 0f) )
+                            FaceDirection = TargetDirection;
                         CurrentDirection = FaceDirection;
                     }
 
@@ -1094,7 +1096,8 @@ public class HeroMovement : MonoBehaviour, IJumpHit
                                 velocity = Vector3.zero;
                                 _canChangeQuadDirection = true;
                                 _pendingStop = false;
-                                FaceDirection = TargetDirection;
+                                if (!(TargetDirection.x == 0f && TargetDirection.z == 0f))
+                                    FaceDirection = TargetDirection;
                             } else if (TryingToMove)
                             {
                                 FaceDirection = TargetDirection;
@@ -1114,8 +1117,6 @@ public class HeroMovement : MonoBehaviour, IJumpHit
                         } else
                             _canChangeQuadDirection = false;
                     }
-                    if (Hero.Index == 0)
-                        Debug.Log($"TARGET: {_targetTile} - IN TILE: {_gridOccupation.XyFromVector3(GroundPosition)}");
                     break;
 
                 case ControlSchemeType.TopDown:
@@ -1285,10 +1286,11 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     {
         var xyz = new Vector3(transform.position.x, transform.position.y + GlobalValues.CHAR_GRAB_CYLINDER_COLLIDER_Y_OFFSET, transform.position.z);
 
+        var checkLength = _controlScheme == ControlSchemeType.BomberMan ? 2 * GlobalValues.CHAR_GRAB_CHECK_DISTANCE : GlobalValues.CHAR_GRAB_CHECK_DISTANCE;
 
         var colliders = Physics.OverlapCapsule(
             xyz + FaceDirection * GlobalValues.CHAR_GRAB_CHECK_DISTANCE,
-            xyz + Vector3.up + FaceDirection * GlobalValues.CHAR_GRAB_CHECK_DISTANCE,
+            xyz + Vector3.up + FaceDirection * checkLength,
             GlobalValues.CHAR_GRAB_RADIUS,
             LayerUtil.Exclude(GlobalValues.GROUND_LAYER));
 
@@ -1424,7 +1426,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
     {
         RaycastHit wallHit;
         LayerMask walls = LayerUtil.Include(GlobalValues.BLOCKS_LAYER);
-        Physics.Raycast(transform.position + new Vector3(0, .5f, 0), TargetDirection, out wallHit, _grid.cellSize.x * 0.67f, walls);
+        Physics.Raycast(transform.position + new Vector3(0, .25f, 0), FaceDirection, out wallHit, _grid.cellSize.x * 1f, walls);
         if (wallHit.collider || _gridOccupation.CheckOccupied(_hero))
         {
             Halt();
