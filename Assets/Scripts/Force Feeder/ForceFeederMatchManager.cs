@@ -18,20 +18,25 @@ public class MatchManager : MonoBehaviour
     private bool _isFadingOut = false;
     private bool _zoomingToWinner = false;
     // Start is called before the first frame update
+
     void Awake()
     {
         _transTimer = new EasyTimer(GlobalValues.SCENE_CIRCLETRANSIT_TIME);
         _transTimer.Reset();
-        // Subscribe to the event for each unicorn
+
+        // Subscribe to the event HandleScoreReached for each unicorn.
         foreach (var unicorn in unicorns)
         {
             unicorn.OnScoreReached += HandleScoreReached;
         }
+
+        //Set the script to follow the Heroes
         zoomFollowScript = _cam.GetComponent<ZoomFollowGang>();
     }
 
     void Start()
     {
+        // Sets the direction of the heroes to point towards the middle of the arena. 
         foreach (var hero in _heroes)
         {
             var heroComp = hero.GetComponent<Hero>();
@@ -53,20 +58,35 @@ public class MatchManager : MonoBehaviour
         GameManager.Instance.Music.Fadeout(1.5f);
     }
 
+    /// <summary>
+    /// This method handles the event when the "Get Ready" countdown finishes.
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     private void onGetReadyCountedDown(object sender, EventArgs e)
     {
+        // Starts the food spawning process.
         _foodSpawner.Running = true;
     }
 
+    /// <summary>
+    /// This method handles the event when a score milestone is reached.
+    /// </summary>
     private void HandleScoreReached()
     {
+
+        // Create two integer arrays to store scores and match results for each unicorn.
         int[] scores = new int[unicorns.Length];
         int[] matchResult = new int[unicorns.Length];
 
+        // Populate the scores array with the scores of each unicorn.
         foreach (var unicorn in unicorns) scores[unicorn.Index] = unicorn.Score;
 
+        // Initialize variables to track the current match position and the index of the winner.
         int matchPosition = 0;
         int winnersIndex = -1;
+
+        // Continue looping until all scores have been processed.
         while (scores.Any(item => item != -1))
         {
             int maxIndex = 0;
@@ -78,39 +98,37 @@ public class MatchManager : MonoBehaviour
                 }
             }
 
-            // Setting the winners index
+            // Setting the index of the highest score
             if (matchPosition == 0) winnersIndex = maxIndex;
 
-
+            //Setting the score to -1 indicating a processed score             
             scores[maxIndex] = -1;
             matchResult[maxIndex] = matchPosition;
             matchPosition++;
         }
 
 
-        //Debug
+        // Processing the result in case the game was a tournament
         if (GameManager.Instance.Tournament)
         {
             MatchResult newResult = new MatchResult(GameType.ForceFeeder, matchResult);
             GameManager.Instance.AddNewMatchResult(newResult);
         }
         
-
+        //Setting the zoom script to follow the Hero
         Hero winner = zoomFollowScript.Targets[winnersIndex].GetComponent<Hero>();
-        //zoomFollowScript.Targets = new Transform[] { winner };
-
         var hero = winner.GetComponent<HeroMovement>();
         hero.SetWinner(true);
-
         zoomFollowScript.SetWinner(winner.transform, false);
         _zoomingToWinner = true;
+
+        // Activating the winnertext and transition timer 
         _transTimer.Time = _transTimer.Time * 3;
         _winnerText.Activate();
         _transTimer.Reset();
 
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (_isFadingIn)
