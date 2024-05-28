@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Class that handles the spawning of powerups
+/// </summary>
 public class PowerupSpawner : MonoBehaviour
 {
     public GameObject[] _objectBuffer;
