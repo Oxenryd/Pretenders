@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -29,6 +30,7 @@ public class Unicorn : MonoBehaviour, IRecievable
     private RaycastHit _previousCollider = new RaycastHit();
 
     public event ScoreReachedEventHandler OnScoreReached;
+    public event EventHandler OnTransfered;
 
     void Start()
     {
@@ -200,6 +202,8 @@ public class Unicorn : MonoBehaviour, IRecievable
                 collider.excludeLayers = LayerUtil.Include(11, 12, 13, 14);
             }
         }
+
+        OnTransfered?.Invoke(this, EventArgs.Empty);
 
         if (_score >= GlobalValues.WINNING_POINTS_FORCE_FEEDER)
         {

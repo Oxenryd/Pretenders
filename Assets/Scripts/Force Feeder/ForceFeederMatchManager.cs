@@ -1,9 +1,12 @@
 using System;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 
 public class MatchManager : MonoBehaviour
 {
+    private const string SLASH = "/";
+
     [SerializeField] private WinnerTextScript _winnerText;
     [SerializeField] private GetReadyScript _getReady;
     [SerializeField] private Camera _cam;
@@ -11,6 +14,7 @@ public class MatchManager : MonoBehaviour
     [SerializeField] private HeroMovement[] _heroes;
     [SerializeField] private FoodSpawner _foodSpawner;
     ZoomFollowGang zoomFollowScript;
+    [SerializeField] private TextMeshProUGUI[] _scores;
 
     [SerializeField] private Transitions _transitions;
     private EasyTimer _transTimer;
@@ -28,10 +32,19 @@ public class MatchManager : MonoBehaviour
         foreach (var unicorn in unicorns)
         {
             unicorn.OnScoreReached += HandleScoreReached;
+            unicorn.OnTransfered += OnUnicornTransfered;
         }
 
         //Set the script to follow the Heroes
         zoomFollowScript = _cam.GetComponent<ZoomFollowGang>();
+    }
+
+    private void OnUnicornTransfered(object sender, EventArgs e)
+    {
+        var unicorn = (Unicorn)sender;
+        _scores[unicorn.Index].text =
+            GameManager.Instance.IntegerToString(Math.Min(unicorns[unicorn.Index].Score, GlobalValues.WINNING_POINTS_FORCE_FEEDER)) +
+            SLASH + GameManager.Instance.IntegerToString(GlobalValues.WINNING_POINTS_FORCE_FEEDER);
     }
 
     void Start()
@@ -56,6 +69,11 @@ public class MatchManager : MonoBehaviour
         _getReady.CountdownComplete += onGetReadyCountedDown;
 
         GameManager.Instance.Music.Fadeout(1.5f);
+
+        for (int i = 0; i < 4; i++)
+        {
+            _scores[i].text = GameManager.Instance.IntegerToString(unicorns[i].Score) + SLASH + GameManager.Instance.IntegerToString(GlobalValues.WINNING_POINTS_FORCE_FEEDER);
+        }
     }
 
     /// <summary>
@@ -67,6 +85,11 @@ public class MatchManager : MonoBehaviour
     {
         // Starts the food spawning process.
         _foodSpawner.Running = true;
+    }
+
+    public void UpdateScore(int unicornIndex)
+    {
+        _scores[unicornIndex].text = GameManager.Instance.IntegerToString(unicorns[unicornIndex].Score) + SLASH + GameManager.Instance.IntegerToString(GlobalValues.WINNING_POINTS_FORCE_FEEDER);
     }
 
     /// <summary>
