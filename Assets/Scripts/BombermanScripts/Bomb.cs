@@ -120,12 +120,11 @@ public class Bomb : Grabbable
                 Drop();
             hasDetonated = true;
             detonationTickTimer.Reset();
-            _gridOccupation.RemoveOccupiedByBomb(this, _bombIndex);
         }
         if (hasDetonated && detonationTickTimer.Done) // Has detonated
         {
-            explosionCheckOnTop();
             _gridOccupation.RemoveOccupiedByBomb(this, _bombIndex);
+            explosionCheckOnTop();        
             currentXplosion++;
             for (int i = 0; i < directions.Count; i++)
             {
