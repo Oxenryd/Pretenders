@@ -18,6 +18,9 @@ public class GridOccupation : MonoBehaviour
     [SerializeField]
     private Vector2[] _occupiedTiles = new Vector2[8];
 
+    /// <summary>
+    /// This class handles the map in bomberman which is grid based
+    /// </summary>
     public Vector2 GetHeroTile(Hero hero)
     {
         return _occupiedTiles[hero.Index];
@@ -99,7 +102,6 @@ public class GridOccupation : MonoBehaviour
         return new Vector2 (x, y);
     }
 
-    // Start is called before the first frame update
     void Start()
     {
         for (int i = 4; i < _occupiedTiles.Length; i++)
@@ -108,7 +110,6 @@ public class GridOccupation : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
     void Update()
     {
         

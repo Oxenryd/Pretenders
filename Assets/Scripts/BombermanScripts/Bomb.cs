@@ -55,9 +55,6 @@ public class Bomb : Grabbable
     private GameObject crossDrawing;
     private SpriteRenderer spriteRenderer;
 
-    //Vänta med explosion när man kastat
-    //Nolla när man släppt bomb trajectory på ett ställe man inte får kasta
-
     private bool _canExplode = true;
 
     private EasyTimer timer;
@@ -68,6 +65,12 @@ public class Bomb : Grabbable
     { get; set; } = false;
 
     public Hero Hero { get; set; }
+
+
+    /// <summary>
+    /// This class handles bomb behavior. 
+    /// It handles the explosions, the spawning, the drawing of the trajectory and the throwing of the bomb.
+    /// </summary>
 
     private void Start()
     {
@@ -95,6 +98,14 @@ public class Bomb : Grabbable
         gameObject.SetActive(false);
         IsActive = false;
     }
+
+
+    /// <summary>
+    /// The update method handles mostly the timers of the explosions.
+    /// When a player puts down bomb the timer determines how many seconds it will go before the bomb explodes.
+    /// When the timer is done it starts another timer starts,
+    /// which determines how long time it will go between each explosion in the cross explosion.
+    /// </summary>
     void Update()
     {
         base.Update();
@@ -111,7 +122,6 @@ public class Bomb : Grabbable
         }
         if (hasDetonated && detonationTickTimer.Done)
         {
-            // Check special case if bomb is on top or below player
             explosionCheckOnTop();
 
             currentXplosion++;
@@ -169,6 +179,9 @@ public class Bomb : Grabbable
         }
     }
 
+    /// <summary>
+    /// This method will stop the bomb from continuing.
+    /// </summary>
     public void Detonate()
     {
         canThrow = true;
@@ -190,6 +203,11 @@ public class Bomb : Grabbable
             return false;
         }
     }
+
+    /// <summary>
+    /// This method spawns the bomb.
+    /// Since the bombs are recycled this method also resets variables so the explosions are set correctly.
+    /// </summary>
     public void SpawnBomb(Vector3 charPosition)
     {
         if (_gridOccupation == null)
@@ -220,6 +238,13 @@ public class Bomb : Grabbable
             return false;
         }
     }
+
+    /// <summary>
+    /// This method adds behavior to the bomb throw.
+    /// There's two ways a player can throw a bomb.
+    /// Either when holding L which will draw the trajectory and the bomb will be thrown based on throw force.
+    /// If the player doesn't hold in L and just click L the bomb will be thrown straight down without any force.
+    /// </summary>
     public override void OnDropThrow()
     {
         if (threwBomb)
@@ -237,6 +262,11 @@ public class Bomb : Grabbable
         threwBomb = false;
     }
 
+    /// <summary>
+    /// This method draws the trajectory. 
+    /// It uses physics equations to determine the gravitational effects and the motion of the bomb with velocity.
+    /// To draw the trajectory it uses line renderer and also raycast to see if a a collider is blocking the bomb
+    /// </summary>
     private void DrawTrajectory()
     {
         lineRenderer.transform.rotation = Quaternion.Euler(0,0,45);
@@ -261,7 +291,6 @@ public class Bomb : Grabbable
 
             LayerMask mask = LayerUtil.Include(GlobalValues.BLOCKS_LAYER);
             if (Physics.Raycast(lastPosition, (point - lastPosition).normalized, out RaycastHit hit, (point - lastPosition).magnitude, mask))
-            //if (Physics.Raycast(lastPosition, -Vector3.up, out var _, 10f, mask))
             {
                 spriteRenderer.color = new Color(1, 0, 0, 0.2f);
                 lineRenderer.material.SetColor("_TintColor", spriteRenderer.color);
@@ -283,6 +312,9 @@ public class Bomb : Grabbable
 
     }
 
+    /// <summary>
+    /// This method checks if the explosion of the bomb hits a player higher up than the bomb itself
+    /// </summary>
     private void explosionCheckOnTop()
     {
         RaycastHit hit;
@@ -297,6 +329,11 @@ public class Bomb : Grabbable
         }
     }
 
+    /// <summary>
+    /// When a bomb explosion has started it uses this method to see if its hitting nearby colliders. 
+    /// If the explosion reaches a wall or crate it will stop.
+    /// If the explosion reaches a hero the hero will get killed but the explosion will keep on going
+    /// </summary>
     private void explosionCheckNearby(Vector3 direction, int tick)
     {
         RaycastHit hit;
@@ -316,7 +353,6 @@ public class Bomb : Grabbable
                 directions[direction] = true;
             }
 
-            // Check hero collision
             var heroCollision = hit.collider.GetComponentInParent<Hero>();
             if (heroCollision != null)
             {
