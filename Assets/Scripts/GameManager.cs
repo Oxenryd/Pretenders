@@ -110,6 +110,8 @@ public class GameManager : MonoBehaviour
         NumOfPlayersChanged.Invoke(this, NumOfPlayers);
     }
 
+    public void DisableTournament()
+    { Tournament = false; }
     public void StartNewTournament() { StartNewTournament(false); }
     public void StartNewTournament(bool includeMiniGames)
     {

@@ -19,6 +19,7 @@ public class BombSack : MonoBehaviour
     private int _currentBombIndex = 0;
     private int _maxCurrentBombs = 1;
     private Grid grid;
+    private GridOccupation gridOccupation;
 
 
     [SerializeField]
@@ -38,6 +39,7 @@ public class BombSack : MonoBehaviour
         if (!_enabled) return;
         GameObject gridObject = GameObject.FindWithTag(GlobalStrings.NAME_BOMBERGRID);
         grid = gridObject.GetComponent<Grid>();
+        gridOccupation = grid.GetComponent<GridOccupation>();
 
         character = heroGameObject.gameObject.GetComponent<HeroMovement>();
 
@@ -82,7 +84,7 @@ public class BombSack : MonoBehaviour
             Vector3 middlePoint = GridCellMiddlePoint.Get(grid, character.GameObject.transform.position);
             RaycastHit hit;
             Physics.Raycast(middlePoint + new Vector3(0, 0.75f, 0), character.FaceDirection, out hit, grid.cellSize.x, bombLayerMask);
-            if (!hit.collider)
+            if (!hit.collider && !gridOccupation.CheckOccupied(character.Hero) )
             {
                 for (int i = 0; i < directions.Count; i++)
                 {

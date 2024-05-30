@@ -895,7 +895,7 @@ public class HeroMovement : MonoBehaviour, IJumpHit
 
         if (CanMove && CanTrigger && _triedToTrigger)
         {
-            if (_controlScheme == ControlSchemeType.BomberMan)
+            if (_controlScheme == ControlSchemeType.BomberMan && _canChangeQuadDirection)
                 OnTriggered();
 
             _triedToTrigger = false;

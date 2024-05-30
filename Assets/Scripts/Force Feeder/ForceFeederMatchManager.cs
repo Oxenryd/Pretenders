@@ -39,11 +39,11 @@ public class MatchManager : MonoBehaviour
         zoomFollowScript = _cam.GetComponent<ZoomFollowGang>();
     }
 
-    private void OnUnicornTransfered(object sender, EventArgs e)
+    private void OnUnicornTransfered(object sender, int score)
     {
         var unicorn = (Unicorn)sender;
         _scores[unicorn.Index].text =
-            GameManager.Instance.IntegerToString(Math.Min(unicorns[unicorn.Index].Score, GlobalValues.WINNING_POINTS_FORCE_FEEDER)) +
+            GameManager.Instance.IntegerToString(Math.Min(score, GlobalValues.WINNING_POINTS_FORCE_FEEDER)) +
             SLASH + GameManager.Instance.IntegerToString(GlobalValues.WINNING_POINTS_FORCE_FEEDER);
     }
 

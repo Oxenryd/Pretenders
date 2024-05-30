@@ -55,7 +55,10 @@ public class TransitionZoneScript : MonoBehaviour
                     GameManager.Instance.StartNewTournament(GameManager.Instance.IncludeMiniGames);
                     GameManager.Instance.TransitToNextScene(GameManager.Instance.GetTournamentNextScene());
                 } else
+                {
+                    GameManager.Instance.DisableTournament();
                     GameManager.Instance.TransitToNextScene(_nextScene);
+                }
             }
         }
 

@@ -30,7 +30,10 @@ public class Unicorn : MonoBehaviour, IRecievable
     private RaycastHit _previousCollider = new RaycastHit();
 
     public event ScoreReachedEventHandler OnScoreReached;
-    public event EventHandler OnTransfered;
+    /// <summary>
+    /// Provides current score of unicorn after latest transfer.
+    /// </summary>
+    public event EventHandler<int> OnTransfered;
 
     void Start()
     {
@@ -199,11 +202,11 @@ public class Unicorn : MonoBehaviour, IRecievable
 
             foreach (var collider in foodArray[i].Colliders)
             {
-                collider.excludeLayers = LayerUtil.Include(11, 12, 13, 14);
+                collider.excludeLayers = LayerUtil.Include(11, 12, 13, 14); // heroes layers
             }
         }
 
-        OnTransfered?.Invoke(this, EventArgs.Empty);
+        OnTransfered?.Invoke(this, _score);
 
         if (_score >= GlobalValues.WINNING_POINTS_FORCE_FEEDER)
         {
