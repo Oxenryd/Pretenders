@@ -1,9 +1,13 @@
+/// <summary>
+/// Class for storing and activating effects, that can be provided through powerups, for example.
+/// </summary>
 public class Effect
 {
     private static Effect _noEffect = null;
 
     private EasyTimer _activeTimer;
 
+    public bool Expires { get; set; } = true;
     public bool Active { get; private set; } = false;
     public float BumbMultiplier
     { get; set; } = 1f;
@@ -21,6 +25,10 @@ public class Effect
     { get; set; } = 1f;
     public bool StunImmune
     { get; set; } = false;
+    public int ExtraBombs
+    { get; set; } = 0;
+    public int ExtraBombRange
+    { get; set; } = 0;
     public float EffectDuration
     {
         get
@@ -34,12 +42,13 @@ public class Effect
     }
     public float DurationMultiplier
     { get; set; } = 1f;
+
     public EasyTimer ActiveTimer
     { get { return _activeTimer; } }
 
     public Effect()
     {
-        _activeTimer = new EasyTimer(5f, false, true);
+        _activeTimer = new EasyTimer(GlobalValues.EFFECT_DEFAULT_DURATION, false, true);
         GameManager.Instance.EarlyFixedUpdate += OnFixedUpdate;
     }
 
@@ -57,11 +66,13 @@ public class Effect
     {
         Active = false;
     }
+
     public void Activate()
     {
         Active = true;
         _activeTimer.Reset();
     }
+
     public Effect CurrentEffects()
     {
         if (!Active)

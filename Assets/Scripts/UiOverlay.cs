@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
+/// <summary>
+/// Class that enable toggling of fps counter.
+/// </summary>
 public class UiOverlay : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI _fpsValueText;
@@ -12,7 +15,7 @@ public class UiOverlay : MonoBehaviour
     void Start()
     {
         this.tag = GlobalStrings.NAME_UIOVERLAY;
-        toggleFps(_showFps);
+        ToggleFps(_showFps);
     }
 
     void LateUpdate()
@@ -23,14 +26,7 @@ public class UiOverlay : MonoBehaviour
         }
     }
 
-
-
-    private void toggleFps()
-    {
-        _showFps = !_showFps;
-        _fpsValueText.transform.parent.gameObject.SetActive(_showFps);
-    }
-    private void toggleFps(bool on)
+    public void ToggleFps(bool on)
     {
         _showFps = on;
         _fpsValueText.transform.parent.gameObject.SetActive(on);

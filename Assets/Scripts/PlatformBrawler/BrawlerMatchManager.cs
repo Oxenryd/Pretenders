@@ -4,6 +4,9 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// This class handles the transitions, screen fades and calculates the results for tournament in the Brawler Minigame.
+/// </summary>
 public class BrawlerMatchManager : MonoBehaviour
 {
     [SerializeField] private ZoomFollowGang _cam;
@@ -11,7 +14,7 @@ public class BrawlerMatchManager : MonoBehaviour
     [SerializeField] private Transitions _transitions;
     [SerializeField] public float _deathAltitude;
     [SerializeField] private List<GameObject> players = new List<GameObject>();
-    [SerializeField] private GetReadyScript _getReady = new GetReadyScript();
+    [SerializeField] private GetReadyScript _getReady; // = new GetReadyScript();
 
     private bool _fadingIn = true;
     private bool _fadingOut = false;
@@ -23,16 +26,35 @@ public class BrawlerMatchManager : MonoBehaviour
     public List<GameObject> placements = new List<GameObject>();
     int playersAlive = 4;
 
-    void Awake()
-    {
-        _fadeTimer = new EasyTimer(GlobalValues.SCENE_CIRCLETRANSIT_TIME);
-    }
-
     void Start()
     {
+        _fadeTimer = new EasyTimer(GlobalValues.SCENE_CIRCLETRANSIT_TIME);
+        _fadingIn = true;
         //roundWinner.gameObject.SetActive(false);
+        List<Hero> heroes = new List<Hero>();
+        foreach (var player in players)
+        {
+            heroes.Add(player.GetComponent<Hero>());
+        }
+        foreach (var hero in heroes)
+        {
+            switch (hero.Index)
+            {
+                case 0:
+                case 2:
+                    hero.Movement.TryMoveAi(new Vector2(1, 0)); break;
+
+                case 1:
+                case 3:
+                    hero.Movement.TryMoveAi(new Vector2(-1, 0)); break;
+
+            }
+        }
+
         _getReady.Activate();
         _fadeTimer.Reset();
+        if (GameManager.Instance.Music != null)
+            GameManager.Instance.Music.Fadeout(1.5f);
     }
 
     void Update()
@@ -128,6 +150,8 @@ public class BrawlerMatchManager : MonoBehaviour
             heroes.Add(obj.GetComponent<Hero>());
         }
         var winnerTransform = heroes.Where(hero => hero.Index == winnerIndex).SingleOrDefault().transform;
+        var movement = winnerTransform.GetComponent<HeroMovement>();
+        movement.SetWinner(true);
         _cam.SetWinner(winnerTransform, true);
         //GameManager.Instance.StartNewTournament(); //remove later
         //MatchResult result = new MatchResult(GameType.Brawler, playerPositionInMatch);

@@ -4,27 +4,20 @@ using UnityEngine;
 
 public class CrateExplosion : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject powerUpObject;
+    [SerializeField] private MeshRenderer _renderer;
+    [SerializeField] private Collider _collider;
+    [SerializeField] private ParticleSystem _explosion;
 
-    private Bomb powerUp;
-    void Start()
-    {
-    }
-
-    private void SetInactive()
-    {
-        gameObject.SetActive(false);
-    }
-
+    /// <summary>
+    /// This class handles the explosions of the individual crates.
+    /// It disables the crate so it no longer blocks the player.
+    /// It starts the explosion animation for the crate.
+    /// </summary>
     public void Explode()
     {
-        //Instantiate(powerUpObject, transform.position, transform.rotation);
-        SetInactive();
+        _renderer.enabled = false;
+        _collider.enabled = false;
+        _explosion.Play();
     }
 
-    void Update()
-    {
-        
-    }
 }

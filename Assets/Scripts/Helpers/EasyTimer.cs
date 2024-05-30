@@ -23,6 +23,9 @@ public class EasyTimer
         Timed.Invoke(this, deltaTime);
     }
 
+    /// <summary>
+    /// Resets the cycle count to zero.
+    /// </summary>
     public void ResetCycles()
     { _cycles = 0; }
 
@@ -71,6 +74,9 @@ public class EasyTimer
         _onTime = false;
         _pendingReset = false;
     }
+    /// <summary>
+    /// Check this to tell if the timer has finished counting or not.
+    /// </summary>
     public bool Done
     {
         get { return _onTime; }

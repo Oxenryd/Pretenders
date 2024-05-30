@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
+/// <summary>
+/// Class that handles the count in during Matches.
+/// </summary>
 public class GetReadyScript : MonoBehaviour
 {
     [SerializeField] private bool _enabled = true;

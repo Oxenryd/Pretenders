@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Scene = UnityEngine.SceneManagement.Scene;
@@ -23,6 +24,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Transitions _transitions;
     [SerializeField] private bool _useMiniGames = true;
     [SerializeField] private GameObject[] _powerupPrefabs;
+    [SerializeField] private bool _showFps = true;
 
     private float[] _fpsBuffer;
     private int _fpsCounter = 0;
@@ -35,7 +37,9 @@ public class GameManager : MonoBehaviour
     private bool _includingMiniGames = false;
     private string[] _tournamentGameList;
     private int _currentTournamentScene = 0;
-    
+
+    private EasyTimer _escapeTransitTimer;
+    private bool _escapeTransit = false;
 
     public bool IncludeMiniGames
     { get { return _useMiniGames; } set {  _useMiniGames = value; } }
@@ -106,9 +110,13 @@ public class GameManager : MonoBehaviour
         NumOfPlayersChanged.Invoke(this, NumOfPlayers);
     }
 
+    public void DisableTournament()
+    { Tournament = false; }
     public void StartNewTournament() { StartNewTournament(false); }
     public void StartNewTournament(bool includeMiniGames)
     {
+        _resultsNextCall = false;
+        _minigameNextCall = false;
         _tournamentComplete = false;
         _includingMiniGames = includeMiniGames;
         Tournament = true;
@@ -221,18 +229,7 @@ public class GameManager : MonoBehaviour
     { return _lastStandings.ToArray(); }
     public MatchResult[] GetMatchResults()
     { return _currentResults.ToArray(); }
-    //public float GetTournamentScore(int playerIndex)
-    //{ return _tournamentScore[playerIndex]; }
-    //public void IncreaseTournamentScore(int playerIndex, float score)
-    //{ _tournamentScore[playerIndex] += score; }
-    //public void ResetTournamentScore()
-    //{
 
-    //    for (int i = 0; i < _tournamentScore.Length; i++)
-    //    {
-    //        _tournamentScore[i] = 0f;
-    //    }
-    //}
     public SceneManager SceneManager
     { get { return _curSceneman; } }
     public InputManager InputManager
@@ -311,7 +308,7 @@ public class GameManager : MonoBehaviour
         var transition = GameObject.FindGameObjectWithTag(GlobalStrings.TRANSITIONS_TAG);
         _transitions = transition.GetComponent<Transitions>();
 
-        var sceneMan = GameObject.FindGameObjectsWithTag(GlobalStrings.NAME_SCENEMANAGER);//.GetComponent<SceneManager>();
+        var sceneMan = GameObject.FindGameObjectsWithTag(GlobalStrings.NAME_SCENEMANAGER);
         _curSceneman = sceneMan[^1].GetComponent<SceneManager>();
         List<HeroMovement> movements = new List<HeroMovement>();
         foreach (var character in _playableCharacters)
@@ -321,7 +318,31 @@ public class GameManager : MonoBehaviour
         }
         _inputMan.ResetHeroes(movements.ToArray());
 
+        if (arg0.name != "StartScreen" && arg0.name != "PricePall" && arg0.name != "ResultScreen")
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                movements[i].PressedEscapeButton += escapeToLobby;
+            }
+        }
+
         FromSceneLoaded = true;
+
+        var fpsCounter = GameObject.FindWithTag("UiOverlay").GetComponent<UiOverlay>();
+        if (fpsCounter != null)
+        {
+            fpsCounter.ToggleFps(_showFps);
+        }
+    }
+
+    private void escapeToLobby(object sender, EventArgs e)
+    {
+        if (!_escapeTransit)
+        {
+            _escapeTransitTimer = new EasyTimer(1f);
+            _escapeTransitTimer.Reset();
+            _escapeTransit = true;
+        }   
     }
 
     private bool checkThisIsTheOneAndOnly()
@@ -430,6 +451,17 @@ public class GameManager : MonoBehaviour
         OnEarlyUpdate(DeltaTime);
 
         transform.position = _camTransform.position;
+
+        // Someone pressed escape??
+        if (_escapeTransit)
+        {
+            _transitions.Value = 1 - _escapeTransitTimer.Ratio;
+            if (_escapeTransitTimer.Done)
+            {
+                _escapeTransit = false;
+                UnitySceneManager.LoadScene(GlobalStrings.SCENE_LOBBY);
+            }
+        }
     }
     private void FixedUpdate()
     {

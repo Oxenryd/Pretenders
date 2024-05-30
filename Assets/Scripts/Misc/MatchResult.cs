@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
 
+/// <summary>
+/// Script that handles the data for the result screen and provides standings based on results from tournament matches.
+/// </summary>
 public class MatchResult
 {
     public MatchResult(GameType gameType, int[] playerPositionInMatch)
@@ -67,6 +70,10 @@ public class MatchResult
         return actualPositions;
     }
 
+    /// <summary>
+    /// Used for debugging.
+    /// </summary>
+    /// <returns></returns>
     public static int[] GenerateRandomStandings()
     {
         int[] standings = new int[] { -1, -1, -1, -1 };

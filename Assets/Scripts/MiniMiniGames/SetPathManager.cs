@@ -1,25 +1,39 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class SetPathManager : MonoBehaviour
 {
+    public const string CLOCKTEXT = "Time Left: ";
+
     [SerializeField] private ZoomFollowGang _cam;
     [SerializeField] private GetReadyScript _getReady;
     [SerializeField] private WinnerTextScript _winnerText;
     [SerializeField] private Transitions _transitions;
+    [SerializeField] private HeroMovement[] _heroes;
+    [SerializeField] private TextMeshProUGUI _clockText;
+
     public GameObject headlightPrefab;
     public GameObject[] spHeroes;
 
+    [SerializeField] private float[] _heroesMax = new float[] { 0f,0f,0f,0f};
     private float groundLvl;
     private Vector3 startPosition;
     private bool _isFadingIn = true;
     private bool _isFadingOut = false;
     private bool _zoomingToWinner = false;
     private EasyTimer _fadeTimer;
+    private EasyTimer _gameTimer;
+
+    private bool _timeIsUp = false;
+
 
     public void InformWinnerFound(Transform winnerTransform)
     {
+        var hero = winnerTransform.GetComponent<HeroMovement>();
+        hero.SetWinner(false);
         _cam.SetWinner(winnerTransform, false);
         _winnerText.Activate();
         _zoomingToWinner = true;
@@ -29,11 +43,17 @@ public class SetPathManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        foreach (var hero in _heroes)
+        {
+            hero.TryMoveAi(new Vector2(0, 1));
+        }
+        _getReady.CountdownComplete += onCountdownComplete;
         _transitions.TransitionType = TransitionType.CircleFade;
         _fadeTimer = new EasyTimer(GlobalValues.SCENE_CIRCLETRANSIT_TIME);
         _fadeTimer.Reset();
         _getReady.Activate();
         GameManager.Instance.ResetPlayerMultipliers();
+        GameManager.Instance.Music.Fadeout(1.5f);
 
         Vector3 lightOneStartPos = new Vector3 (0, 0, 0);
         Vector3 lightTwoStartPos = new Vector3 (0, 0, 0);
@@ -47,11 +67,35 @@ public class SetPathManager : MonoBehaviour
 
         // Add all heroes to the hero list
         spHeroes = GameObject.FindGameObjectsWithTag("Character");
+        _gameTimer = new EasyTimer(GlobalValues.SETPATH_GAME_TIME);
+    }
+
+    private void onCountdownComplete(object sender, EventArgs e)
+    {
+        _clockText.enabled = true;
+        _gameTimer.Reset();
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (_gameTimer.Done && !_timeIsUp)
+        {
+            _timeIsUp = true;
+            var bestIndex = -1;
+            var bestResult = float.NegativeInfinity;
+            for (int i = 0; i < 4;  i++)
+            {
+                if (_heroesMax[i] > bestResult)
+                {
+                    bestIndex = i;
+                    bestResult = _heroesMax[i];
+                }
+            }
+            InformWinnerFound(_heroes[bestIndex].transform);
+        }
+
+
         // Randomize the lights next location
         // Move the lights to the next location
 
@@ -62,6 +106,17 @@ public class SetPathManager : MonoBehaviour
             {
                 heroObj.transform.position = startPosition;
             }
+        }
+
+        if (_clockText.enabled)
+        {
+            _clockText.text = CLOCKTEXT + GameManager.Instance.IntegerToString((int)(_gameTimer.Time - (_gameTimer.Time * _gameTimer.Ratio)));
+        }
+
+        // Check maximum depth achieved
+        for (int i = 0; i < 4; i++)
+        {
+            _heroesMax[i] = Mathf.Max(_heroesMax[i], _heroes[i].transform.position.z);
         }
 
         if (_isFadingIn)
@@ -87,8 +142,10 @@ public class SetPathManager : MonoBehaviour
 
         if (_zoomingToWinner && !_isFadingOut)
         {
+            _clockText.color = new Color(_clockText.color.r, _clockText.color.g, _clockText.color.b, 1 - _fadeTimer.Ratio);
             if (_fadeTimer.Done)
             {
+                _clockText.enabled = false;
                 _isFadingOut = true;
                 _fadeTimer.Time = _fadeTimer.Time / 3f;
                 _fadeTimer.Reset();

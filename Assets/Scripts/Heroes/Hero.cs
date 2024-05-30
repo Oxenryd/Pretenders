@@ -49,17 +49,4 @@ public class Hero : MonoBehaviour, ICharacter
     {
         _movement = GetComponent<HeroMovement>();
     }
-
-    void Start()
-    {
-        // Set color to prefab instance picked color.
-      //  var bodyRend = transform.GetChild(0).GetChild(0).GetComponent<MeshRenderer>();
-      //  bodyRend.sharedMaterial = new Material(_primMat);
-     //   bodyRend.sharedMaterial.color = _primaryColor;
-     //   var headRend = transform.GetChild(0).GetChild(1).GetComponent<MeshRenderer>();
-     //   headRend.sharedMaterial = new Material(_secMat);
-    //    headRend.sharedMaterial.color = _secondaryColor;
-
-        
-    }
 }

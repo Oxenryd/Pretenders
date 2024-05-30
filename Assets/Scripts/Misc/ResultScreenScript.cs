@@ -3,9 +3,11 @@ using System.Linq;
 using TMPro;
 using UnityEngine;
 
+/// <summary>
+/// Class that handles the Result Screen behaviour.
+/// </summary>
 public class ResultScreenScript : MonoBehaviour
 {
-   
     private const string PLUS = "+ ";
     [SerializeField] private bool _debugCreateBogusStats;
     [SerializeField] private RectTransform[] _transforms;
@@ -54,6 +56,8 @@ public class ResultScreenScript : MonoBehaviour
         _delayTimer = new EasyTimer(1.2f);
         _delayTimer.Reset();
         _pointsBeforeLast = new int[] { 0, 0, 0, 0 };
+
+        // Count current scores up until last game and preset them.
         for (int i = 0; i < 4; i++)
         {
             var points = 0f;
@@ -69,6 +73,7 @@ public class ResultScreenScript : MonoBehaviour
             }
         }
 
+        // Get the last results scores to be visually incremented.
         _pointsLastMatch = GameManager.Instance.GetMatchResults()[^1].Scores;
 
         for (int i = 0; i < 4; i++)
@@ -83,6 +88,7 @@ public class ResultScreenScript : MonoBehaviour
         _fadeTimer.Reset();
         GameManager.Instance.InputManager.HeroPressedButton += transit;
 
+        // Find out the standings before last match and set the BG to then leader's main color.
         _targetStandings = getPositions(true, out int previousLeader);
         for (int i = 0; i < 4; i++)
         {

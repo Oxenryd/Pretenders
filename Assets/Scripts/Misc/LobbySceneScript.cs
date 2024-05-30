@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 
+/// <summary>
+/// Class that sets up specific behaviour for the Lobby. Handles fading in.
+/// Things commented out are used during debugging.
+/// </summary>
 public class LobbySceneScript : MonoBehaviour
 {
     [SerializeField] Transitions _transition;
@@ -16,13 +20,13 @@ public class LobbySceneScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        var resultScreenTest = GameObject.FindWithTag(GlobalStrings.NAME_RESULTSCREEN_DEBUG).GetComponent<TransitionZoneScript>();
-        resultScreenTest.TriggeredTransition += resultScreenLoadTest;
+       // var resultScreenTest = GameObject.FindWithTag(GlobalStrings.NAME_RESULTSCREEN_DEBUG).GetComponent<TransitionZoneScript>();
+       // resultScreenTest.TriggeredTransition += resultScreenLoadTest;
 
-        _readyScript.CountdownComplete += (sender, args) =>
-        {
-            Debug.Log("Done counting in!");
-        };
+        //_readyScript.CountdownComplete += (sender, args) =>
+        //{
+        //    Debug.Log("Done counting in!");
+        //};
 
         _fadeTimer = new EasyTimer(GlobalValues.SCENE_CIRCLETRANSIT_TIME);
         if (GameManager.Instance.FromSceneLoaded)
@@ -30,7 +34,8 @@ public class LobbySceneScript : MonoBehaviour
         else
             _transition.Value = 1;
         _fadeTimer.Reset();
-        GameManager.Instance.Music.Crossfade(Music.LOBBY, 0, 2f);
+        if (GameManager.Instance.Music != null)
+            GameManager.Instance.Music.Crossfade(Music.LOBBY, 0, 2f);
 
         //DEBUG DEBUG DEBUG
         //GameManager.Instance.InputManager.Heroes[0].PressedPushButton += testTournamentRando;
@@ -38,16 +43,16 @@ public class LobbySceneScript : MonoBehaviour
        _readyScript.Activate();
     }
 
-    private void resultScreenLoadTest(object sender, EventArgs e)
-    {
-        GameManager.Instance.StartNewTournament();
+    //private void resultScreenLoadTest(object sender, EventArgs e)
+    //{
+    //    GameManager.Instance.StartNewTournament();
 
-        GameManager.Instance.DebuggingResultScreen = true;
+    //    GameManager.Instance.DebuggingResultScreen = true;
 
-        GameManager.Instance.AddNewMatchResult(new MatchResult(GameType.Lobby, MatchResult.GenerateRandomStandings()));
-        GameManager.Instance.AddNewMatchResult(new MatchResult(GameType.Lobby, MatchResult.GenerateRandomStandings()));
+    //    GameManager.Instance.AddNewMatchResult(new MatchResult(GameType.Lobby, MatchResult.GenerateRandomStandings()));
+    //    GameManager.Instance.AddNewMatchResult(new MatchResult(GameType.Lobby, MatchResult.GenerateRandomStandings()));
 
-    }
+    //}
 
     /// <summary>
     /// DEBUG DEBUG DEBUG

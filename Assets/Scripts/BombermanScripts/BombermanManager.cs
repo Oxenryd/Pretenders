@@ -4,6 +4,7 @@ using System.Linq;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BombermanManager : MonoBehaviour
 {
@@ -28,25 +29,52 @@ public class BombermanManager : MonoBehaviour
     private GameObject getReady;
     [SerializeField]
     private bool killAll = true;
+    [SerializeField]
+    private bool _allowThrows = false;
+
+    private BombSack[] _bombSacks = new BombSack[4];
+    [SerializeField] private TextMeshProUGUI[] _bombTexts;
+    private int _currentBombs = 1;
+    private int _currentExplosionLength = 5;
+    [SerializeField] private Image[] _crosses;
+
+
+    /// <summary>
+    /// This class handles the overall behavior of the bomber man gameplay
+    /// It determines the positions at which the characters start at in bomber man
+    /// It handles the player death in bomber man
+    /// It handles the transitions for this scene
+    /// </summary>
     void Start()
     {
+        for (int i = 0; i < 4; i++)
+        {
+            characterList[i].CanThrowBombs = _allowThrows;
+            _bombSacks[i] = characterList[i].GetComponent<BombSack>();
+        }
+            
+        
+
         transitions = GameObject.FindWithTag(GlobalStrings.TRANSITIONS_TAG).GetComponent<Transitions>();
         transitions.Value = 0;
         timer.Reset();
 
         RandomizeArray(startCorners);
+        var gridOccupation = _grid.GetComponent<GridOccupation>();
+        //This loop determines at which corner each character will stand in and depending on that corner if will change
+        //The direction at which the characters face
         for (int i = 0; i < startCorners.Length; i++)
         {
-            if (startCorners[i] == new Vector3(2, 0, 2) || startCorners[i] == new Vector3(42, 0, 2))
+            if (startCorners[i] == new Vector3(1, 0, 3) || startCorners[i] == new Vector3(41, 0, 3))
             {
                 characterList[i].ForceRotation(Vector3.zero);
-                characterList[i].transform.position = GridCellMiddlePoint.Get(_grid, startCorners[i]);
             }
-            if (startCorners[i] == new Vector3(2, 0, 38) || startCorners[i] == new Vector3(42, 0, 38))
+            if (startCorners[i] == new Vector3(1, 0, 39) || startCorners[i] == new Vector3(41, 0, 39))
             {
                 characterList[i].ForceRotation(new Vector3(0, -180, 0));
-                characterList[i].transform.position = GridCellMiddlePoint.Get(_grid, startCorners[i]);
             }
+            characterList[i].transform.position = startCorners[i];
+            gridOccupation.SetOccupiedForced(i, characterList[i].transform.position);
         }
         var getReadyScript = getReady.GetComponent<GetReadyScript>();
         getReadyScript.Activate();
@@ -55,7 +83,14 @@ public class BombermanManager : MonoBehaviour
         {
             getReadyScript.CountdownComplete += OnKillAll;
         }
+
+        if (GameManager.Instance.Music != null)
+            GameManager.Instance.Music.Fadeout(1.5f);
     }
+
+    /// <summary>
+    /// This method is a debugging method that kills all the characters in the bomberman scene
+    /// </summary>
 
     private void OnKillAll(object sender, System.EventArgs e)
     {
@@ -66,6 +101,10 @@ public class BombermanManager : MonoBehaviour
     {
         timer = new EasyTimer(GlobalValues.SCENE_CIRCLETRANSIT_TIME);
     }
+
+    /// <summary>
+    /// The update method handles the timers which determines when the intro and outro transitions will start.
+    /// </summary>
     void Update()
     {
         if (fadingIn)
@@ -101,10 +140,29 @@ public class BombermanManager : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// This method adds all the players in an array which will determine the match result
+    /// The array is ordered based on which character got killed first.
+    /// It also handles the animations for the winning scene when there is only one player left in the scene.
+    /// </summary>
     public void AddPlayerDeathToQueue(int playerId)
     {
+        _crosses[playerId].enabled = true;
         deathQueue[playerId] = placementToSet;
         placementToSet--;
+        _currentExplosionLength = _currentExplosionLength + 2;
+        _currentBombs++;
+        foreach (var sack in _bombSacks)
+        {
+            sack.IncreaseMaxBombs();
+            sack.SetExplosionLength(_currentExplosionLength);
+        }
+
+        foreach (var text in _bombTexts)
+        {
+            text.text = $"Bombs: x{_currentBombs}\nsize +{_currentExplosionLength - 5}";
+        }
+
         if(placementToSet < 1)
         {
             if (GameManager.Instance.Tournament)
@@ -124,11 +182,15 @@ public class BombermanManager : MonoBehaviour
             zoomingToWinner = true;
             timer.Time = timer.Time * 3;
             timer.Reset();
+            characterList[winnerIndex].SetWinner(true);
             _cam.SetWinner(characterList[winnerIndex].transform, true);
             _winnerText.Activate();
         }
     }
 
+    /// <summary>
+    /// This method is a debugging method that kills all the characters in the bomberman scene
+    /// </summary>
     void KillAllElse()
     {
         for(int i = 1; i < 4;  i++)
@@ -137,6 +199,11 @@ public class BombermanManager : MonoBehaviour
             PlayerDeath(hero);
         }
     }
+
+    /// <summary>
+    /// The playerDeath method handles the individual players death
+    /// When a player dies it will fly off the scene and no longer be in the camera
+    /// </summary>
     public void PlayerDeath(Hero hero)
     {
         var heroMovementScript = hero.gameObject.GetComponent<HeroMovement>();
@@ -145,10 +212,21 @@ public class BombermanManager : MonoBehaviour
             heroMovementScript.IsAlive = false;
             heroMovementScript.AcceptInput = false;
             heroMovementScript.RigidBody.velocity = Vector3.zero;
-            heroMovementScript.RigidBody.AddForce((-heroMovementScript.FaceDirection + Vector3.up).normalized * 30, ForceMode.Impulse);
+            heroMovementScript.RigidBody.useGravity = false;
+            //heroMovementScript.RigidBody.AddForce((-heroMovementScript.FaceDirection + Vector3.up).normalized * 30, ForceMode.Impulse);
+            heroMovementScript.RigidBody.AddForce((-heroMovementScript.FaceDirection + Vector3.up).normalized * 40, ForceMode.Impulse);
+            var colliders = heroMovementScript.GetComponentsInChildren<Collider>();
+            foreach (Collider collider in colliders)
+            {
+                collider.enabled = false;
+            }
             AddPlayerDeathToQueue(hero.Index);
         }
     }
+
+    /// <summary>
+    /// This is a randomizing array which is used to randomize where the characters start in order to achieve more fairness in the game
+    /// </summary>
     private void RandomizeArray<T>(T[] array)
     {
         for (int i = array.Length - 1; i > 0; i--)

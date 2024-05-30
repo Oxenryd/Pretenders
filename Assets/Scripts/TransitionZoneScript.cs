@@ -4,6 +4,9 @@ using UnityEngine;
 using UnitySceneManager = UnityEngine.SceneManagement.SceneManager;
 using Scene = UnityEngine.SceneManagement.Scene;
 
+/// <summary>
+/// Class that handles transitions to other game modes from the Lobby.
+/// </summary>
 public class TransitionZoneScript : MonoBehaviour
 {
     [SerializeField] private LobbySceneScript _script;
@@ -52,7 +55,10 @@ public class TransitionZoneScript : MonoBehaviour
                     GameManager.Instance.StartNewTournament(GameManager.Instance.IncludeMiniGames);
                     GameManager.Instance.TransitToNextScene(GameManager.Instance.GetTournamentNextScene());
                 } else
+                {
+                    GameManager.Instance.DisableTournament();
                     GameManager.Instance.TransitToNextScene(_nextScene);
+                }
             }
         }
 
@@ -100,6 +106,8 @@ public class TransitionZoneScript : MonoBehaviour
 
     private void onHeroPressedTrigger(object sender, EventArgs e)
     {
+        if (_interactivePlayer.IsGrabbing) return;
+
         _transitions.TransitionType = TransitionType.CircleFade;
         _fadeTimer.Reset();
         _transitioning = true;

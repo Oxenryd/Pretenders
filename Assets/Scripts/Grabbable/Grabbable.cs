@@ -1,9 +1,10 @@
 using System;
 using UnityEngine;
-using UnitySceneManager = UnityEngine.SceneManagement.SceneManager;
-using Scene = UnityEngine.SceneManagement.Scene;
-using LoadSceneMode = UnityEngine.SceneManagement.LoadSceneMode;
 
+/// <summary>
+/// Base class for objects and items that should be able to be picked up and carried around.
+/// Also has triggering properties and behaviours that can be set by inherited classes.
+/// </summary>
 public class Grabbable : MonoBehaviour
 {
     [SerializeField] protected Collider[] _colliders;
@@ -29,7 +30,7 @@ public class Grabbable : MonoBehaviour
     { get; set; } = false;
     private int _grabberLayer = 0;
     public bool GrabInProgress { get; set; } = false;
-
+    public bool UseGunAnimation { get; set; } = false;
     public bool DetachOnDrop { get; set; } = true;
     public int GrabberLayer
     { get { return _grabberLayer; } }
@@ -59,6 +60,9 @@ public class Grabbable : MonoBehaviour
     public bool CanBeGrabbed
     { get; set; } = true;
 
+    /// <summary>
+    /// Make this object invisible and disable its collider.
+    /// </summary>
     public void Hide()
     {
         Hidden = true;
@@ -71,6 +75,10 @@ public class Grabbable : MonoBehaviour
         gameObject.SetActive(false);
     }
 
+    /// <summary>
+    /// Attach this grabbable to another object implementing the IRecievable interface.
+    /// </summary>
+    /// <param name="attachedTo"></param>
     public void Attach(IRecievable attachedTo)
     {
         IsGrabbed = true;
@@ -84,13 +92,14 @@ public class Grabbable : MonoBehaviour
         }
     }
 
-    public virtual float GetSpeedPenalty()
-    {
-        return GlobalValues.CHAR_GRAB_DEFAULT_SPEEDPENALTY;
-    }
+    /// <summary>
+    /// Releases this grabbable from an IRecievable.
+    /// </summary>
     public void Detach()
     { Detach(1f); }
-
+    /// <summary>
+    /// Releases this grabbable from an IRecievable wth provided power for tossing the object away in a random direction.
+    /// </summary>
     public void Detach(float powerMultiplier)
     {
         IsAttached = false;
@@ -107,11 +116,18 @@ public class Grabbable : MonoBehaviour
     public HeroMovement Grabber
     { get { return _grabber; } }
 
+    /// <summary>
+    /// Makes this grabbable visible at a specific position.
+    /// </summary>
+    /// <param name="position"></param>
     public void Show(Vector3 position)
     {
         transform.position = position;
         Show();
     }
+    /// <summary>
+    /// Makes this grabbable visible and sets its collider to enabled.
+    /// </summary>
     public void Show()
     {
         Hidden = false;
@@ -141,17 +157,29 @@ public class Grabbable : MonoBehaviour
     public bool IsGrabbed
     { get; set; }
 
+    /// <summary>
+    /// Starts a Tug-o-war between two heroes.
+    /// </summary>
+    /// <param name="hero1"></param>
+    /// <param name="hero2"></param>
     public void StartTug(HeroMovement hero1, HeroMovement hero2)
     {
         hero1.SetTug(-1);
         hero2.SetTug(1);
         Tug.Activate(hero1, hero2);
     }
+    /// <summary>
+    /// This is called to increment/decrement the meter during a tug-o-war, based on the heroes provided/involved in the tug.
+    /// </summary>
+    /// <param name="hero"></param>
     public void TugPull(HeroMovement hero)
     {
         Tug.Increase(hero.TuggerIndex * hero.TugPower * hero.Effect.CurrentEffects().TugPowerMultiplier);
     }
 
+    /// <summary>
+    /// Aborts a progressing grab.
+    /// </summary>
     public void AbortGrabInProgress()
     {
         IsGrabbed = false;
@@ -163,6 +191,11 @@ public class Grabbable : MonoBehaviour
         _grabber = null;
     }
 
+    /// <summary>
+    /// Check for conditions and if able the provided grabber grabs this grabbable and returns whether a grab was possible or not.
+    /// </summary>
+    /// <param name="grabber"></param>
+    /// <returns></returns>
     public bool TryGrab(HeroMovement grabber)
     {
         if (!IsGrabbed && !GrabInProgress)
@@ -186,6 +219,10 @@ public class Grabbable : MonoBehaviour
         return false;
     }
 
+    /// <summary>
+    /// Forcefully set this grabbable as Grabbed by the grabber.
+    /// </summary>
+    /// <param name="grabber"></param>
     public virtual void Grab(HeroMovement grabber)
     {
         IsGrabbed = true;
@@ -210,6 +247,11 @@ public class Grabbable : MonoBehaviour
         StraightenUp();
     }
 
+    /// <summary>
+    /// Sets this grabbable to a non-grabbed state and its previous grabber in a non-grabbing state.<br></br>
+    /// bool InjectDropAbort() can be overriden to create a custom behaviour for aborting a requested drop.
+    /// </summary>
+    /// <returns></returns>
     public virtual bool Drop()
     {
         if (InjectDropAbort()) return false;
@@ -288,7 +330,7 @@ public class Grabbable : MonoBehaviour
                 case GrabbablePosition.AboveHeadOneHand:
                 case GrabbablePosition.InFrontOneHand:
                     transform.rotation = TransformHelpers.FixNegativeZRotation(Vector3.forward, _grabber.FaceDirection) * _grabbableRotationOffset;
-                    transform.position = _grabber.LeftHand.position + _grabber.LeftHand.rotation * new Vector3(GrabPointOffset.x, GrabPointOffset.y, GrabPointOffset.z);
+                    transform.position = _grabber.RightHand.position + _grabber.RightHand.rotation * new Vector3(GrabPointOffset.x, GrabPointOffset.y, GrabPointOffset.z);
                     break;
                 case GrabbablePosition.InFrontTwoHands:
                     transform.rotation = TransformHelpers.FixNegativeZRotation(Vector3.forward, _grabber.FaceDirection) * _grabbableRotationOffset;
@@ -312,21 +354,54 @@ public class Grabbable : MonoBehaviour
         }
         return false;
     }
+    /// <summary>
+    /// If a grabbable also implements IRecievable, this can be overriden to present objects that can be transferred. <br></br>
+    /// By default this return an array containing only this grabbable. Needs to be cast to correct type.
+    /// </summary>
+    /// <returns></returns>
     public virtual object[] GetTransferables() { return new GameObject[] { this.gameObject }; }
 
+    /// <summary>
+    /// Override to provide inherited class with triggered behaviour. Returns whether triggered or not.
+    /// </summary>
+    /// <returns></returns>
     public virtual bool TriggerEnter() { return false; }
+    /// <summary>
+    /// Override to provide inherited class with triggered behaviour. Returns whether exited trigger or not.
+    /// </summary>
+    /// <returns></returns>
     public virtual bool TriggerExit() { return false; }
 
+    /// <summary>
+    /// Called to just forced upward direction of object.
+    /// </summary>
     protected virtual void StraightenUp()
     {
         transform.rotation = Quaternion.identity;
     }
+    /// <summary>
+    /// This can be overidden to make a seperate behaviour when this grabbable is being "Knocked off" rather than just a Dropped. <br></br>
+    /// Default behaviour is same as a Drop();
+    /// </summary>
     public virtual void KnockOff() { Drop(); }
+    /// <summary>
+    /// Override to make a conditional abort of a Drop-attempt.<br></br>
+    /// Default behaviour is false, indicating to not abort a drop.
+    /// </summary>
+    /// <returns></returns>
     public virtual bool InjectDropAbort() { return false; }
+
+    /// <summary>
+    /// This can be overridden to apply a different move speed penalty than default while carrying this Grabbable.
+    /// </summary>
+    /// <returns></returns>
     public virtual float SpeedPenalty()
     {
         return GlobalValues.CHAR_GRAB_DEFAULT_SPEEDPENALTY;
     }
+    /// <summary>
+    /// Override to alter how this grabbable should behave when succesfully being dropped.
+    /// </summary>
     public virtual void OnDropThrow()
     {
         Rigidbody.AddForce(_rBody.mass * GlobalValues.CHAR_GRAB_DROPFORCE * (_grabber.FaceDirection + Vector3.up).normalized, ForceMode.Impulse);
