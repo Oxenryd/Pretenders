@@ -15,10 +15,12 @@ public class SetPathManager : MonoBehaviour
     [SerializeField] private HeroMovement[] _heroes;
     [SerializeField] private TextMeshProUGUI _clockText;
 
+    // Declare Game Object Prefabs
     public GameObject headlightPrefab;
     public GameObject[] spHeroes;
 
     [SerializeField] private float[] _heroesMax = new float[] { 0f,0f,0f,0f};
+    // Declare variables
     private float groundLvl;
     private Vector3 startPosition;
     private bool _isFadingIn = true;
@@ -40,6 +42,7 @@ public class SetPathManager : MonoBehaviour
         _fadeTimer.Time = _fadeTimer.Time * 3;
         _fadeTimer.Reset();
     }
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -47,11 +50,15 @@ public class SetPathManager : MonoBehaviour
         {
             hero.TryMoveAi(new Vector2(0, 1));
         }
+
+        // Create a fade in transition to the minigame
         _getReady.CountdownComplete += onCountdownComplete;
         _transitions.TransitionType = TransitionType.CircleFade;
         _fadeTimer = new EasyTimer(GlobalValues.SCENE_CIRCLETRANSIT_TIME);
         _fadeTimer.Reset();
         _getReady.Activate();
+        
+        // Reset the score multipliers from the previous mini minigame
         GameManager.Instance.ResetPlayerMultipliers();
         GameManager.Instance.Music.Fadeout(1.5f);
 
@@ -79,6 +86,8 @@ public class SetPathManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // Check if the time is up without anyone having reached the goal
+        // If so, then make the winner the player that made it the closest to the goal
         if (_gameTimer.Done && !_timeIsUp)
         {
             _timeIsUp = true;
@@ -128,6 +137,7 @@ public class SetPathManager : MonoBehaviour
             }
         }
 
+        // If the minigame is over and needs to start fading out into the next scene
         if (_isFadingOut)
         {
             _transitions.Value = 1 - _fadeTimer.Ratio;
@@ -140,6 +150,7 @@ public class SetPathManager : MonoBehaviour
             }
         }
 
+        // Check if the minigame is in the last stage where the winner is shown more across the screen
         if (_zoomingToWinner && !_isFadingOut)
         {
             _clockText.color = new Color(_clockText.color.r, _clockText.color.g, _clockText.color.b, 1 - _fadeTimer.Ratio);
