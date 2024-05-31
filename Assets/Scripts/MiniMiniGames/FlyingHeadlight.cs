@@ -4,18 +4,20 @@ using UnityEngine;
 
 public class FlyingHeadlight : MonoBehaviour
 {
+    // Declare corner variables
     public Vector3 corner1;
     public Vector3 corner2;
     public Vector3 corner3;
     public Vector3 corner4;
 
+    // Declare the flying lights movement speed and target position
     public float moveSpeed = 5F;
 
     private Vector3 targetPosition;
 
     void Start()
     {
-        // Set initial target posirion
+        // Set the targets initial position randomly
         SetRandomTargetPosition();
     }
 
@@ -24,7 +26,7 @@ public class FlyingHeadlight : MonoBehaviour
         // Move towards the next pos
         transform.position = Vector3.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
 
-        // Check if the object has reached the target position
+        // Check if the flying light object has reached the target position
         if (Vector3.Distance(transform.position, targetPosition) < 0.1f)
         {
             // Set a new random target position
