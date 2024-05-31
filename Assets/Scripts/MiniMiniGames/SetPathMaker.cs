@@ -5,6 +5,7 @@ using UnityEngine;
 public class SetPathMaker : MonoBehaviour
 {
     [SerializeField] private SetPathManager _manager;
+    // Declare prefab Game Objects
     public GameObject pathStartPrefab;
     public GameObject pathEndPrefab;
     public GameObject pathPlatformPrefab;
@@ -18,6 +19,7 @@ public class SetPathMaker : MonoBehaviour
     private Transform _winnerTransform;
     private EasyTimer _gameTimer;
 
+    // Method which adds a platform to the set path during its creation
     void AddPlatformToPath(int rowNr, int colNr, Vector3 pathTopLeftPos)
     {
         Vector3 platformPos = new Vector3(pathTopLeftPos.x + colNr*platformSize + platformSize / 2, 0, pathTopLeftPos.z - rowNr*platformSize - platformSize / 2);
@@ -29,11 +31,12 @@ public class SetPathMaker : MonoBehaviour
     {
         
         Vector3 pathMidPos = GameObject.Find("SetPathPrint").transform.position;
-        //float setPathWidth = GameObject.Find("SetPathPrint").bounds.size.x;
-        //float setPathHeight = GameObject.Find("SetPathPrint").bounds.size.z;
+        // Since the size of the path is always the same, this is the value you get from taking the width and height from the gameobject in the scene
+        // Did this for performance reasons instead of directly taking it each time running the program
         float setPathWidth = 22;
         float setPathHeight = 44;
 
+        // The position on the top left of the path. Used mainly for calculations of where to place things relative to each other in the scene
         Vector3 pathTopLeftPos = new Vector3(pathMidPos.x - setPathWidth / 2, 0, pathMidPos.z + setPathHeight / 2);
 
         int pathRowCount = 10;
@@ -42,6 +45,7 @@ public class SetPathMaker : MonoBehaviour
 
         int pastPathColumnNumber = 3;
 
+        // Creates a random path by putting each platform either in front on the left, in front, or in front on the right of the last placed platform on the path
         for (int row = 0; row < pathRowCount; row++)
         {
             int curRowSetPlatform = Random.Range(pastPathColumnNumber - 1, pastPathColumnNumber + 1);
@@ -68,6 +72,8 @@ public class SetPathMaker : MonoBehaviour
         _winnerTransform = winnerTransform;
     }
 
+    // Method that checks if a position is colliding with the goal platform
+    // Used to check if the players positions are collidiing with the goal
     bool IsCollidingWithGoal(Vector3 posToCheck)
     {
         Vector3 goalPos = pathEndPrefab.transform.position;
@@ -86,36 +92,7 @@ public class SetPathMaker : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //if (winnerFound == false)
-        //{
-        //    GameObject[] heroObjects = GameObject.FindGameObjectsWithTag("Character");
-        //    List<Hero> heroes = new();
-        //    foreach (var obj in heroObjects)
-        //    {
-        //        var hero = obj.GetComponent<Hero>();
-        //        heroes.Add(hero);
-        //    }
-
-        //    for (global::System.Int32 heroIndex = 0; heroIndex < 4; heroIndex++)
-        //    {
-        //        if (IsCollidingWithGoal(heroes[heroIndex].transform.position))
-        //         {
-        //            Debug.Log("Winner! Player: " + heroIndex);
-
-        //            // Update the _scoreMultiplier of the hero's index in the GameManager
-        //            GameManager.Instance.SetPlayerMultiplier(heroes[heroIndex].Index, 1.5F);
-
-        //            Debug.Log("Player 0: " + GameManager.Instance.GetPlayerMultiplier(0));
-        //            Debug.Log("Player 1: " + GameManager.Instance.GetPlayerMultiplier(1));
-        //            Debug.Log("Player 2: " + GameManager.Instance.GetPlayerMultiplier(2));
-        //            Debug.Log("Player 3: " + GameManager.Instance.GetPlayerMultiplier(3));
-
-        //            winnerFound = true;
-        //            _manager.InformWinnerFound(heroes[heroIndex].transform);
-        //        }
-        //    }
-        //}
-
+        // Checks if the winner is found and then informs the program to continue to the next minigame if that is the case
         if (_winnerInformed)
         {
             _winnerInformed = false;
